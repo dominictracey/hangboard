@@ -12,14 +12,14 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 class CounterView extends Component {
   static displayName = 'CounterView';
 
-  static navigationOptions = {
-    title: 'Counter',
-    tabBar: () => ({
-      icon: (props) => (
-        <Icon name='plus-one' size={24} color={props.tintColor} />
-      )
-    })
-  }
+  // static navigationOptions = {
+  //   title: 'Counter',
+  //   tabBar: () => ({
+  //     icon: (props) => (
+  //       <Icon name='plus-one' size={24} color={props.tintColor} />
+  //     )
+  //   })
+  // }
 
   static propTypes = {
     counter: PropTypes.number.isRequired,
@@ -106,7 +106,7 @@ class CounterView extends Component {
             accessibilityLabel={'Randomize counter'}
             onPress={this.random}>
           <Text style={styles.linkButton}>
-            Random
+            Fucker
           </Text>
         </TouchableOpacity>
 

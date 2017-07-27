@@ -1,16 +1,18 @@
 import {Platform} from 'react-native';
 import {TabNavigator, StackNavigator} from 'react-navigation';
 
-import CounterViewContainer from '../counter/CounterViewContainer';
+import WorkoutViewContainer from '../workout/WorkoutViewContainer';
 import ColorViewContainer from '../colors/ColorViewContainer';
+//import CounterViewContainer from '../counter/CounterViewContainer';
 
 const headerColor = '#39babd';
 const activeColor = 'white';
 
 // TabNavigator is nested inside StackNavigator
 export const MainScreenNavigator = TabNavigator({
-  Counter: {screen: CounterViewContainer},
-  Color: {screen: ColorViewContainer}
+  Workout: {screen: WorkoutViewContainer},
+  Color: {screen: ColorViewContainer},
+  // Counter: {screen: CounterViewContainer},
 }, {
   tabBarOptions: {
     ...Platform.select({
@@ -24,7 +26,7 @@ export const MainScreenNavigator = TabNavigator({
 });
 
 MainScreenNavigator.navigationOptions = {
-  title: 'Pepperoni App Template',
+  title: 'Hangboard Workout',
   header: {
     titleStyle: {color: 'white'},
     style: {

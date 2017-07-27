@@ -15,6 +15,9 @@ class AppView extends Component {
   };
 
   componentDidMount() {
+    //console.log('CDM')
+    //snapshotUtil.clearSnapshot()
+
     snapshotUtil.resetSnapshot()
       .then(snapshot => {
         const {dispatch} = this.props;
