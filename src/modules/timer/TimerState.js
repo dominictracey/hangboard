@@ -90,19 +90,11 @@ export default function TimerStateReducer(state = initialState, action = {}) {
             Effects.constant({type: DONE})
           );
         } else {
-          //return loop(
           return state.update('seconds', seconds => seconds - 1)
-          //   Effects.promise(nextTick)
-          // );
         }
       } else {
         return state;
       }
-    //
-    // case INIT:
-    //   heartbeat()
-    //   return state;
-
     default:
       return state;
   }

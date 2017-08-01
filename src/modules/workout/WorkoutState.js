@@ -1,3 +1,5 @@
+/*eslint-disable no-unused-vars*/
+
 import {fromJS} from 'immutable';
 import {loop, Effects} from 'redux-loop-symbol-ponyfill';
 import {DONE, setTime, pause} from '../timer/TimerState';
@@ -32,9 +34,9 @@ const initialState = fromJS({
         },
         '7': {
           name: 'narrow pinch'
-        }
-      }
-    }
+        },
+      },
+    },
   },
   sets: {
     '0': {
@@ -183,19 +185,15 @@ const initialState = fromJS({
   },
 
   session: {
-    workout: '1',
-    currentExercise: '1',
-    currentSet: '1',
-    currentRep: '0',
-    currentPhase: 'Warmup',
-    setLabel: '1/1',
+    workoutId: '-',
+    currentExerciseId: '-',
+    currentSetOrd: '-',
+    currentRep: '-',
+    currentPhase: 'Init',
+    exerciseLabel: '-/-',
+    setLabel: '-/-',
+    repLabel: '-/-',
     weights: {
-      '0': {'0': 0},
-      '1': {'0': 0},
-      '2': {'0': 0},
-      '3': {'0': -10},
-      '4': {'0': -10},
-      '5': {'0': -20},
     },
     grip: '--',
     complete: false,
@@ -208,9 +206,8 @@ const initialState = fromJS({
 });
 
 // Actions
-const LOAD = 'WorkoutState/LOAD';  // get ready to rock it
-const START = 'WorkoutState/START';  // workout begins
-const WARMUP = 'WorkoutState/WARMUP';
+const LOAD = 'WorkoutState/LOAD';  // select workout
+const WARMUP = 'WorkoutState/WARMUP'; // begin phases of workout
 const EXERCISE = 'WorkoutState/EXERCISE';
 const REST = 'WorkoutState/REST';
 const RECOVER = 'WorkoutState/RECOVER';
@@ -226,12 +223,8 @@ const PhaseLabels = {
 };
 
 // Action creators
-export function load() {
-  return {type: LOAD};
-}
-
-export function start() {
-  return {type: START};
+export function load(workoutId) {
+  return {type: LOAD, workout: workoutId};
 }
 
 export function warmup() {
@@ -258,77 +251,117 @@ export function reset() {
   return {type: RESET};
 }
 
+// accessors
+export const getWorkoutId = (state) => state.getIn(['session','workout']).toString();
+export const getWorkout = (state) => state.getIn(['workouts',getWorkoutId(state)]);
+export const getProgramId = (state) => state.getIn(['workouts',getWorkoutId(state),'program']).toString();
+export const getProgram = (state) => state.getIn(['programs',getWorkout(state).get('program')]);
+
+export const getCurrExerciseOrd = (state) => state.getIn(['session','currentExercise']);
+export const getCurrExerciseId = (state) => state.getIn(['session','currentExercise']).toString();
+
+export const getCurrRep = (state) => state.getIn(['session','currentRep']);
+export const getNumReps = (state) => getCurrSet(state).get('reps');
+
+// this is the number set we are on (e.g. 1 of 2)
+export const getCurrSetOrd = (state) => state.getIn(['session','currentSet']);
+// this is the id of that set
+export const getCurrSetId = (state) =>
+  state.getIn(['programs',getProgramId(state),
+    'exercises',getCurrExerciseOrd(state),'sets',getCurrSetOrd(state)]);
+// this is the actual immuatable Map
+export const getCurrSet = (state) => state.getIn(['sets',getCurrSetId(state)]);
+// TODO this seems wrong
+export const getSetLabel = (state) => getCurrExerciseOrd(state) + '/' + getCurrSetOrd(state);
+export const getBoardId = (state) => getProgram(state).get('board').toString();
+export const getBoard = (state) => state.getIn(['boards',getBoardId(state)]);
+export const getCurrGripName = (state) => getBoard(state).getIn(['grips',getCurrExerciseOrd(state),'name']);
+export const getNextGripName = (state) =>
+  getBoard(state).getIn(['grips',getCurrExerciseOrd(state) + 1,'name']);
+export const numSetsInExercise = (state) =>
+  state.getIn(['programs', getProgramId(state),'exercises',getCurrExerciseId(state),'sets']).count()
+
 // Reducer
 export default function WorkoutStateReducer(state = initialState, action = {}) {
 
-  const workoutId = state.getIn(['session','workout']);
-  const workout = state.getIn(['workouts',workoutId]);
-  const program = state.getIn(['programs',workout.get('program')]);
-  //const board = state.getIn(['boards',program.board]);
-  const currExercise = state.getIn(['session','currentExercise']);
-  //const exercise = program.exercises[currExercise];
-  const currSet = state.getIn(['session','currentSet']);
-  const currRep = state.getIn(['session','currentRep']);
-  const setId = state.getIn(['programs',workout.get('program'),'exercises',currExercise,'sets',currSet]);
-  const set = state.getIn(['sets',setId]);
-  const setLabel = currExercise + '/' + currSet;
-
   switch (action.type) {
     case LOAD:
-      return loop(
-        state.update('loading',loading => true),
-        Effects.constant(warmup())
-      );
-
-    //case START:
-      // do we need this?
+      if (state.get('workouts').has(action.workout)) {
+        const workout = state.getIn(['workouts',action.workout])
+        const program = state.getIn(['programs',workout.get('program')])
+        console.log('workout is ' + workout)
+        console.log('program is ' + program)
+        return loop(
+          state.update('loading',loading => true)
+            .updateIn(['session','workoutId'],workoutId => action.workout)
+            .updateIn(['session','currentExerciseId'], ex => '1')
+            .updateIn(['session','currentSetOrd'], set => '1')
+            .updateIn(['session','currentRep'], rep => '1')
+            .updateIn(['session','currentPhase'], phase => 'Init')
+            .updateIn(['session','exerciseLabel'], label =>
+              '1/' + program.get('exercises').count())
+            .updateIn(['session','setLabel'], label =>
+              '1/' + program.get('exercises').get('1').get('sets').count())
+            .updateIn(['session','repLabel'], label =>
+              '1/' + state.getIn(['sets',program.get('exercises').get('1').get('sets').get('1')]).get('reps'))
+            .updateIn(['session','grip'], grip =>
+              state.getIn(['boards',program.get('board'),'grips',program.get('exercises').get('1').get('grip')]))
+            .updateIn(['session','weights'],
+              weights => state.getIn(['programs',action.workout,'weights'])),
+          Effects.constant(warmup())
+        );
+      } else {
+        // bad workout id
+        console.log('attempt to load bad workout id ' + action.workout)
+        return state
+      }
 
     case WARMUP:
       return loop(
         state.update('loading',loading => false)
         .updateIn(['session','currentPhase'], phase => PhaseLabels[WARMUP])
         .updateIn(['session','currentRep'], rep => '0')
-        .updateIn(['session','currentSet'], cset => '1')
-        .updateIn(['session','grip'], grip => state.getIn(['boards',program.get('board'),'grips','0','name'])),
-        Effects.constant(setTime(program.get('warmup_secs')))
+        .updateIn(['session','currentSet'], cset => '1'),
+        Effects.constant(setTime(getProgram(state).get('warmup_secs')))
       );
 
     case EXERCISE:
       return loop(
         state.updateIn(['session','currentPhase'], phase => PhaseLabels[EXERCISE])
           .updateIn(['session','currentRep'], rep => rep === '0' ? '1' : parseInt(rep) + 1),
-        Effects.constant(setTime(set.get('secs_on')))
+        Effects.constant(setTime(getCurrSet(state).get('secs_on')))
       );
 
     case REST:
       return loop(
         state.updateIn(['session','currentPhase'], phase => PhaseLabels[REST]),
-        Effects.constant(setTime(set.get('secs_off')))
+        Effects.constant(setTime(getCurrSet(state).get('secs_off')))
       );
 
     case RECOVER:
-      // do we have another set to do on this hold or do we move on to the next one?
-      if (state.getIn(['programs',workout.get('program'),'exercises',currExercise,'sets']).count() === parseInt(currSet)) {
+      // do we have another set to do on this grip or do we move on to the next one?
+      if (numSetsInExercise(state) === parseInt(getCurrSetOrd(state))) {
         // move on to next exercise
-        var newEx = parseInt(currExercise) + 1  //note we shouldn't recover after last set
-        var newGripId = state.getIn(['programs',workout.get('program'),'exercises',newEx.toString(),'grip'])
+        var newEx = parseInt(getCurrExerciseOrd(state)) + 1  //note we shouldn't recover after last set
         return loop(
           state.updateIn(['session','currentPhase'], phase => PhaseLabels[RECOVER])
             .updateIn(['session','currentRep'], rep => '0')
-            .updateIn(['session','currentExercise'], exercise => newEx.toString())
+            .updateIn(['session','currentExercise'], exer => newEx.toString())
             .updateIn(['session','currentSet'], cset => '1')
-            .updateIn(['session','setLabel'], label => parseInt(currExercise) + 1 + '/1')
-            .updateIn(['session','grip'], grip => state.getIn(['boards',program.get('board'),'grips',newGripId,'name'])),
-          Effects.constant(setTime(set.get('secs_recovery')))
+            .updateIn(['session','setLabel'],
+              label => '1/' + numSetsInExercise(state))
+            .updateIn(['session','grip'], grip => getCurrGripName(state)),
+          Effects.constant(setTime(getCurrSet(state).get('secs_recovery')))
         );
       } else {
+        // ready for the next set on this grip
         return loop(
           state.updateIn(['session','currentPhase'], phase => PhaseLabels[RECOVER])
             .updateIn(['session','currentRep'], rep => '0')
             .updateIn(['session','currentSet'], cset => parseInt(cset) + 1)
-            .updateIn(['session','setLabel'], label => setLabel)
-            .updateIn('session','grip', grip => state.getIn(['boards',program.get('board'),'grips',currSet,'name'])),
-          Effects.constant(setTime(set.get('secs_recovery')))
+            .updateIn(['session','setLabel'],
+              label => getCurrSetOrd(state) + 1 + '/' + numSetsInExercise(state)),
+          Effects.constant(setTime(getCurrSet(state).get('secs_recovery')))
         );
       }
 
@@ -347,8 +380,8 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
         return loop(state,Effects.constant(exercise()));
       } else if (state.getIn(['session','currentPhase']) === PhaseLabels[EXERCISE]) {
         // move on to rest or recovery
-        if (set.get('reps') === currRep) {
-          if (program.get('exercises').count() === parseInt(currExercise)) {
+        if (getCurrSet(state).get('reps') === getCurrRep(state)) {
+          if (getProgram(state).get('exercises').count() === parseInt(getCurrExerciseOrd(state))) {
             return loop(state,Effects.constant(complete()));
           } else {
             return loop(state,Effects.constant(recover()));

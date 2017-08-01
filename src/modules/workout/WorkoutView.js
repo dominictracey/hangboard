@@ -26,7 +26,6 @@ class WorkoutView extends Component {
     session: PropTypes.object.isRequired,
     workoutStateActions: PropTypes.shape({
       load: PropTypes.func.isRequired,
-      start: PropTypes.func.isRequired,
       complete: PropTypes.func.isRequired,
       reset: PropTypes.func.isRequired
     }).isRequired,
@@ -77,7 +76,7 @@ class WorkoutView extends Component {
   // };
 
   render() {
-    const loadingStyle = this.props.loading
+    const loadingStyle = this.props.session.get('loading')
       ? {backgroundColor: '#eee'}
       : null;
 

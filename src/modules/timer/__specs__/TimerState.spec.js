@@ -2,12 +2,12 @@
 
 import {Effects} from 'redux-loop-symbol-ponyfill';
 import {initialState, dispatch} from '../../../../test/state';
-//import * as CounterStateActions from '../CounterState';
+import * as TimerStateActions from '../TimerState';
+import * as WorkflowStateActions from '../../workout/WorkoutState'
 
 describe('TimerState', () => {
 
-  // Example of how to test multiple dispatches in series
-  describe('start', () => {
+  describe('resume', () => {
     const getValue = state => state.getIn(['timer', 'running']);
 
     it('should start the timer', () => {
@@ -17,52 +17,74 @@ describe('TimerState', () => {
     });
   });
 
-  // describe('reset', () => {
-  //   it('should reset the counter state to initial value', () => {
-  //     // create an incremented state to test against
-  //     const [modifiedState] = dispatch(initialState, CounterStateActions.increment());
-  //     expect(modifiedState.get('counter')).not.toBe(initialState.get('counter'));
-  //
-  //     // reset to original and verify it === initial state
-  //     const [resetState] = dispatch(modifiedState, CounterStateActions.reset());
-  //     expect(resetState.get('counter')).toBe(initialState.get('counter'));
-  //   });
-  // });
-  //
-  // // Example of how to test side effects returned from reducers
-  // describe('random', () => {
-  //
-  //   const [nextState, effects] = dispatch(initialState, CounterStateActions.random());
-  //
-  //   it('should update loading bit', () => {
-  //     expect(nextState.getIn(['counter', 'loading'])).toBe(true);
-  //   });
-  //
-  //   it('should trigger a requestRandomNumber side effect', () => {
-  //     expect(effects).toEqual(
-  //       Effects.promise(CounterStateActions.requestRandomNumber)
-  //     );
-  //   });
-  // });
-  //
-  // // Example of how to test async action creators
-  // describe('requestRandomNumber', () => {
-  //   // randomizer uses timeouts to delay response, let's make it execute
-  //   // instantly to improve test speed
-  //   beforeEach(() => {
-  //     // jest 16 still breaks Promises...
-  //     global.Promise = require.requireActual('promise');
-  //     // instantly resolve timeouts
-  //     global.setTimeout = (cb) => cb();
-  //   });
-  //
-  //   it('should generate a random number and dispatch it', async () => {
-  //     const action = await CounterStateActions.requestRandomNumber();
-  //     expect(typeof action.payload).toBe('number');
-  //
-  //     const [nextState] = dispatch(initialState, action);
-  //     expect(nextState.getIn(['counter', 'value'])).toBe(action.payload);
-  //     expect(nextState.getIn(['counter', 'loading'])).toBe(false);
-  //   });
-  // });
+  describe('pause', () => {
+    const getValue = state => state.getIn(['timer', 'running']);
+
+    it('should pause the timer', () => {
+      const [secondState] = dispatch(initialState, TimerStateActions.pause());
+      expect(getValue(initialState)).toBe(false);
+      expect(getValue(secondState)).toBe(false);
+    });
+  });
+
+  describe('pause', () => {
+    const getValue = state => state.getIn(['timer', 'running']);
+
+    it('should pause the timer', () => {
+      const [secondState] = dispatch(initialState, TimerStateActions.resume());
+      const [thirdState] = dispatch(initialState, TimerStateActions.pause());
+      expect(getValue(initialState)).toBe(false);
+      expect(getValue(secondState)).toBe(true);
+      expect(getValue(thirdState)).toBe(false);
+    });
+  });
+
+  describe('tick', () => {
+    const getValue = state => state.getIn(['timer', 'seconds']);
+
+    it('shouldn\'t decrement the paused non-zero timer', () => {
+      const [secondState] = dispatch(initialState, TimerStateActions.tick());
+      expect(getValue(initialState)).toBe(10);
+      expect(getValue(secondState)).toBe(10);
+    });
+  });
+
+  describe('set_time', () => {
+    const getValue = state => state.getIn(['timer', 'seconds']);
+
+    it('should set the seconds on the timer', () => {
+      const [secondState] = dispatch(initialState, TimerStateActions.setTime(77));
+      expect(getValue(initialState)).toBe(10);
+      expect(getValue(secondState)).toBe(77);
+    });
+  });
+
+  describe('tick', () => {
+    const getValue = state => state.getIn(['timer', 'seconds']);
+
+    it('should decrement the running non-zero timer', () => {
+      const [runState] = dispatch(initialState, TimerStateActions.resume());
+      const [secondState] = dispatch(runState, TimerStateActions.tick());
+      expect(getValue(initialState)).toBe(10);
+      expect(getValue(secondState)).toBe(9);
+    });
+  });
+
+  describe('tick', () => {
+    const getValue = state => state.getIn(['timer', 'seconds']);
+    const statezero = initialState.updateIn(['timer','seconds'],sec => 0)
+    const [runState] = dispatch(statezero, TimerStateActions.resume());
+    const [secondState, effects] = dispatch(runState, TimerStateActions.tick());
+
+    it('should not decrement the running zero timer but generate a DONE effect', () => {
+      expect(getValue(statezero)).toBe(0);
+      expect(getValue(secondState)).toBe(0);
+    });
+
+    it('should trigger a DONE side effect', () => {
+      expect(effects).toEqual(
+         Effects.constant(TimerStateActions.done())
+      );
+    });
+  });
 });

@@ -1,79 +1,34 @@
-![Pepperoni - Empowered by Futurice](/docs/pepperoni.png?v=2)
-Futurice React Native Starter Kit
-===
+## Hangboard
 
-[![Join the chat at https://gitter.im/futurice/pepperoni-app-kit](https://badges.gitter.im/futurice/pepperoni-app-kit.svg)](https://gitter.im/futurice/pepperoni-app-kit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/futurice/pepperoni-app-kit.svg?branch=master)](https://travis-ci.org/futurice/pepperoni-app-kit)
-[![React Native](https://img.shields.io/badge/react%20native-0.42.0-brightgreen.svg)](https://github.com/facebook/react-native)
-[![Sponsored](https://img.shields.io/badge/chilicorn-sponsored-brightgreen.svg)](http://spiceprogram.org/oss-sponsorship/)
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg?maxAge=2592000)](https://github.com/futurice/pepperoni-app-kit/blob/master/LICENSE)
+Hangboard is the premier mobile app for rockclimbers to manage their fingerboard (hangboard) workouts. All climbers quickly reach a plateau in their abilities where they are
+limited by finger strength and a regimen of workouts with a hangboard is the generally accepted way of making gains in this area. [The Rock Climber's Training Manual](https://rockclimberstrainingmanual.com/tools-for-rock-climbing-training/rock-prodigy-training-center/) is the seminal work on the subject and has detailed instructions
+on the process.
 
-We :green_heart: building apps with React Native, because it helps us create high quality products for both major mobile platforms quickly and cost-effectively.
+A core tenet of a successful hangboard program is rigorous record-keeping. Traditionally climbers have used a stopwatch (or stopwatch app like Tabata) and either paper or spreadsheets. This app provides a single interface for planning, executing and analyzing your hangboard journey.
 
-Getting started on a new app just takes too damn long, though. Most apps need the same basic building blocks and developer infrastructure, and we are bored of reinventing the wheel time and time again.
+The crucial aspect of executing a hangboard exercise is *adding or removing weight* such that we *train to failure*. Hangboard manages this personal data all within a single
+intuitive interface, obviating the need for switching apps on your phone or tablet, or using pen and paper to track changes.
 
-This Starter Kit reflects the best practices of React Native development we have discovered while building real-world applications for our customers. It is opinionated about tooling, patterns and development practices. It might not be a one-size-fits-all solution for everyone, but feel free to customize it for your needs, or just take inspiration from it.
+## Status
 
-React Native Starter Kit is a part of [Pepperoni](http://getpepperoni.com), a framework for kickstarting digital product development.
-
-## tltr;
-
-Sounds good and you just want to see how it works? Here is a quick start guide:
-
-```
-git clone https://github.com/futurice/pepperoni-app-kit.git
-cd pepperoni-app-kit
-yarn install
-react-native run-ios
-```
-
-For further setup instructions please see our [Getting Started](#getting-started) section.
-
-## Contents
-
-:warning: **WORK IN PROGRESS** |
-:star: **COMING SOON**
-
-Not all of the below is yet fully implemented
-
-### Application Blueprint
-
-* Always up-to-date [React Native](https://facebook.github.io/react-native/) scaffolding
-* Modular and well-documented structure for application code
-* [Redux](http://redux.js.org/) and [ImmutableJS](https://facebook.github.io/immutable-js/) for safe and **Reasonaboutable**:tm: state management
-* [Redux Loop](https://github.com/raisemarketplace/redux-loop) for Elm-style controlled side effects
-* [React Navigation](https://reactnavigation.org/) for awesome navigation with 60fps transitions
-* Disk-persisted application state caching for offline support and snappy startup performance
-* Clean and testable service layer for interacting with RESTful APIs
-* :warning: Sample app to show how to wire it all together
-* :star: JSON Web Token authentication
-* :star: Multi-environment configuration (dev, staging, production) for iOS and Android
-* :star: Built-in error handling and customizable error screens
-
-### Testing Setup
-
-* [Jest](https://facebook.github.io/jest/) for unit testing application code and providing coverage information.
-* [Enzyme](https://github.com/airbnb/enzyme) and fully mocked React Native for unit testing UI components
-* Utilities for end-to-end integration testing Redux state, including side effects and asynchronous actions
-
-### Development & Deployment Infrastructure
-
-* [Auth0](https://auth0.com/) for ready-to-use login and signup screens, user authentication and identity management
-* [Bitrise.io](https://www.bitrise.io) configurations for Continuous Integration and beta app distribution
-* :warning: [Google Tag Manager](https://www.google.com/analytics/tag-manager/) analytics
-* [Travis CI](https://travis-ci.org/futurice/pepperoni-app-kit) example [configuration](https://github.com/futurice/pepperoni-app-kit/blob/master/.travis.yml) for Android, iOS and Javascript tests.
-
-
-### Roadmap
-
-* **TODO** :star: [Microsoft Code Push](http://microsoft.github.io/code-push) for instant JavaScript and images update
-* **TODO** Crash reporting
-* **TODO** Android and iOS UI Testing with Calaba.sh?
-* **TODO** Feature flags?
+August 1, 2017:
+- Basic project structure established using pepperoni-app-kit
+- react-native, redux and react-navigation architecture
+- AsyncStorage for persisting local data.
+- Jest unit testing
+- Immutable.js
+- Basic stopwatch capability
+- Workout phases (warmup, [exercise, rest, recover]..., complete)
+- Data model/store shape
+  - boards: various manufacturer's hangboards (currently only the Trango Rock Prodigy included)
+  - sets: time on/off and recovery profiles (e.g. 10 seconds on, 5 seconds off x 6, 3 minute recovery)
+  - programs: includes Rock Prodigy beginner, intermediate and advanced configs
+  - workouts: includes user's current weight adjustments for each grip
+  - session: current state information for underway workout
 
 ## Getting started
 
-To build your own app on top of the Starter Kit, fork or mirror this repository. For serious use we recommend [mirroring using these instructions](https://help.github.com/articles/duplicating-a-repository/), since you can't make a fork of a public repository private on GitHub. To contribute to Starter Kit development or just playing around, forking is the way to go.
+To build the hangboard app, fork or mirror this repository. For serious use we recommend [mirroring using these instructions](https://help.github.com/articles/duplicating-a-repository/), since you can't make a fork of a public repository private on GitHub. To contribute to Starter Kit development or just playing around, forking is the way to go.
 
 First, give your application a name by running `./support/rename.sh YourAppName`.
 
