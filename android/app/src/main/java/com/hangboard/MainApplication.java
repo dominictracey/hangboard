@@ -1,4 +1,4 @@
-package com.pepperoniapptemplate;
+package com.hangboard;
 
 import android.app.Application;
 

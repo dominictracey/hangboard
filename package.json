@@ -1,26 +1,25 @@
 {
-  "name": "PepperoniAppTemplate",
-  "author": "Futurice",
-  "description": "React Native App Starter Kit for Android and iOS",
+  "name": "Hangboard",
+  "author": "Dominic Tracey",
+  "description": "Android and iOS app for climbing training",
   "license": "MIT",
   "homepage": "http://getpepperoni.com",
-  "bugs": "https://github.com/futurice/pepperoni-app-kit/issues",
+  "bugs": "https://github.com/dominictracey/react-native-hangboard/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/futurice/pepperoni-app-kit"
+    "url": "https://github.com/dominictracey/react-native-hangboard"
   },
   "keywords": [
     "React Native",
-    "Starter Kit",
     "Bitrise",
     "Redux",
     "Auth0"
   ],
-  "version": "1.0.0",
+  "version": "0.0.7",
   "private": false,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "bundle:ios": "node ./node_modules/react-native/local-cli/cli.js bundle --platform ios --entry-file index.ios.js --bundle-output ios/PepperoniAppTemplate/main.jsbundle --dev=false --verbose",
+    "bundle:ios": "node ./node_modules/react-native/local-cli/cli.js bundle --platform ios --entry-file index.ios.js --bundle-output ios/Hangboard/main.jsbundle --dev=false --verbose",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src test",
@@ -29,7 +28,9 @@
   },
   "jest": {
     "preset": "react-native",
-    "setupFiles": ["<rootDir>/test/setup.js"],
+    "setupFiles": [
+      "<rootDir>/test/setup.js"
+    ],
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|react-navigation)"
     ]
@@ -51,7 +52,8 @@
     "redux-loop-symbol-ponyfill": "^2.2.0",
     "redux-promise": "^0.5.3",
     "redux-thunk": "^2.0.1",
-    "standard-http-error": "^2.0.0"
+    "standard-http-error": "^2.0.0",
+    "tocktimer": "git+https://github.com/mrchimp/tock.git"
   },
   "devDependencies": {
     "babel-core": "^6.9.0",
@@ -67,7 +69,8 @@
     "eslint-plugin-react": "^6.7.1",
     "fetch-mock": "^5.5.0",
     "istanbul": "1.0.0-alpha.2",
-    "jest": "^17.0.2",
+    "jest": "^20.0.4",
+    "jest-cli": "^20.0.4",
     "plop": "^1.7.4",
     "react-addons-test-utils": "~15.4.2",
     "react-native-mock": "~0.2.5",

@@ -16,21 +16,17 @@ const color = () => Math.floor(255 * Math.random());
 class ColorView extends Component {
   static displayName = 'ColorView';
 
-  static navigationOptions = {
-    title: 'Colors!',
-    tabBar: () => ({
-      icon: (props) => (
-        <Icon name='color-lens' size={24} color={props.tintColor} />
-      )
-    }),
-    // TODO: move this into global config?
-    header: {
-      tintColor: 'white',
-      style: {
+  static navigationOptions =
+    ({navigation}) => ({
+      tabBarKey: navigation.state,
+      tabBarlabel: 'Colors!',
+      tabBarIcon: (props) => (<Icon name='color-lens' size={24} color={props.tintColor} />
+     ),
+      headerTintColor: 'white',
+      headerStyle: {
         backgroundColor: '#39babd'
       }
-    }
-  }
+    });
 
   static propTypes = {
     navigate: PropTypes.func.isRequired

@@ -1,20 +1,19 @@
 /**
  * @Author: Dominic Tracey <dpt>
- * @Date:   22-07-2017
+ * @Date:   06-08-2017
  * @Email:  dominic.tracey@gmail.com
  * @Project: Hangboard
  * @Last modified by:   dpt
- * @Last modified time: 08-08-2017
+ * @Last modified time: 06-08-2017
  * @License: MIT
  * @Copyright: (c) 2017 Aquilon Consulting, Inc.
  */
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import WorkoutView from './WorkoutView';
 import {NavigationActions} from 'react-navigation';
-import * as WorkoutStateActions from '../workout/WorkoutState';
-//import {K,M} from '../../utils/constants'
+import StartView from './StartView';
+import * as WorkoutStateActions from '../workout/WorkoutState'
 
 export default connect(
   state => ({
@@ -22,12 +21,12 @@ export default connect(
     sets: state.getIn(['workout', 'sets']),
     programs: state.getIn(['workout', 'programs']),
     workouts: state.getIn(['workout', 'workouts']),
-    session: state.getIn(['workout', 'session']),
+    session: state.getIn(['workout', 'session'])
   }),
-  dispatch => {
-    return {
-      navigate: bindActionCreators(NavigationActions.navigate, dispatch),
-      workoutStateActions: bindActionCreators(WorkoutStateActions, dispatch)
-    };
-  }
-)(WorkoutView);
+   dispatch => {
+     return {
+       navigate: bindActionCreators(NavigationActions.navigate, dispatch),
+       workoutStateActions: bindActionCreators(WorkoutStateActions, dispatch)
+     };
+   }
+)(StartView);

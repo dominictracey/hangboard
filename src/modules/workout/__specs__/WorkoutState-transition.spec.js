@@ -1,4 +1,5 @@
 /*eslint-disable max-nested-callbacks, no-unused-expressions*/
+/*eslint-disable no-unused-vars*/
 
 import {Effects} from 'redux-loop-symbol-ponyfill';
 import {initialState, dispatch} from '../../../../test/state';
@@ -8,14 +9,13 @@ import * as TimerStateActions from '../../timer/TimerState'
 describe('WorkoutState transitions', () => {
   const getLoadingValue = state => state.getIn(['workout', 'loading']);
   const getPhaseValue = state => state.getIn(['workout', 'session', 'currentPhase']);
-  const getWorkoutValue = state => state.getIn(['workout', 'session', 'workout']);
+  const getWorkoutValue = state => state.getIn(['workout', 'session', 'workoutId']);
   const getRepValue = state => state.getIn(['workout', 'session', 'currentRep']);
   const getSetValue = state => state.getIn(['workout', 'session', 'currentSet']);
   const getCompleteValue = state => state.getIn(['workout', 'session', 'complete']);
 
   describe('warmup to exercise', () => {
-    const [secondState] = dispatch(initialState, WorkoutStateActions.load('1'));
-
+    const [secondState] = dispatch(initialState, WorkoutStateActions.load('2'));
     const [warmupState] = dispatch(secondState, WorkoutStateActions.warmup())
 
     it('should start in warmup state', () => {

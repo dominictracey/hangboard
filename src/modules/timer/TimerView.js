@@ -1,3 +1,15 @@
+/**
+ * @Author: Dominic Tracey <dpt>
+ * @Date:   19-07-2017
+ * @Email:  dominic.tracey@gmail.com
+ * @Project: Hangboard
+ * @Last modified by:   dpt
+ * @Last modified time: 08-08-2017
+ * @License: MIT
+ * @Copyright: (c) 2017 Aquilon Consulting, Inc.
+ */
+
+/*eslint-disable no-unused-vars*/
 import React, {PropTypes, Component} from 'react';
 import {
   StyleSheet,
@@ -6,44 +18,50 @@ import {
   Text,
   View
 } from 'react-native';
-
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class TimerView extends Component {
   static displayName = 'TimerView';
-
-  static navigationOptions = {
-    title: 'Timer',
-    tabBar: () => ({
-      icon: (props) => (
-        <Icon name='plus-one' size={24} color={props.tintColor} />
-      )
-    })
-  }
+  static heartbeatRunning = false
 
   static propTypes = {
     seconds: PropTypes.number.isRequired,
+    color: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     running: PropTypes.bool.isRequired,
     timerStateActions: PropTypes.shape({
       resume: PropTypes.func.isRequired,
       pause: PropTypes.func.isRequired,
       tick: PropTypes.func.isRequired,
+      setTime: PropTypes.func.isRequired,
       done: PropTypes.func.isRequired,
+      restart: PropTypes.func.isRequired,
+      skip: PropTypes.func.isRequired,
+    }).isRequired,
+    workoutStateActions: PropTypes.shape({
+      reset: PropTypes.func.isRequired,
+      complete: PropTypes.func.isRequired,
     }).isRequired,
     navigate: PropTypes.func.isRequired
   };
 
   componentDidMount() {
-    this.heartbeat() // start metronome
+    if (!TimerView.heartbeatRunning) {
+      this.heartbeat() // start metronome
+      TimerView.heartbeatRunning = true
+    }
   }
 
   // heartbeat
   heartbeat = () => {
     setTimeout(() => {
-      this.props.timerStateActions.tick()
       this.heartbeat()
+      this.props.timerStateActions.tick()
     }, 1000)
+  }
+
+  restart = () => {
+    this.props.workoutStateActions.reset()
   }
 
   resume = () => {
@@ -53,53 +71,71 @@ class TimerView extends Component {
   pause = () => {
     this.props.timerStateActions.pause();
   };
-  //
-  // renderUserInfo = () => {
-  //   if (!this.props.userName) {
-  //     return null;
-  //   }
-  //
-  //   return (
-  //     <View style={styles.userContainer}>
-  //       <Image
-  //         style={styles.userProfilePhoto}
-  //         source={{
-  //           uri: this.props.userProfilePhoto,
-  //           width: 80,
-  //           height: 80
-  //         }}
-  //         />
-  //       <Text style={styles.linkButton}>
-  //         Welcome, {this.props.userName}!
-  //       </Text>
-  //     </View>
-  //   );
-  // };
+
+  finish = () => {
+    this.props.timerStateActions.setTime(0)
+    this.props.workoutStateActions.complete()
+  }
+
+  rewind = () => {
+    this.props.timerStateActions.restart()
+  }
+
+  skip = () => {
+    this.props.timerStateActions.skip()
+  }
+
+  getColorStyle = (running, color) => {
+    switch (color) {
+      case 'red':
+        return styles.red
+      case 'green':
+        return styles.green
+      case 'orange':
+        return styles.orange
+      case 'blue':
+        return styles.blue
+      case 'purple':
+        return styles.purple
+      default:
+        return null
+    }
+  }
 
   render() {
-    const loadingStyle = this.props.loading
-      ? {backgroundColor: '#eee'}
-      : null;
+    const {loadingStyle, running, color} = this.props
+      // ? {backgroundColor: '#eee'}
+      // : null;
 
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, this.getColorStyle(running, color)]}>
+        <View style={styles.row}>
+          <Text style={styles.timer}>
+            {this.props.seconds}
+          </Text>
+        </View>
 
-        {/* {this.renderUserInfo()} */}
-        {/* <Text style={styles.exercise}>
-          {this.props.phase}
-        </Text>
-         */}
-        <Text style={styles.timer}>
-          {this.props.seconds}
-        </Text>
-
-        <View style={styles.controls}>
+        <View style={styles.row}>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel={'Reset'}
+            onPress={this.restart}
+            style={[styles.timerButton, loadingStyle]}>
+            <Icon name='fast-rewind' size={32} color='black'/>
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel={'Rewind'}
+            onPress={this.rewind}
+            style={[styles.timerButton, loadingStyle]}>
+            <Icon name='skip-previous' size={32} color='black'/>
+          </TouchableOpacity>
           <TouchableOpacity
             accessible={true}
             accessibilityLabel={'Start timer'}
             onPress={this.resume}
             style={[styles.timerButton, loadingStyle]}>
-            <Icon name='arrow-forward' size={48} color='green'/>
+            <Icon name='play-circle-outline' size={48} color='black'/>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -107,25 +143,23 @@ class TimerView extends Component {
             accessibilityLabel={'Stop timer'}
             onPress={this.pause}
             style={[styles.timerButton, loadingStyle]}>
-            <Icon name='pause' size={48} color='red' />
+            <Icon name='pause-circle-outline' size={48} color='black' />
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel={'Skip'}
+            onPress={this.skip}
+            style={[styles.timerButton, loadingStyle]}>
+            <Icon name='skip-next' size={32} color='black'/>
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel={'Finish'}
+            onPress={this.finish}
+            style={[styles.timerButton, loadingStyle]}>
+            <Icon name='fast-forward' size={32} color='black'/>
           </TouchableOpacity>
         </View>
-
-        {/* <TouchableOpacity
-            accessible={true}
-            accessibilityLabel={'Randomize timer'}
-            onPress={this.random}>
-          <Text style={styles.linkButton}>
-            Fucker
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={this.bored} accessible={true}>
-          <Text style={styles.linkButton}>
-            {'I\'m bored!'}
-          </Text>
-        </TouchableOpacity> */}
-
       </View>
     );
   }
@@ -133,56 +167,52 @@ class TimerView extends Component {
 
 const circle = {
   borderWidth: 0,
-  borderRadius: 40,
-  width: 80,
-  height: 80
+  borderRadius: 30,
+  width: 60,
+  height: 60
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
-  userContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  userProfilePhoto: {
-    ...circle,
-    alignSelf: 'center'
-  },
-  controls: {
+  row: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   timerButton: {
     ...circle,
-    backgroundColor: '#349d4a',
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 20
   },
   timer: {
-    color: '#dfdfdf',
+    flex: 1,
+    color: '#ffffff',
     fontSize: 80,
-    textAlign: 'center'
-  },
-  welcome: {
     textAlign: 'center',
-    color: 'black',
-    marginBottom: 5,
-    padding: 5
+    paddingBottom: 15,
   },
-  linkButton: {
-    textAlign: 'center',
-    color: '#CCCCCC',
-    marginBottom: 10,
-    padding: 5
-  }
+  red: {
+    backgroundColor: '#f82d3b'
+  },
+  green: {
+    backgroundColor: '#35d22c'
+  },
+  orange: {
+    backgroundColor: '#fdb63a'
+  },
+  blue: {
+    backgroundColor: '#1f37d0',
+  },
+  purple: {
+    backgroundColor: '#5c2bd0',
+  },
 });
 
 export default TimerView;

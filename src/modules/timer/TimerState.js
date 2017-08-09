@@ -1,13 +1,13 @@
+/*eslint-disable no-unused-vars*/
 import {Map} from 'immutable';
 import {loop, Effects} from 'redux-loop-symbol-ponyfill';
-//import {generateRandomNumber} from '../../services/randomNumberService';
-import * as WorkoutStateActions from '../workout/WorkoutState';
 
 // Initial state
 const initialState = Map({
   seconds: 10,
   running: false,
-  loading: false
+  loading: false,
+  timeToRun: 10,
 });
 
 // Actions
@@ -16,6 +16,8 @@ const RESUME = 'TimerState/RESUME'; // unpause
 const PAUSE = 'TimerState/PAUSE'; // stop counting and hold
 const TICK = 'TimerState/TICK'; // move down one second
 export const DONE = 'TimerState/DONE'; // we have reached zero
+const RESTART = 'TimerState/RESTART'; // start the timer over
+const SKIP = 'TimerState/SKIP'; // set the timer to 0
 //export const INIT = 'TimerState/INIT' // start the metronome
 
 // Action creators
@@ -24,7 +26,7 @@ export function resume() {
 }
 
 export function setTime(seconds) {
-  return {type: SET_TIME, seconds: seconds};
+  return {type: SET_TIME, seconds,};
 }
 
 export function pause() {
@@ -37,6 +39,14 @@ export function tick() {
 
 export function done() {
   return {type: DONE};
+}
+
+export function restart() {
+  return {type: RESTART};
+}
+
+export function skip() {
+  return {type: SKIP};
 }
 
 // export function init() {
@@ -68,16 +78,11 @@ export function done() {
 export default function TimerStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case SET_TIME:
-      //return loop(
       return state.update('seconds', seconds => action.seconds)
-      //  Effects.promise(nextTick)
-      //);
+                  .update('timeToRun', seconds => action.seconds)
 
     case RESUME:
-      //return loop(
       return state.update('running', running => true)
-        //Effects.promise(nextTick)
-    //  );
 
     case PAUSE:
       return state.update('running', running => false);
@@ -95,6 +100,13 @@ export default function TimerStateReducer(state = initialState, action = {}) {
       } else {
         return state;
       }
+
+    case RESTART:
+      return state.update('seconds', secs => state.get('timeToRun'))
+
+    case SKIP:
+      return state.update('seconds', secs => 0)
+
     default:
       return state;
   }

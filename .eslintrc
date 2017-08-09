@@ -24,10 +24,9 @@
     "indent": [2, 2, {"SwitchCase": 1}],
     "quotes": [2,"single"],
     "linebreak-style": [2,"unix"],
-    "semi": [2,"always"],
+    # "semi": [2,"always"],
     "no-console": 0,
     "max-len": [1,110],
-    "comma-dangle": [2,"never"],
     "no-cond-assign": [2, "always"],
     "no-ex-assign": 2,
     "curly": 2,
@@ -74,11 +73,11 @@
     "no-undef-init": 2,
     "no-undef": 2,
     "no-undefined": 2,
-    "no-unused-vars": [2, {
-      "vars": "all",
-      "args": "after-used",
-      "varsIgnorePattern": "hJSX"
-    }],
+    # "no-unused-vars": [2, {
+    #   "vars": "all",
+    #   "args": "after-used",
+    #   "varsIgnorePattern": "hJSX"
+    # }],
     "yoda": [2, "never"],
     "consistent-return": 2,
     "spaced-line-comment": 0,
