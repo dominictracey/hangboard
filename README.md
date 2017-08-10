@@ -1,6 +1,6 @@
 ## Hangboard
 
-![hangboard](https://github.com/dominictracey/react-hangboard/images/hb1.png)
+![hangboard](https://github.com/dominictracey/react-native-hangboard/blob/master/images/hb1.png)
 
 Hangboard is the premier mobile app for rockclimbers to manage their fingerboard (hangboard) workouts. All climbers quickly reach a plateau in their abilities where they are
 limited by finger strength and a regimen of workouts with a hangboard is the generally accepted way of making gains in this area. [The Rock Climber's Training Manual](https://rockclimberstrainingmanual.com/tools-for-rock-climbing-training/rock-prodigy-training-center/) is the seminal work on the subject and has detailed instructions
