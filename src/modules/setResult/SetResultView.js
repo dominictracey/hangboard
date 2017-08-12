@@ -13,20 +13,17 @@ import React, {PropTypes, Component} from 'react';
 import {
   Button,
   View,
-  Text,
   StyleSheet
 } from 'react-native';
 import RepsComplete from '../../components/RepsComplete'
 import WeightView from '../../components/WeightView'
+import AppText from '../../components/AppText'
 
-// import Icon from 'react-native-vector-icons/MaterialIcons';
-
-// const color = () => Math.floor(255 * Math.random());
-
-/**
- * Sample view to demonstrate StackNavigator
- * @TODO remove this module in a live application.
- */
+/*
+** view to collect results from a set:
+**    - what was the last successful rep
+**    - what weight should we use next time
+*/
 class SetResultView extends Component {
   static displayName = 'SetResultView';
 
@@ -34,7 +31,8 @@ class SetResultView extends Component {
     exId: PropTypes.string.isRequired,
     setId: PropTypes.string.isRequired,
     setLabel: PropTypes.string.isRequired,
-    weight: PropTypes.number.isRequired,
+    workoutWeight: PropTypes.number.isRequired,
+    sessionWeight: PropTypes.number.isRequired,
     grip: PropTypes.string.isRequired,
     reps: PropTypes.number.isRequired,
     save: PropTypes.func.isRequired,
@@ -69,25 +67,28 @@ class SetResultView extends Component {
   }
 
   render() {
-    const {grip,setLabel,weight,reps} = this.props
-    const buttonText = 'Save';
+    const {grip,setLabel,sessionWeight,workoutWeight,reps} = this.props
+    // only allow the user to edit weight on the first (baseline) setLabel
+    // TODO will probably get complaints about this...
+    const canEditWeight = setLabel.startsWith('1') ? true : false
+    const buttonAppText = 'Save';
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
           <View style={[styles.row, styles.rowplus]}>
-            <Text style={styles.header}>Enter Results for Set</Text>
+            <AppText size='lg'>Enter Results for Set</AppText>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Grip:</Text>
-            <Text style={styles.content}>{grip}</Text>
+            <AppText size='sm'>Grip:</AppText>
+            <AppText size='sm'>{grip}</AppText>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Set:</Text>
-            <Text style={styles.content}>{setLabel}</Text>
+            <AppText size='sm'>Set:</AppText>
+            <AppText size='sm'>{setLabel}</AppText>
           </View>
           <View style={styles.row}>
-            <Text style={styles.label}>Weight:</Text>
-            <Text style={styles.content}>{weight}</Text>
+            <AppText size='sm'>Weight:</AppText>
+            <AppText size='sm'>{sessionWeight}</AppText>
           </View>
         </View>
         <View style={styles.row}>
@@ -97,14 +98,14 @@ class SetResultView extends Component {
                         complete={this.state['lastSuccess']}/>
         </View>
         <View style={styles.row}>
-          <WeightView weight={weight}
+          <WeightView weight={workoutWeight}
                       title='Next Workout Weight'
                       addCb={this.addWeight}
                       removeCb={this.removeWeight}
-                      allowUpdate={true}/>
+                      allowUpdate={canEditWeight}/>
         </View>
         <View style={styles.row}>
-          <Button color='#ee7f06' title={buttonText} onPress={this.save}/>
+          <Button color='#ee7f06' title={buttonAppText} onPress={this.save}/>
         </View>
       </View>
     );
@@ -122,9 +123,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  repsComplete: {
-    flex: 3,
-  },
+  // repsComplete: {
+  //   flex: 3,
+  // },
   row: {
     flex: 1,
     flexDirection: 'row',

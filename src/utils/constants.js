@@ -42,6 +42,7 @@ export const K = {
   LAST_SUCCESSES: 'lastSuccesses',
   COMPLETE: 'complete',
   COLOR: 'color',
+  THEME: 'theme',
 }
 
 export const M = {

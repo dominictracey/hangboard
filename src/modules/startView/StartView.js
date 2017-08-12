@@ -20,6 +20,7 @@ import {
 import WorkoutListView from '../../components/WorkoutListView'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {K} from '../../utils/constants'
+import AppText from '../../components/AppText'
 
 /**
  * Home page, such as it is.
@@ -43,6 +44,7 @@ class StartView extends Component {
     navigate: PropTypes.func.isRequired,
     session: PropTypes.object.isRequired,
     workouts: PropTypes.object.isRequired,
+    theme: PropTypes.string,
     workoutStateActions: PropTypes.shape({
       load: PropTypes.func.isRequired,
     })
@@ -62,23 +64,29 @@ class StartView extends Component {
   }
 
   render() {
-    const {workouts,session} = this.props;
+    const {workouts,session, theme} = this.props;
     const loadingStyle = session.get('loading')
           ? {backgroundColor: '#eee'}
           : null;
+    const background = theme === 'dark' ? styles.dark : styles.light
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, background]}>
         <TouchableOpacity
           style={[styles.defaultStartButton, loadingStyle]}
             accessible={true}
             accessibilityLabel={'Start Workout'}
             onPress={this.loadDefault}>
-          <Text style={styles.startWorkout}>
-            Start Workout
-          </Text>
+            <AppText size='lg' theme={theme}>
+              Start Workout
+            </AppText>
         </TouchableOpacity>
-        <Text style={styles.details}>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</Text>
-        <WorkoutListView workouts={workouts} lastWorkoutId={session.get(K.LAST_WORKOUT_ID)} loadCb={this.load}/>
+        <AppText
+          size='sm'
+          theme={this.theme}>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
+        <WorkoutListView workouts={workouts}
+                          lastWorkoutId={session.get(K.LAST_WORKOUT_ID)}
+                          loadCb={this.load}
+                          theme={theme}/>
       </View>
     )
   }
@@ -97,6 +105,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white'
+  },
+  dark: {
+    backgroundColor: '#212121',
+  },
+  light: {
+    backgroundColor: 'white',
   },
   userContainer: {
     justifyContent: 'center',

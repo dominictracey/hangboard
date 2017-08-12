@@ -95,26 +95,22 @@ const initialState = fromJS({
           type: H.FP2,
         },
         '18': {
-          name: 'Offset 2F pocket',
-          type: H.FP2,
-        },
-        '19': {
           name: 'Offset 3F pocket (as mono - outer)',
           type: H.FP1,
         },
-        '20': {
+        '19': {
           name: 'Offset 3F pocket (as mono - middle)',
           type: H.FP1,
         },
-        '21': {
+        '20': {
           name: 'Offset 3F pocket (as mono - inner)',
           type: H.FP1,
         },
-        '22': {
+        '21': {
           name: 'Offset 2F pocket (as mono - outer)',
           type: H.FP1,
         },
-        '23': {
+        '22': {
           name: 'Offset 2F pocket (as mono - inner)',
           type: H.FP1,
         },
@@ -453,12 +449,13 @@ const initialState = fromJS({
     [K.COLLECT_SET_RESULTS]: {},
     [K.LAST_SUCCESSES]: {},
     [K.COMPLETE]: false,
+
   },
 
   [K.HISTORY]: {
-
   },
-  loading: false
+  [K.THEME]: 'light',
+  loading: false,
 });
 
 // Actions
@@ -515,8 +512,8 @@ export function reset() {
   return {type: RESET};
 }
 
-export function collectSetResults(setId, setLabel, exId, grip, reps, weight) {
-  return {type: COLLECTRESULTS, setId, setLabel, exId, grip, reps, weight}
+export function collectSetResults(setId, setLabel, exId, grip, reps, sessionWeight, workoutWeight) {
+  return {type: COLLECTRESULTS, setId, setLabel, exId, grip, reps, sessionWeight, workoutWeight}
 }
 
 export function collectedSetResults(exId, setId, successfulReps) {
@@ -559,7 +556,7 @@ export const getCurrSetId = (state) =>
     'exercises',getCurrExerciseId(state),'sets',getCurrSetOrd(state)]);
 // this is the actual immuatable Map
 export const getCurrSet = (state) => state.getIn(['sets',getCurrSetId(state)]);
-export const getSetLabel = (state) => getCurrExerciseOrd(state) + '/' + getCurrSetOrd(state);
+export const getSetLabel = (state) => getCurrSetOrd(state) + '/' + numSetsInExercise(state);
 export const getBoardId = (state) => getWorkout(state).get('board');
 export const getBoard = (state) => state.getIn(['boards',getBoardId(state)]);
 export const getCurrGripName = (state) =>
@@ -569,7 +566,12 @@ export const getNextGripName = (state) =>
 export const numSetsInExercise = (state) =>
   state.getIn(['programs', getProgramId(state),'exercises',getCurrExerciseId(state),'sets']).count()
 export const getCurrWeight = (state) => state.getIn(M.CURRENT_WEIGHT)
-
+export const getWorkoutWeight = (state) => {
+  const setOrd = getCurrSetOrd(state)
+  const weightAdjustment = setOrd > 1 ? 10 * (setOrd - 1) : 0 // only autoincrease weights on 2nd+ sets
+  return state.getIn(['workouts',getWorkoutId(state),'weights',getCurrExerciseId(state)]) +
+    weightAdjustment
+}
 export const getSessLastSuccesses = (state) => state.getIn(M.LAST_SUCCESSES)
 
 // mutators
@@ -743,22 +745,23 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
           changePhase(stateR3,RECOVER),
           Effects.batch([
             Effects.constant(setTime(getCurrSet(stateR3).get('secs_recovery'))),
-            Effects.constant(collectSetResults(getCurrSetOrd(stateR1), getSetLabel(stateR1), getCurrExerciseId(stateR1),
-                        getCurrGripName(stateR1), getNumReps(stateR1), getCurrWeight(stateR1)))
+            Effects.constant(collectSetResults(getCurrSetOrd(stateR1), getSetLabel(stateR1),
+                getCurrExerciseId(stateR1), getCurrGripName(stateR1), getNumReps(stateR1),
+                getCurrWeight(stateR1), getWorkoutWeight(stateR1))
+            )
           ])
         );
       } else {
         // ready for the next set on this grip
         var stateR4 = incrementSet(stateR1)
-        // console.log('curr set is ' + getCurrSet(stateR4) + ' state is ' + stateR4)
-        // console.log('current baseline add for id ' + getCurrSetId(stateR4) + ' is ' + getCurrSet(stateR4).get('baseline_plus'))
-
         return loop(
           changePhase(stateR4,RECOVER),
           Effects.batch([
             Effects.constant(setTime(getCurrSet(stateR4).get('secs_recovery'))),
-            Effects.constant(collectSetResults(getCurrSetOrd(stateR1), getSetLabel(stateR1), getCurrExerciseId(stateR1),
-                        getCurrGripName(stateR1), getNumReps(stateR1), getCurrWeight(stateR1)))
+            Effects.constant(collectSetResults(getCurrSetOrd(stateR1), getSetLabel(stateR1),
+                getCurrExerciseId(stateR1), getCurrGripName(stateR1), getNumReps(stateR1),
+                getCurrWeight(stateR1), getWorkoutWeight(stateR1))
+            )
           ])
         );
       }
@@ -770,14 +773,17 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
           .updateIn(M.COMPLETE, done => true),
           Effects.batch([
             Effects.constant(pause()),
-            Effects.constant(collectSetResults(getCurrSetOrd(state), getSetLabel(state), getCurrExerciseId(state),
-                        getCurrGripName(state), getNumReps(state), getCurrWeight(state))),
+            Effects.constant(collectSetResults(getCurrSetOrd(state), getSetLabel(state),
+                getCurrExerciseId(state), getCurrGripName(state), getNumReps(state),
+                getCurrWeight(state), getWorkoutWeight(state))
+            )
           ])
       )
 
     case COLLECTRESULTS:
       var struct = Map({'setId': action.setId, 'setLabel': action.setLabel, 'exId': action.exId,
-        'grip': action.grip, 'reps': action.reps, 'weight': action.weight})
+        'grip': action.grip, 'reps': action.reps, 'sessionWeight': action.sessionWeight,
+        'workoutWeight': action.workoutWeight})
       return state.mergeIn(M.COLLECT_SET_RESULTS, struct)
 
     case COLLECTEDRESULTS:
@@ -802,7 +808,7 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       var newState = action.result
         ? state.updateIn(['workouts',getWorkoutId(state),'weights',action.exerciseId],
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
-                .updateIn([...M.COLLECT_SET_RESULTS,'weight'],
+                .updateIn([...M.COLLECT_SET_RESULTS,'workoutWeight'],
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
         : state.updateIn([...M.WEIGHTS,action.exerciseId],
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)

@@ -6,11 +6,13 @@ import TimerStateReducer from '../modules/timer/TimerState';
 import WorkoutStateReducer from '../modules/workout/WorkoutState';
 import SessionStateReducer, {RESET_STATE} from '../modules/session/SessionState';
 // ## Generator Reducer Imports
+import HistoryReducer from '../modules/history/HistoryState';
 
 const reducers = {
   // Counter sample app state. This can be removed in a live application
   // counter: CounterStateReducer,
   // ## Generator Reducers
+  history: HistoryReducer,
   timer: TimerStateReducer,
   workout: WorkoutStateReducer,
   // Navigator states

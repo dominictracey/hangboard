@@ -10,8 +10,9 @@
  */
 
 import React, {PropTypes} from 'react'
-import {View, Text, TouchableOpacity} from 'react-native'
-import {StyleSheet} from 'react-native';
+import {View, TouchableOpacity} from 'react-native'
+import {StyleSheet} from 'react-native'
+import AppText from './AppText'
 
 class WorkoutListView extends React.Component {
 
@@ -19,6 +20,7 @@ class WorkoutListView extends React.Component {
     lastWorkoutId: PropTypes.string,
     workouts: PropTypes.object.isRequired,
     loadCb: PropTypes.func.isRequired,
+    theme: PropTypes.string,
   }
   constructor(props) {
     super(props);
@@ -35,7 +37,7 @@ class WorkoutListView extends React.Component {
   }
 
   buildList = () => {
-    const {workouts, lastWorkoutId} = this.props
+    const {workouts, lastWorkoutId, theme} = this.props
 
     var arr = []
     workouts.mapKeys((id) => {
@@ -46,7 +48,7 @@ class WorkoutListView extends React.Component {
             accessible={true}
             accessibilityLabel={'Load Workout ' + workouts.getIn([id,'name'])}
             onPress={() => this.loadWorkout(id)}>
-              <Text style={styles.detailsSm} key={id}>{workouts.getIn([id,'name'])}</Text>
+              <AppText size='xs' key={id} theme={theme}>{workouts.getIn([id,'name'])}</AppText>
           </TouchableOpacity>
         )
       }
@@ -57,6 +59,7 @@ class WorkoutListView extends React.Component {
   }
 
   render() {
+    //const background = this.props.theme === 'dark' ? styles.dark : styles.light
     const v = this.state.list
       ? (<View style={styles.container}>
           {this.state.list}

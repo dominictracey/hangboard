@@ -13,7 +13,6 @@ import React, {PropTypes, Component} from 'react';
 import {
   StyleSheet,
   TouchableOpacity,
-  Text,
   View
 } from 'react-native';
 import WeightView from '../../components/WeightView'
@@ -23,6 +22,7 @@ import TimerViewContainer from '../timer/TimerViewContainer';
 import SetResultViewContainer from '../setResult/SetResultViewContainer'
 import {K} from '../../utils/constants'
 import EditableGripView from '../../components/EditableGripView'
+import AppText from '../../components/AppText'
 
 class WorkoutView extends Component {
   static displayName = 'WorkoutView';
@@ -32,9 +32,11 @@ class WorkoutView extends Component {
     tabBarKey: navigation.state,
     tabBarLabel: 'Workout',
     tabBarIcon: () => (
-        <Icon name='plus-one' size={24} color='red' />
+        <Icon name='pages' size={24} color='red' />
       )
   });
+
+  static theme = 'dark'
 
   static propTypes = {
     session: PropTypes.object.isRequired,
@@ -96,39 +98,43 @@ class WorkoutView extends Component {
             accessible={true}
             accessibilityLabel={'Start Workout'}
             onPress={this.loadDefault}>
-          <Text style={styles.startWorkout}>
+          <AppText size='xs' theme={this.theme}>
             Start Workout
-          </Text>
+          </AppText>
         </TouchableOpacity>
-        <Text style={styles.details}>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</Text>
+        <AppText size='lg' theme='theme'>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
       </View>
     )
   }
 
   workoutPage = () => {
     const {session, workouts, boards} = this.props
+    const canEditWeight = session.get(K.SET_LABEL).startsWith('1') ? true : false
+
     // console.log('workoutId: ' + session.get(K.WORKOUT_ID))
     return (
       <View style={styles.container}>
 
         {/* {this.renderUserInfo()} */}
-        <Text style={styles.phase}>
+        <AppText size='xl'>
           {session.get('currentPhase')}
-        </Text>
+        </AppText>
         <TimerViewContainer/>
-        <EditableGripView session={session} board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get('board'))} selectCb={this.changeGrip}/>
+        <EditableGripView session={session}
+            board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get('board'))}
+            selectCb={this.changeGrip}/>
         <View style={styles.detailsContainer}>
           <View style={styles.container}>
-            <Text style={styles.details}>Grip</Text>
-            <Text style={styles.details}>{session.get('exerciseLabel')}</Text>
+            <AppText size='lg' theme='theme'>Grip</AppText>
+            <AppText size='lg' theme='theme'>{session.get('exerciseLabel')}</AppText>
           </View>
           <View style={styles.container}>
-            <Text style={styles.details}>Set</Text>
-            <Text style={styles.details}> {session.get('setLabel')}</Text>
+            <AppText size='lg' theme='theme'>Set</AppText>
+            <AppText size='lg' theme='theme'> {session.get('setLabel')}</AppText>
           </View>
           <View style={styles.container}>
-            <Text style={styles.details}>Rep</Text>
-            <Text style={styles.details}>{session.get('repLabel')}</Text>
+            <AppText size='lg' theme='theme'>Rep</AppText>
+            <AppText size='lg' theme='theme'>{session.get('repLabel')}</AppText>
           </View>
         </View>
         <View style={styles.detailsContainer}>
@@ -136,7 +142,7 @@ class WorkoutView extends Component {
                       title='Weight'
                       addCb={this.addWeight}
                       removeCb={this.removeWeight}
-                      allowUpdate={true}/>
+                      allowUpdate={canEditWeight}/>
           <NextView nextWeight={session.get('nextWeight')}
                     nextGrip={session.get('nextGrip')}/>
         </View>
@@ -152,10 +158,11 @@ class WorkoutView extends Component {
         <View style={styles.container}>
           <SetResultViewContainer exId={collectSetResults.get('exId')}
                                   setId={collectSetResults.get('setId')}
-                                  setLabel={session.get('setLabel')}
+                                  setLabel={collectSetResults.get('setLabel')}
                                   grip={collectSetResults.get(K.GRIP)}
                                   reps={collectSetResults.get('reps')}
-                                  weight={collectSetResults.get('weight')}
+                                  workoutWeight={collectSetResults.get('workoutWeight')}
+                                  sessionWeight={collectSetResults.get('sessionWeight')}
                                   save={workoutStateActions.collectedSetResults}/>
       </View>
     )

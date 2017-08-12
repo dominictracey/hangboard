@@ -14,6 +14,7 @@ import {bindActionCreators} from 'redux';
 import {NavigationActions} from 'react-navigation';
 import StartView from './StartView';
 import * as WorkoutStateActions from '../workout/WorkoutState'
+import {K} from '../../utils/constants'
 
 export default connect(
   state => ({
@@ -21,7 +22,8 @@ export default connect(
     sets: state.getIn(['workout', 'sets']),
     programs: state.getIn(['workout', 'programs']),
     workouts: state.getIn(['workout', 'workouts']),
-    session: state.getIn(['workout', 'session'])
+    session: state.getIn(['workout', 'session']),
+    theme: state.getIn(['workout',K.THEME]),
   }),
    dispatch => {
      return {

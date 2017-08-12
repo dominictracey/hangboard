@@ -135,7 +135,7 @@ class TimerView extends Component {
             accessibilityLabel={'Start timer'}
             onPress={this.resume}
             style={[styles.timerButton, loadingStyle]}>
-            <Icon name='play-circle-outline' size={48} color='black'/>
+            <Icon name='play-circle-outline' size={32} color='black'/>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -143,7 +143,7 @@ class TimerView extends Component {
             accessibilityLabel={'Stop timer'}
             onPress={this.pause}
             style={[styles.timerButton, loadingStyle]}>
-            <Icon name='pause-circle-outline' size={48} color='black' />
+            <Icon name='pause-circle-outline' size={32} color='black' />
           </TouchableOpacity>
           <TouchableOpacity
             accessible={true}
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   timer: {
     flex: 1,
     color: '#ffffff',
-    fontSize: 80,
+    fontSize: 60,
     textAlign: 'center',
     paddingBottom: 15,
   },

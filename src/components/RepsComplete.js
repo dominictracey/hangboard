@@ -1,5 +1,7 @@
 import React, {Component, PropTypes} from 'react'
-import {View, Text, TouchableOpacity} from 'react-native'
+import {View, TouchableOpacity} from 'react-native'
+import AppText from './AppText'
+
 // import {connect} from 'react-redux'
 import {StyleSheet} from 'react-native';
 
@@ -16,34 +18,27 @@ class RepsComplete extends Component {
     this.state = {done: -1};
   }
 
-  // markDone = (i) => {
-  //   cb(i)
-  // }
   render() {
     const {reps} = this.props
 
     let buttonArr = []
     for (let i = 1; i <= reps; ++i) {
-      // buttonArr.push(<Button title={i.toString()}
-      //                         style={styles.button}
-      //                         color={i < this.state.done ? 'green' : 'red'}
-      //                         onPress={() => this.markDone(i)} key={i}/>)
       buttonArr.push(<TouchableOpacity
           accessible={true}
           accessibilityLabel={i + ' reps complete'}
           onPress={() => this.props.cb(i)}
           style={[styles.toButton, i <= this.props.complete ? styles.success : styles.fail]}
           key={i}>
-        <Text style={styles.buttonLabel}>
+        <AppText size='sm' theme='dark'>
           {i}
-        </Text>
+        </AppText>
       </TouchableOpacity>)
     }
 
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <Text style={styles.details}>Last Successful Rep</Text>
+          <AppText size='sm'>Last Successful Rep</AppText>
         </View>
         <View style={styles.row}>
           {buttonArr.map((button) => button)}
@@ -60,14 +55,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
+    borderWidth: 2,
+    borderColor: '#dfdfdf',
+    paddingBottom: 10,
   },
   row: {
     height: 50,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    borderWidth: 2,
-    borderColor: 'green',
   },
   details: {
     flex: 1,

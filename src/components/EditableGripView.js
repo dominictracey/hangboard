@@ -10,7 +10,8 @@
  */
 
 import React, {PropTypes} from 'react'
-import {View, Text, Picker} from 'react-native'
+import {View, Picker} from 'react-native'
+import AppText from './AppText'
 import {TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {K} from '../utils/constants'
@@ -54,7 +55,7 @@ class EditableGripView extends React.Component {
     if (!this.state.edit) {
       return (
         <View style={styles.row}>
-          <Text style={styles.details}>{session.get(K.GRIP)}</Text>
+          <AppText size='sm'>{session.get(K.GRIP)}</AppText>
           <TouchableOpacity
             accessible={true}
             accessibilityLabel={'Change grip'}
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   picker: {
+    flex: 1,
     borderWidth: 1,
     borderColor: 'blue',
     // fontSize: 32,  // doesn't work on Android...

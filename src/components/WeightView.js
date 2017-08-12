@@ -10,7 +10,9 @@
  */
 
 import React, {PropTypes} from 'react'
-import {View, Text} from 'react-native'
+import {View} from 'react-native'
+import AppText from './AppText'
+
 // import {connect} from 'react-redux'
 import {TouchableOpacity, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -53,10 +55,10 @@ class WeightView extends React.Component {
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <Text style={styles.details}>{title}</Text>
+          <AppText size='lg'>{title}</AppText>
         </View>
         <View style={[styles.row, styles.rowplus]}>
-          <Text style={styles.weight}>{weight}</Text>
+          <AppText size='xl' align='center'>{weight}</AppText>
           {controls}
         </View>
       </View>

@@ -10,7 +10,9 @@
  */
 
 import React, {PropTypes} from 'react'
-import {View, Text} from 'react-native'
+import {View} from 'react-native'
+import AppText from './AppText';
+
 // import {connect} from 'react-redux'
 import {StyleSheet} from 'react-native';
 
@@ -24,10 +26,10 @@ function NextView(props) {
   const weightLabel = props.nextGrip === 'Complete' ? '' : 'Weight '
   return (
     <View style={styles.container}>
-      <Text style={styles.details}>Next</Text>
+      <AppText size='lg'>Next</AppText>
       <View style={styles.la_container}>
-        <Text style={styles.detailsSm}>{props.nextGrip}</Text>
-        <Text style={styles.detailsSm}>{weightLabel} {props.nextWeight}</Text>
+        <AppText size='xs'>{props.nextGrip}</AppText>
+        <AppText size='xs'>{weightLabel} {props.nextWeight}</AppText>
       </View>
     </View>
   )
