@@ -40,7 +40,9 @@ class EditableGripView extends React.Component {
 
   buildGripChoices = (board) => {
     let itemArr = []
-    board.get('grips').mapKeys(gripId => {
+    // painful realization that stringy number keys are suboptimal
+    const sorted = board.get('grips').sortBy((v,k) => parseInt(k))
+    sorted.mapKeys(gripId => {
       itemArr.push(<Picker.Item
         label={board.getIn(['grips',gripId]).get('name')}
         value={gripId}

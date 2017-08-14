@@ -7,6 +7,7 @@ class AppText extends Component {
     size: PropTypes.string,
     theme: PropTypes.string,
     align: PropTypes.string,
+    flex: PropTypes.string,
   }
 
   constructor(props) {
@@ -36,18 +37,30 @@ class AppText extends Component {
     return align === 'center' ? styles.center : styles.left
   }
 
+  getFlex = (flex) => {
+    if (!isNaN(flex)) {
+      return {flex: Number(flex)}
+    } else {
+      return {flex: 1}
+    }
+  }
+
   render() {
-    const {children, size = 'lg', theme = 'light', align = 'center'} = this.props
+    const {children, size = 'lg', theme = 'light', align = 'center', flex = 1} = this.props
     const sizeStyle = this.getSize(size)
     const colorStyle = this.getColor(theme)
     const alignStyle = this.getAlign(align)
+    const flexStyle = this.getFlex(flex)
     return (
-      <Text style={[sizeStyle, colorStyle, alignStyle]}>{children}</Text>
+      <Text style={[sizeStyle, colorStyle, alignStyle, flexStyle]}>{children}</Text>
     )
   }
 }
 
 const styles = StyleSheet.create({
+  base: {
+    flex: 1,
+  },
   center: {
     textAlign: 'center',
   },

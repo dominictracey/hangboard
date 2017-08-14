@@ -89,7 +89,7 @@ export default function TimerStateReducer(state = initialState, action = {}) {
 
     case TICK:
       if (state.getIn(['running'])) {
-        if (state.getIn(['seconds']) === 0) {
+        if (state.getIn(['seconds']) === 1) {
           return loop(
             state,
             Effects.constant({type: DONE})
@@ -105,7 +105,7 @@ export default function TimerStateReducer(state = initialState, action = {}) {
       return state.update('seconds', secs => state.get('timeToRun'))
 
     case SKIP:
-      return state.update('seconds', secs => 0)
+      return state.update('seconds', secs => 1)
 
     default:
       return state;

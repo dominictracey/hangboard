@@ -27,91 +27,59 @@ const initialState = fromJS({
       description: 'Blue split board aligned with Mark Anderson\'s seminal book \"Training for Rock Climbing\"',
       grips: {
         '1': {
-          name: 'Jug',
+          name: 'Warm-up Jug',
           type: H.JUG,
         },
         '2': {
-          name: 'Big edge (inner)',
-          type: H.EDGE,
-        },
-        '3': {
-          name: 'Little edge (inner)',
-          type: H.EDGE,
-        },
-        '4': {
-          name: 'Big edge (outer)',
-          type: H.EDGE,
-        },
-        '5': {
-          name: 'Little edge (outer)',
-          type: H.EDGE,
-        },
-        '6': {
           name: 'Sloper',
           type: H.SLOPER,
         },
-        '7': {
-          name: 'Large 3F pocket',
-          type: H.FP3,
+        '3': {
+          name: 'Large edge',
+          type: H.EDGE,
         },
-        '8': {
-          name: 'Wide pinch',
-          type: H.PINCH,
+        '4': {
+          name: 'Small edge',
+          type: H.EDGE,
         },
-        '9': {
-          name: 'Narrow pinch',
-          type: H.PINCH,
-        },
-        '10': {
-          name: 'Medium pinch',
-          type: H.PINCH,
-        },
-        '11': {
+        '5': {
           name: 'Crimp',
           type: H.EDGE,
         },
+        '6': {
+          name: 'Wide pinch',
+          type: H.PINCH,
+        },
+        '7': {
+          name: 'Medium pinch',
+          type: H.PINCH,
+        },
+        '8': {
+          name: 'Narrow pinch',
+          type: H.PINCH,
+        },
+        '9': {
+          name: 'MRP 3F pocket (deep)',
+          type: H.FP3,
+        },
+        '10': {
+          name: 'IMR 3F pocket (var)',
+          type: H.FP3,
+        },
+        '11': {
+          name: 'Medium MR 2F pocket',
+          type: H.FP2,
+        },
         '12': {
-          name: 'Medium 2F pocket',
+          name: 'IM 2F pocket',
           type: H.FP2,
         },
         '13': {
-          name: 'Small 2F pocket',
+          name: 'Small MR 2F pocket',
           type: H.FP2,
         },
         '14': {
-          name: 'Offset 3F pocket',
-          type: H.FP3,
-        },
-        '15': {
-          name: 'Offset 3F pocket (as 2F - outer)',
-          type: H.FP2,
-        },
-        '16': {
-          name: 'Offset 3F pocket (as 2F - inner)',
-          type: H.FP2,
-        },
-        '17': {
-          name: 'Offset 2F pocket',
-          type: H.FP2,
-        },
-        '18': {
-          name: 'Offset 3F pocket (as mono - outer)',
-          type: H.FP1,
-        },
-        '19': {
-          name: 'Offset 3F pocket (as mono - middle)',
-          type: H.FP1,
-        },
-        '20': {
-          name: 'Offset 3F pocket (as mono - inner)',
-          type: H.FP1,
-        },
-        '21': {
-          name: 'Offset 2F pocket (as mono - outer)',
-          type: H.FP1,
-        },
-        '22': {
-          name: 'Offset 2F pocket (as mono - inner)',
+          name: 'Mono',
           type: H.FP1,
         },
       },
@@ -197,6 +165,21 @@ const initialState = fromJS({
           }
         },
         '6': {
+          sets: {
+            '1': '1'
+          },
+        },
+        '7': {
+          sets: {
+            '1': '1'
+          },
+        },
+        '8': {
+          sets: {
+            '1': '1'
+          },
+        },
+        '9': {
           sets: {
             '1': '1'
           },
@@ -347,19 +330,25 @@ const initialState = fromJS({
       board: '1',
       weights: {
         '1': 0,
-        '2': 0,
-        '3': -10,
-        '4': -10,
-        '5': -20,
-        '6': -40,
+        '2': -30,
+        '3': -30,
+        '4': -40,
+        '5': -40,
+        '6': -20,
+        '7': -50,
+        '8': -20,
+        '9': -40,
       },
       grips: {
         '1': '1',
-        '2': '3',
-        '3': '4',
-        '4': '5',
-        '5': '6',
-        '6': '7',
+        '2': '9',
+        '3': '3',
+        '4': '7',
+        '5': '11',
+        '6': '3',
+        '7': '6',
+        '8': '2',
+        '9': '9',
       }
     },
     '2': {
@@ -367,20 +356,24 @@ const initialState = fromJS({
       program: '3',
       board: '1',
       weights: {
-        '1': 0,
+        '1': 10,
         '2': 0,
-        '3': -10,
+        '3': -30,
         '4': -10,
         '5': -20,
         '6': -40,
+        '7': -10,
+        '8': -50,
       },
       grips: {
         '1': '1',
         '2': '3',
-        '3': '4',
-        '4': '5',
-        '5': '6',
-        '6': '7',
+        '3': '13',
+        '4': '4',
+        '5': '10',
+        '6': '6',
+        '7': '2',
+        '8': '8',
       }
     },
     '3': {
@@ -389,19 +382,21 @@ const initialState = fromJS({
       board: '1',
       weights: {
         '1': 0,
-        '2': 0,
-        '3': -10,
-        '4': -10,
+        '2': -20,
+        '3': 0,
+        '4': -30,
         '5': -20,
-        '6': -40,
+        '6': -30,
+        '7': -30,
       },
       grips: {
-        '1': '1',
-        '2': '3',
+        '1': '3',
+        '2': '13',
         '3': '4',
-        '4': '5',
+        '4': '14',
         '5': '6',
-        '6': '7',
+        '6': '12',
+        '7': '8',
       }
     },
     '4': {
@@ -804,7 +799,11 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       // add (boolean) - whether to add or remove weight
       // result (boolean) - whether to adjust the actual workout, or the session
       // if the climber changes this during the set, it should update the session and the workout
-      // if the climber changes this during collecting results, it should just update the workout
+      // if the climber changes this during collecting results,
+      //    it should just update the workout and the collection object
+      //
+      // if the current set is not the first in the set it should update everything properly
+      //  (e.g. changing the baseline) since we are doing relative changes and not absolute.
       var newState = action.result
         ? state.updateIn(['workouts',getWorkoutId(state),'weights',action.exerciseId],
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)

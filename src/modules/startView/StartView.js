@@ -76,7 +76,7 @@ class StartView extends Component {
             accessible={true}
             accessibilityLabel={'Start Workout'}
             onPress={this.loadDefault}>
-            <AppText size='lg' theme={theme}>
+            <AppText size='lg' theme='dark' flex='0'>
               Start Workout
             </AppText>
         </TouchableOpacity>

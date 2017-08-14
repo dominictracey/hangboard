@@ -73,7 +73,7 @@ class TimerView extends Component {
   };
 
   finish = () => {
-    this.props.timerStateActions.setTime(0)
+    this.props.timerStateActions.setTime(1)
     this.props.workoutStateActions.complete()
   }
 

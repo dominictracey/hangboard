@@ -109,7 +109,7 @@ class WorkoutView extends Component {
 
   workoutPage = () => {
     const {session, workouts, boards} = this.props
-    const canEditWeight = session.get(K.SET_LABEL).startsWith('1') ? true : false
+    //const canEditWeight = session.get(K.SET_LABEL).startsWith('1') ? true : false
 
     // console.log('workoutId: ' + session.get(K.WORKOUT_ID))
     return (
@@ -142,7 +142,7 @@ class WorkoutView extends Component {
                       title='Weight'
                       addCb={this.addWeight}
                       removeCb={this.removeWeight}
-                      allowUpdate={canEditWeight}/>
+                      allowUpdate={true}/>
           <NextView nextWeight={session.get('nextWeight')}
                     nextGrip={session.get('nextGrip')}/>
         </View>

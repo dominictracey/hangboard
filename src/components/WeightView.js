@@ -58,7 +58,7 @@ class WeightView extends React.Component {
           <AppText size='lg'>{title}</AppText>
         </View>
         <View style={[styles.row, styles.rowplus]}>
-          <AppText size='xl' align='center'>{weight}</AppText>
+          <AppText size='xl' align='center' flex='1'>{weight}</AppText>
           {controls}
         </View>
       </View>
@@ -68,7 +68,7 @@ class WeightView extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1.5,
+    flex: .75,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',

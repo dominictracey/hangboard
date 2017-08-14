@@ -48,7 +48,7 @@ class WorkoutListView extends React.Component {
             accessible={true}
             accessibilityLabel={'Load Workout ' + workouts.getIn([id,'name'])}
             onPress={() => this.loadWorkout(id)}>
-              <AppText size='xs' key={id} theme={theme}>{workouts.getIn([id,'name'])}</AppText>
+              <AppText size='xs' key={id} theme={theme} flex='0'>{workouts.getIn([id,'name'])}</AppText>
           </TouchableOpacity>
         )
       }

@@ -76,7 +76,7 @@ class SetResultView extends Component {
       <View style={styles.container}>
         <View style={styles.infoContainer}>
           <View style={[styles.row, styles.rowplus]}>
-            <AppText size='lg'>Enter Results for Set</AppText>
+            <AppText size='lg'>Enter Results</AppText>
           </View>
           <View style={styles.row}>
             <AppText size='sm'>Grip:</AppText>
