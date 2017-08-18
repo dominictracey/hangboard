@@ -17,6 +17,7 @@ import {DONE, setTime, pause} from '../timer/TimerState';
 import {NavigationActions} from 'react-navigation'
 import {K,M,H} from '../../utils/constants'
 import moment from 'moment'
+import KeepAwake from 'react-native-keep-awake'
 
 // Initial state
 // All keys are strings per https://github.com/facebook/immutable-js/issues/282
@@ -692,6 +693,8 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
 
   switch (action.type) {
     case LOAD:
+      // keep screen from sleeping
+      KeepAwake.activate();
       var stateWorkout = setWorkout(state,action.workout)
       if (stateWorkout) { // returns null if bad workoutId requested
         var workout = stateWorkout.getIn(['workouts',action.workout])
@@ -763,6 +766,10 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
 
     case COMPLETE:
       // TODO move the current session object to history
+
+      // allow screen to sleep again
+      // keep screen from sleeping
+      KeepAwake.deactivate();
       return loop(
         changePhase(state,COMPLETE)
           .updateIn(M.COMPLETE, done => true),

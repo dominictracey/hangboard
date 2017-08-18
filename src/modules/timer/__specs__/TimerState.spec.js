@@ -3,7 +3,6 @@
 import {Effects} from 'redux-loop-symbol-ponyfill';
 import {initialState, dispatch} from '../../../../test/state';
 import * as TimerStateActions from '../TimerState';
-import * as WorkflowStateActions from '../../workout/WorkoutState'
 
 describe('TimerState', () => {
 
@@ -72,13 +71,13 @@ describe('TimerState', () => {
 
   describe('tick', () => {
     const getValue = state => state.getIn(['timer', 'seconds']);
-    const statezero = initialState.updateIn(['timer','seconds'],sec => 0)
+    const statezero = initialState.updateIn(['timer','seconds'],sec => 1)
     const [runState] = dispatch(statezero, TimerStateActions.resume());
     const [secondState, effects] = dispatch(runState, TimerStateActions.tick());
 
     it('should not decrement the running zero timer but generate a DONE effect', () => {
-      expect(getValue(statezero)).toBe(0);
-      expect(getValue(secondState)).toBe(0);
+      expect(getValue(statezero)).toBe(1);
+      expect(getValue(secondState)).toBe(1);
     });
 
     it('should trigger a DONE side effect', () => {

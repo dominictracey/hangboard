@@ -18,6 +18,18 @@ import * as TimerStateActions from '../../timer/TimerState'
 import {Map} from 'immutable'
 import {K,M} from '../../../utils/constants'
 
+jest.mock('react-native-keep-awake') //
+const keepAwake = require('react-native-keep-awake')
+keepAwake.activate = () => console.log('stay awake!')
+keepAwake.deactivate = () => console.log('go to sleep!')
+// , () => {
+//   class KeepAwake {
+//     activate() {}
+//     deactiveate() {}
+//   }
+// })
+// jest.mock('_reactNativeKeepAwake2', () => 'wat')
+
 describe('WorkoutState', () => {
   const getLoadingValue = state => state.getIn([K.WORKOUT, 'loading']);
   const getPhaseValue = state => state.getIn([K.WORKOUT, ...M.PHASE]);
@@ -131,9 +143,9 @@ describe('WorkoutState', () => {
       expect(getSetIdValue(secondState)).toBe('5');
     })
 
-    it('should have Large 3F pocket grip', () => {
-      expect(getGripValue(firstState)).toBe('Large 3F pocket')
-      expect(getGripValue(secondState)).toBe('Large 3F pocket')
+    it('should have Medium pinch grip', () => {
+      expect(getGripValue(firstState)).toBe('Medium pinch')
+      expect(getGripValue(secondState)).toBe('Medium pinch')
     })
 
     it('should have a green color', () => {
@@ -210,8 +222,8 @@ describe('WorkoutState', () => {
     });
 
     it('should increment grip', () => {
-      expect(getGripValue(exerciseState)).toBe('Large 3F pocket')
-      expect(getGripValue(secondState)).toBe('Big edge (inner)')
+      expect(getGripValue(exerciseState)).toBe('Medium pinch')
+      expect(getGripValue(secondState)).toBe('Sloper')
     })
 
     it('should increment weight', () => {
@@ -229,7 +241,7 @@ describe('WorkoutState', () => {
         Effects.batch([
           Effects.constant(TimerStateActions.setTime(
             WorkoutStateActions.getCurrSet(secondState.get(K.WORKOUT)).get('secs_recovery'))),
-          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Large 3F pocket', 3, 0))
+          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Medium pinch', 3, 0, 0))
         ])
       );
     });
@@ -246,8 +258,8 @@ describe('WorkoutState', () => {
     const [state8] = dispatch(state7, WorkoutStateActions.recover())
 
     it('should increment grip first time', () => {
-      expect(getGripValue(state7)).toBe('Large 3F pocket')
-      expect(getGripValue(state8)).toBe('Big edge (inner)')
+      expect(getGripValue(state7)).toBe('Medium pinch')
+      expect(getGripValue(state8)).toBe('Sloper')
     })
 
     it('should increment weight first time', () => {
@@ -264,8 +276,8 @@ describe('WorkoutState', () => {
     const [state14] = dispatch(state13, WorkoutStateActions.recover())
 
     it('should not increment grip', () => {
-      expect(getGripValue(state13)).toBe('Big edge (inner)')
-      expect(getGripValue(state14)).toBe('Big edge (inner)')
+      expect(getGripValue(state13)).toBe('Sloper')
+      expect(getGripValue(state14)).toBe('Sloper')
     })
 
     it('should increment weight', () => {
@@ -302,14 +314,14 @@ describe('WorkoutState', () => {
     const [state8] = dispatch(state7, WorkoutStateActions.recover())
     // setId, setLabel, exId, grip, reps, weight
     const [state9] = dispatch(state8,
-      WorkoutStateActions.collectSetResults('1','1/1', '1', 'Large 3F pocket', 3, 0))
+      WorkoutStateActions.collectSetResults('1','1/1', '1', 'Medium pinch', 3, 0, 0))
 
     it('should trigger result collection', () => {
       expect(getSetResultCollectionValue(state8)).toEqual(Map({}))
-      //          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Large 3F pocket', 3, 0))
+      //          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Medium pinch', 3, 0))
       expect(getSetResultCollectionValue(state9)).toEqual(
         Map({'setId': '1', 'setLabel': '1/1', 'exId': '1',
-          'grip': 'Large 3F pocket', 'reps': 3, 'weight': 0}))
+          'grip': 'Medium pinch', 'reps': 3, 'sessionWeight': 0, 'workoutWeight': 0}))
     })
 
     const [state10] = dispatch(state9, WorkoutStateActions.collectedSetResults('3', '1', 2))
@@ -342,7 +354,7 @@ describe('WorkoutState', () => {
       expect(effects).toEqual(
         Effects.batch([
           Effects.constant(TimerStateActions.pause()),
-          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Large 3F pocket', 3, 0))
+          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Medium pinch', 3, 0, 0))
         ])
       )
     })
@@ -382,12 +394,12 @@ describe('WorkoutState', () => {
     })
 
     it('should change the session current grip', () => {
-      expect(getCurrentGrip(state1)).toBe('Large 3F pocket')
-      expect(getCurrentGrip(state2)).toBe('Sloper')
+      expect(getCurrentGrip(state1)).toBe('Medium pinch')
+      expect(getCurrentGrip(state2)).toBe('Wide pinch')
     })
 
     // const [state3] = dispatch(state2,
-    //   WorkoutStateActions.collectSetResults('1','1/1', '1', 'Large 3F pocket', 3, 0))
+    //   WorkoutStateActions.collectSetResults('1','1/1', '1', 'Medium pinch', 3, 0))
 
   })
 
@@ -401,7 +413,7 @@ describe('WorkoutState', () => {
     const [state7] = dispatch(state6, WorkoutStateActions.exercise())
     const [state8] = dispatch(state7, WorkoutStateActions.recover())
     const [state9] = dispatch(state8,
-      WorkoutStateActions.collectSetResults('1','1/1', '1', 'Large 3F pocket', 3, 0))
+      WorkoutStateActions.collectSetResults('1','1/1', '1', 'Medium pinch', 3, 0))
     const [state10] = dispatch(state9, WorkoutStateActions.collectedSetResults('1', '1', 2))
 
     const [state3a] = dispatch(state10, WorkoutStateActions.exercise())
@@ -411,7 +423,7 @@ describe('WorkoutState', () => {
     const [state7a] = dispatch(state6a, WorkoutStateActions.exercise())
     const [state8a] = dispatch(state7a, WorkoutStateActions.recover())
     const [state9a] = dispatch(state8a,
-      WorkoutStateActions.collectSetResults('1','1/2', '2', 'Big edge (inner)', 3, 10))
+      WorkoutStateActions.collectSetResults('1','1/2', '2', 'Sloper', 3, 10))
     const [state10a] = dispatch(state9a, WorkoutStateActions.collectedSetResults('2', '1', 3))
 
     const [state3a2] = dispatch(state10a, WorkoutStateActions.exercise())
@@ -421,7 +433,7 @@ describe('WorkoutState', () => {
     const [state7a2] = dispatch(state6a2, WorkoutStateActions.exercise())
     const [state8a2] = dispatch(state7a2, WorkoutStateActions.recover())
     const [state9a2] = dispatch(state8a2,
-      WorkoutStateActions.collectSetResults('2','2/2', '2', 'Big edge (inner)', 3, 30))
+      WorkoutStateActions.collectSetResults('2','2/2', '2', 'Sloper', 3, 30))
     const [state10a2] = dispatch(state9a2, WorkoutStateActions.collectedSetResults('2', '2', 1))
 
     // check that the session results are correct after 2/2

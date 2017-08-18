@@ -6,6 +6,11 @@ import {initialState, dispatch} from '../../../../test/state';
 import * as WorkoutStateActions from '../WorkoutState';
 import * as TimerStateActions from '../../timer/TimerState'
 
+jest.mock('react-native-keep-awake') //
+const keepAwake = require('react-native-keep-awake')
+keepAwake.activate = () => console.log('stay awake!')
+keepAwake.deactivate = () => console.log('go to sleep!')
+
 describe('WorkoutState transitions', () => {
   const getLoadingValue = state => state.getIn(['workout', 'loading']);
   const getPhaseValue = state => state.getIn(['workout', 'session', 'currentPhase']);
