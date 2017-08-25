@@ -727,7 +727,9 @@ export const transition = (state) => {
   } else if (state.getIn(M.PHASE) === EXERCISE) {
     // move on to rest or recovery or complete
     if (getCurrSet(state).get('reps') === getCurrRep(state)) {
-      if (getProgram(state).get(K.EXERCISES).count() === getCurrExerciseOrd(state)) {
+      // if it's the last set of the last exercise, we're done!
+      if (getProgram(state).get(K.EXERCISES).count() === getCurrExerciseOrd(state) &&
+          numSetsInExercise(state) === parseInt(getCurrSetOrd(state))) {
         return complete()
       } else {
         return recover()
@@ -910,17 +912,29 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       // do we need to go to the next exercise?
       state1 = changePhase(state,K.RECOVERY)
       if (parseInt(getCurrSetOrd(state)) === numSetsInExercise(state)) {
+        // is this the last exercise?
+        if (getCurrExerciseOrd(state) === getNumExercises(state)) {
+          return loop(state,Effects.constant(complete()))
+        }
+        // special case where we are in warmup or prep phase, just start first ex/set
+        if (getCurrExerciseOrd(state) === 1 &&
+            (getCurrPhase(state) === K.WARMUP || getCurrPhase(state) === K.PREP)) {
+          return loop(state,Effects.constant(exercise()))
+        }
+        // if not, move to next exercise
         var state2a = incrementExercise(state1)
         state2 = resetSet(state2a)
-      } else if (getCurrExerciseOrd(state1) < getNumExercises(state1)) {
+      } else {
+        // move on to next set on this grip
         state2 = incrementSet(state1)
       }
-      return loop(resetRep(state2),Effects.constant(exercise())) //setTime(1)))
+      return loop(resetRep(state2),Effects.constant(exercise()))
 
     case PREV_SET:
       // if we haven't gotten started, just go back to beginning
-      if (getCurrPhaseLabel(state) === K.WARMUP ||
-          getCurrPhaseLabel(state) === K.PREP ||
+      if (getCurrPhase(state) === K.WARMUP ||
+          getCurrPhase(state) === K.PREP ||
+          getCurrPhase(state) === K.COMPLETE ||
           getCurrExerciseOrd(state) === 1) {
         return loop(state,Effects.constant(reset()))
       }

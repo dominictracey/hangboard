@@ -3,13 +3,29 @@ import PropTypes from 'prop-types'
 import {
   StyleSheet,
   View,
+  ScrollView,
 } from 'react-native'
 import {CheckBox, Card} from 'react-native-elements'
 import {PhaseLabels} from '../workout/WorkoutState'
 import {K} from '../../utils/constants'
+import VersionNumber from 'react-native-version-number';
+import AppText from '../../components/AppText'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class SettingsView extends Component {
   static displayName = 'SettingsView';
+
+  static navigationOptions =
+    ({navigation}) => ({
+      tabBarKey: navigation.state,
+      tabBarlabel: 'Home',
+      tabBarIcon: () => (<Icon name='settings' size={24} />
+     ),
+      headerTintStart: 'white',
+      headerStyle: {
+        backgroundStart: '#39babd'
+      }
+    });
 
   static propTypes = {
     ticksFor: PropTypes.object.isRequired,
@@ -62,7 +78,10 @@ class SettingsView extends Component {
     const ticks = this.buildTicks()
     const beeps = this.buildBeeps()
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
+        <View style={styles.row}>
+          <AppText size='sm'>{'App version: ' + VersionNumber.appVersion}</AppText>
+        </View>
         {/* <AppText size='lg'>Sounds</AppText> */}
         <View style={styles.row}>
           <Card title='Ticks For:'>
@@ -72,24 +91,24 @@ class SettingsView extends Component {
             {beeps}
           </Card>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: 'white'
+    // flex: 1,
+    // justifyContent: 'flex-start',
+    // alignItems: 'center',
+    // backgroundColor: 'white'
   },
   row: {
-    flex: .5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 70, //otherwise hides under the tab bar on iOS
+    // flex: .5,
+    // flexDirection: 'row',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // paddingTop: 70, //otherwise hides under the tab bar on iOS
   },
 });
 

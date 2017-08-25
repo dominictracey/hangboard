@@ -48,6 +48,7 @@
     "react-native-keep-awake": "^2.0.5",
     "react-native-sound": "^0.10.3",
     "react-native-vector-icons": "^4.0.0",
+    "react-native-version-number": "^0.1.3",
     "react-navigation": "^1.0.0-beta.7",
     "react-redux": "^4.4.5",
     "redux": "^3.4.0",

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hangboard"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.dominictracey.hangboard"
     android:versionCode="1"
     android:versionName="1.0">
 
@@ -10,6 +11,10 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="22" />
 
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        tools:node="remove"/>
+    s
     <application
       android:name=".MainApplication"
       android:allowBackup="true"

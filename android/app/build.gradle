@@ -94,11 +94,13 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.hangboard"
+        applicationId "com.dominictracey.hangboard"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+//        versionCode 1
+//        versionName "1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -133,6 +135,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-version-number')
     compile project(':react-native-sound')
     compile project(':react-native-keep-awake')
     compile project(':react-native-vector-icons')
@@ -147,3 +150,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+
