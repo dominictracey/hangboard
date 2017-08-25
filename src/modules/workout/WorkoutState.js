@@ -776,20 +776,20 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
 
     case PREP:
       return loop(
-        changePhase(state,PREP),
+        changePhase(state,action.type),
         Effects.constant(setTime(getTimeForPhase(action.type, state)))
       );
 
     case EXERCISE:
       var stateEx = incrementRep(state)
       return loop(
-        changePhase(stateEx,EXERCISE),
+        changePhase(stateEx,action.type),
         Effects.constant(setTime(getTimeForPhase(action.type, state)))
       );
 
     case REST:
       return loop(
-        changePhase(state,REST),
+        changePhase(state,action.type),
         Effects.constant(setTime(getTimeForPhase(action.type, state)))
       );
 
@@ -915,7 +915,7 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       } else if (getCurrExerciseOrd(state1) < getNumExercises(state1)) {
         state2 = incrementSet(state1)
       }
-      return loop(resetRep(state2),Effects.constant(setTime(1)))
+      return loop(resetRep(state2),Effects.constant(exercise())) //setTime(1)))
 
     case PREV_SET:
       // if we haven't gotten started, just go back to beginning
@@ -932,7 +932,7 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       } else if (getCurrExerciseOrd(state1) < getNumExercises(state1)) {
         state2 = incrementSet(state1, -1) // decrementSet
       }
-      return loop(resetRep(state2),Effects.constant(setTime(1)))
+      return loop(resetRep(state2),Effects.constant(exercise())) //setTime(1)))
 
     case DONE:  // this action is dispactched from the timer, which doesn't know what it's timing
       return loop(state,Effects.constant(transition(state)))

@@ -88,7 +88,7 @@ export default function TimerStateReducer(state = initialState, action = {}) {
       if (state.getIn(['running'])) {
         // give the workoutReducer a whack at it too
         return loop(state.update('seconds', seconds => seconds - 1),
-                    Effects.constant(tock(state.get('seconds')-1)))
+                    Effects.constant(tock(state.get('seconds') - 1)))
       } else {
         return state;
       }

@@ -19,7 +19,7 @@ import WeightView from '../../components/WeightView'
 import NextView from '../../components/NextView'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TimerViewContainer from '../timer/TimerViewContainer';
-import {K,M} from '../../utils/constants'
+import {K} from '../../utils/constants'
 import EditableGripView from '../../components/EditableGripView'
 import AppText from '../../components/AppText'
 

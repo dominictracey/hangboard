@@ -52,7 +52,6 @@ class TimerView extends Component {
     navigate: PropTypes.func.isRequired,
     ticksFor: PropTypes.object.isRequired,
     beepsFor: PropTypes.object.isRequired,
-    phase: PropTypes.string.isRequired,
     nextSound: PropTypes.string.isRequired,
   }
 
@@ -96,15 +95,10 @@ class TimerView extends Component {
 
   // heartbeat
   heartbeat = () => {
-    // setTimeout(() => {
-    //   this.heartbeat()
-    //   this.props.timerStateActions.tick()
-    // }, 1000)
     var timer = new Tock({
       countdown: false,
       interval: 1000,
       callback: this.interval,
-      // complete: someCompleteFunction
     });
     timer.start()
   }
@@ -116,7 +110,6 @@ class TimerView extends Component {
   }
 
   restart = () => {
-    //this.props.workoutStateActions.reset()
     this.props.workoutStateActions.prevSet()
   }
 
@@ -129,8 +122,6 @@ class TimerView extends Component {
   };
 
   finish = () => {
-    this.props.timerStateActions.setTime(1)
-    // this.props.workoutStateActions.complete()
     this.props.workoutStateActions.nextSet()
   }
 
@@ -173,7 +164,8 @@ class TimerView extends Component {
     soundFile.play((success) => {
       if (success) {
         var diff = this.nowSound.diff(this.lastSound)
-        console.log(sound + ' @ ' + this.nowSound.format('mm:ss:SSS') + ' last is' + this.lastSound.format('mm:ss:SSS') + ' diff is ' + diff);
+        console.log(sound + ' @ ' + this.nowSound.format('mm:ss:SSS') +
+          ' last is' + this.lastSound.format('mm:ss:SSS') + ' diff is ' + diff);
         if (diff > 1025 || diff < 975) {
           console.log('SKEW TOO GREAT!!! ' + diff)
         }
@@ -196,9 +188,10 @@ class TimerView extends Component {
   }
 
   render() {
-    const {loadingStyle, running, color, ticksFor, beepsFor, phase} = this.props
-      // ? {backgroundColor: '#eee'}
-      // : null;
+    const {loading, running, color, ticksFor, beepsFor} = this.props
+    const loadingStyle = loading
+      ? {backgroundColor: '#eee'}
+      : null;
 
     return (
       <View style={[styles.container, this.getColorStyle(running, color)]}>
