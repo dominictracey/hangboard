@@ -14,8 +14,10 @@ import {TabNavigator, StackNavigator} from 'react-navigation';
 
 import WorkoutViewContainer from '../workout/WorkoutViewContainer';
 //import ColorViewContainer from '../colors/ColorViewContainer';
-import SetResultViewContainer from '../setResult/SetResultViewContainer';
 import StartViewContainer from '../startView/StartViewContainer'
+import SettingsViewContainer from '../settings/SettingsViewContainer'
+import ImageViewContainer from '../imageView/ImageViewContainer'
+import SetResultViewContainer from '../setResult/SetResultViewContainer'
 
 const headerColor = '#39babd';
 const activeColor = 'white';
@@ -24,6 +26,7 @@ const activeColor = 'white';
 export const MainScreenNavigator = TabNavigator({
   Home: {screen: StartViewContainer},
   Workout: {screen: WorkoutViewContainer},
+  Settings: {screen: SettingsViewContainer},
   //Color: {screen: ColorViewContainer},
   // Counter: {screen: CounterViewContainer},
 }, {
@@ -55,9 +58,11 @@ const AppNavigator = StackNavigator({
     }
   },
   //InfiniteColorStack: {screen: ColorViewContainer},
-  Start: {screen: StartViewContainer},
+  //Start: {screen: StartViewContainer},
   SetResult: {screen: SetResultViewContainer},
-  Workout: {screen: WorkoutViewContainer},
+  //Workout: {screen: WorkoutViewContainer},
+  //Settings: {screen: SettingsViewContainer},
+  Image: {screen: ImageViewContainer}
 });
 
 export default AppNavigator;

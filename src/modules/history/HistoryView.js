@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet,
   View
@@ -13,9 +14,7 @@ class HistoryView extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-
-      </View>
+      <View style={styles.container} />
     );
   }
 }

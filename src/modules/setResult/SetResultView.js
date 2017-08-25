@@ -9,9 +9,9 @@
  * @Copyright: (c) 2017 Aquilon Consulting, Inc.
  */
 
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
-  Button,
   View,
   StyleSheet
 } from 'react-native';
@@ -30,29 +30,32 @@ class SetResultView extends Component {
   static propTypes = {
     exId: PropTypes.string.isRequired,
     setId: PropTypes.string.isRequired,
-    setLabel: PropTypes.string.isRequired,
-    workoutWeight: PropTypes.number.isRequired,
-    sessionWeight: PropTypes.number.isRequired,
     grip: PropTypes.string.isRequired,
+    setLabel: PropTypes.string.isRequired,
+    sessionWeight: PropTypes.number.isRequired,
+    workoutWeight: PropTypes.number.isRequired,
     reps: PropTypes.number.isRequired,
-    save: PropTypes.func.isRequired,
+    numRepsComplete: PropTypes.number.isRequired,
+
+    // save: PropTypes.func.isRequired,
     navigate: PropTypes.func.isRequired,
     workoutStateActions: PropTypes.shape({
       adjustWeight: PropTypes.func.isRequired,
+      collectedSetResults: PropTypes.func.isRequired,
     })
   };
 
   constructor(props) {
     super(props);
-    this.state = {
-      lastSuccess: -1,
-    };
+    // this.state = {
+    //   lastSuccess: -1,
+    // };
   }
-
-  save = () => {
-    const {exId, setId, save} = this.props
-    save(exId, setId, this.state.lastSuccess)
-  };
+  //
+  // save = () => {
+  //   const {collectSetResults: {exId, setId}} = this.props
+  //   save(exId, setId, this.state.lastSuccess)
+  // };
 
   addWeight = () => {
     this.props.workoutStateActions.adjustWeight(true, true, this.props.exId)
@@ -63,15 +66,17 @@ class SetResultView extends Component {
   }
 
   repsComplete = (i) => {
-    this.setState({lastSuccess: i})
+    const {exId, setId, workoutStateActions: {collectedSetResults}} = this.props
+    collectedSetResults(exId, setId, i)
+    // this.setState({lastSuccess: i})
   }
 
   render() {
-    const {grip,setLabel,sessionWeight,workoutWeight,reps} = this.props
+    const {grip,setLabel,sessionWeight,workoutWeight,reps, numRepsComplete} = this.props
     // only allow the user to edit weight on the first (baseline) setLabel
     // TODO will probably get complaints about this...
-    const canEditWeight = setLabel.startsWith('1') ? true : false
-    const buttonAppText = 'Save';
+    //const canEditWeight = setLabel.startsWith('1') ? true : false
+    // const buttonAppText = 'Save';
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
@@ -95,18 +100,18 @@ class SetResultView extends Component {
           <RepsComplete reps={reps}
                         style={styles.container}
                         cb={this.repsComplete}
-                        complete={this.state['lastSuccess']}/>
+                        complete={numRepsComplete}/>
         </View>
         <View style={styles.row}>
           <WeightView weight={workoutWeight}
-                      title='Next Workout Weight'
+                      title='Baseline Weight'
                       addCb={this.addWeight}
                       removeCb={this.removeWeight}
-                      allowUpdate={canEditWeight}/>
+                      allowUpdate={true}/>
         </View>
-        <View style={styles.row}>
+        {/* <View style={styles.row}>
           <Button color='#ee7f06' title={buttonAppText} onPress={this.save}/>
-        </View>
+        </View> */}
       </View>
     );
   }

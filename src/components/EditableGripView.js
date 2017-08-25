@@ -9,7 +9,8 @@
  * @Copyright: (c) 2017 Aquilon Consulting, Inc.
  */
 
-import React, {PropTypes} from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import {View, Picker} from 'react-native'
 import AppText from './AppText'
 import {TouchableOpacity, StyleSheet} from 'react-native';
@@ -22,6 +23,7 @@ class EditableGripView extends React.Component {
     session: PropTypes.object.isRequired,
     board: PropTypes.object.isRequired,
     selectCb: PropTypes.func.isRequired,
+    showCb: PropTypes.func.isRequired,
   }
 
   constructor(props) {
@@ -36,6 +38,10 @@ class EditableGripView extends React.Component {
   selectGrip = (gripId) => {
     this.setState({edit: false})
     this.props.selectCb(gripId)
+  }
+
+  showBoard = () => {
+    this.props.showCb()
   }
 
   buildGripChoices = (board) => {
@@ -64,6 +70,13 @@ class EditableGripView extends React.Component {
             onPress={this.changeGrip}
             style={[styles.editButton]}>
             <Icon name='mode-edit' size={24} color='black'/>
+          </TouchableOpacity>
+          <TouchableOpacity
+            accessible={true}
+            accessibilityLabel={'Show board'}
+            onPress={this.showBoard}
+            style={[styles.editButton]}>
+            <Icon name='image' size={24} color='black'/>
           </TouchableOpacity>
         </View>
       )
@@ -102,6 +115,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: 'blue',
+    backgroundColor: 'white',
     // fontSize: 32,  // doesn't work on Android...
     width: 100,
   }

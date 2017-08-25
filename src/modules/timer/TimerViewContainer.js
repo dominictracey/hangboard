@@ -15,7 +15,7 @@ import TimerView from './TimerView';
 import {NavigationActions} from 'react-navigation';
 import * as TimerStateActions from '../timer/TimerState';
 import * as WorkoutStateActions from '../workout/WorkoutState'
-import {K,M} from '../../utils/constants'
+import {M} from '../../utils/constants'
 
 export default connect(
   state => ({
@@ -23,6 +23,10 @@ export default connect(
     running: state.getIn(['timer', 'running']),
     loading: state.getIn(['timer', 'loading']),
     color: state.getIn(['workout','session','color']),
+    ticksFor: state.getIn(['settings',...M.TICKS_FOR]),
+    beepsFor: state.getIn(['settings',...M.BEEPS_FOR]),
+    phase: state.getIn(['workout',...M.PHASE]),
+    nextSound: state.getIn(['timer','nextSound'])
   }),
   dispatch => {
     return {

@@ -13,7 +13,8 @@
 
 import {fromJS, Map} from 'immutable';
 import {loop, Effects} from 'redux-loop-symbol-ponyfill';
-import {DONE, setTime, pause} from '../timer/TimerState';
+import {DONE, TICK, SKIP, setTime, pause, setNextSound} from '../timer/TimerState';
+import {needNewSound} from '../settings/SettingsState'
 import {NavigationActions} from 'react-navigation'
 import {K,M,H} from '../../utils/constants'
 import moment from 'moment'
@@ -139,6 +140,7 @@ const initialState = fromJS({
       author: 'Manderson',
       level: 'beginner',
       warmup_secs: 1200,
+      prep_secs: 10,
       exercises: {
         '1': {
           sets: {
@@ -192,6 +194,7 @@ const initialState = fromJS({
       author: 'DPT',
       level: 'advanced',
       warmup_secs: 3,
+      prep_secs: 10,
       exercises: {
         '1': {
           sets: {
@@ -216,6 +219,7 @@ const initialState = fromJS({
       author: 'Manderson',
       level: 'intermediate',
       warmup_secs: 1200,
+      prep_secs: 10,
       exercises: {
         '1': {
           sets: {
@@ -271,6 +275,7 @@ const initialState = fromJS({
       author: 'Manderson',
       level: 'advanced',
       warmup_secs: 1200,
+      prep_secs: 10,
       exercises: {
         '1': {
           sets: {
@@ -421,7 +426,8 @@ const initialState = fromJS({
     [K.WORKOUT_ID]: '-',
     [K.LAST_WORKOUT_ID]: '1',
 
-    [K.PHASE]: 'Init',
+    [K.PHASE]: K.INIT,
+    [K.PHASE_LABEL]: K.INIT_LABEL,
     [K.CURRENT_EXERCISE_ORD]: '-',
     [K.CURRENT_EXERCISE_ID]: '-',
     [K.CURRENT_SET_ORD]: '-',
@@ -444,7 +450,7 @@ const initialState = fromJS({
 
     [K.COLLECT_SET_RESULTS]: {},
     [K.LAST_SUCCESSES]: {},
-    [K.COMPLETE]: false,
+    [K.COMPLETED]: false,
 
   },
 
@@ -455,29 +461,34 @@ const initialState = fromJS({
 });
 
 // Actions
-const LOAD = 'WorkoutState/LOAD';  // select workout
-const WARMUP = 'WorkoutState/WARMUP'; // begin phases of workout
-const EXERCISE = 'WorkoutState/EXERCISE';
-const REST = 'WorkoutState/REST';
-const RECOVER = 'WorkoutState/RECOVER';
-const COMPLETE = 'WorkoutState/COMPLETE'; // the workout is done
-const RESET = 'TimerState/RESET'; // re-establish the initialState
+const LOAD = K.LOAD  // select workout
+const WARMUP = K.WARMUP // begin phases of workout
+const PREP = K.PREP // time needed between warmup and exercise
+const EXERCISE = K.EXERCISE
+const REST = K.REST
+const RECOVER = K.RECOVER
+const COMPLETE = K.COMPLETE
+const RESET = 'WorkoutState/RESET'; // re-establish the initialState
 const COLLECTRESULTS = 'WorkoutState/COLLECTRESULTS' // the view has popped it up
 const COLLECTEDRESULTS = 'WorkoutState/COLLECTEDRESULTS' // the user has entered them
 const ADJUSTWEIGHT = 'WorkoutState/ADJUSTWEIGHT' // change a weight value (see params)
 const CHANGEGRIP = 'WorkoutState/CHANGEGRIP' // change the current grip
+const NEXT_SET = 'WorkoutState/NEXT_SET'
+const PREV_SET = 'WorkoutState/PREV_SET'
+export const TOCK = 'WorkoutState/TOCK' // allows the timer to let us process each tick
 
-const PhaseLabels = {
-  [LOAD]: 'Load',
-  [WARMUP]: 'Warmup',
-  [EXERCISE]: 'Exercise',
-  [REST]: 'Rest',
-  [RECOVER]: 'Recovery',
-  [COMPLETE]: 'Complete',
+export const PhaseLabels = {
+  [LOAD]: K.LOAD_LABEL,
+  [WARMUP]: K.WARMUP_LABEL,
+  [PREP]: K.PREP_LABEL,
+  [EXERCISE]: K.EXERCISE_LABEL,
+  [REST]: K.REST_LABEL,
+  [RECOVER]: K.RECOVER_LABEL,
+  [COMPLETE]: K.COMPLETE_LABEL,
 };
 
 // how much to add/remove when the climber clicks the plus/minus buttons
-const weightAdjustmentAmount = 2.5
+const weightAdjustmentAmount = 5
 
 // Action creators
 export function load(workoutId) {
@@ -486,6 +497,10 @@ export function load(workoutId) {
 
 export function warmup() {
   return {type: WARMUP};
+}
+
+export function prep() {
+  return {type: PREP};
 }
 
 export function exercise() {
@@ -508,6 +523,10 @@ export function reset() {
   return {type: RESET};
 }
 
+export function tock(seconds) {
+  return {type: TOCK, seconds}
+}
+
 export function collectSetResults(setId, setLabel, exId, grip, reps, sessionWeight, workoutWeight) {
   return {type: COLLECTRESULTS, setId, setLabel, exId, grip, reps, sessionWeight, workoutWeight}
 }
@@ -524,7 +543,16 @@ export function changeGrip(newGrip) {
   return {type: CHANGEGRIP, newGrip}
 }
 
+export function nextSet() {
+  return {type: NEXT_SET}
+}
+
+export function prevSet() {
+  return {type: PREV_SET}
+}
+
 // accessors
+export const getCurrPhaseLabel = (state) => state.getIn(M.PHASE_LABEL)
 export const getCurrPhase = (state) => state.getIn(M.PHASE)
 export const getWorkoutId = (state) => state.getIn(M.WORKOUT_ID)
   ? state.getIn(M.WORKOUT_ID).toString()
@@ -561,15 +589,35 @@ export const getNextGripName = (state) =>
   getBoard(state).getIn(['grips',state.getIn([...M.GRIPS, getCurrExerciseId(state) + 1]),'name']);
 export const numSetsInExercise = (state) =>
   state.getIn(['programs', getProgramId(state),'exercises',getCurrExerciseId(state),'sets']).count()
-export const getCurrWeight = (state) => state.getIn(M.CURRENT_WEIGHT)
-export const getWorkoutWeight = (state) => {
-  const setOrd = getCurrSetOrd(state)
-  const weightAdjustment = setOrd > 1 ? 10 * (setOrd - 1) : 0 // only autoincrease weights on 2nd+ sets
-  return state.getIn(['workouts',getWorkoutId(state),'weights',getCurrExerciseId(state)]) +
-    weightAdjustment
-}
-export const getSessLastSuccesses = (state) => state.getIn(M.LAST_SUCCESSES)
 
+// WEIGHTS - stored in various places in state
+//  1) session K.CURRENT_WEIGHT - what workoutview should display
+//  2) workouts.N.weights - map of baseline weights for each grip
+//  3) session.N.weights - map of baseline weights for each grip used in this session (for history)
+//  4) collectSetResults.weight - actual weight used for set
+//  5) collectSetResults.baseline - baseline weight used during set
+// the calculated weight that includes the baseline and any baseline_plus components
+export const getCurrWeight = (state) => state.getIn(M.CURRENT_WEIGHT)
+// the core amount of weight for this grip used in first sets
+export const getBaselineWeight = (state) =>
+  state.getIn(['workouts',getWorkoutId(state),'weights',getCurrExerciseId(state)])
+// computed weight based on baseline + 2nd+ set additions
+// TODO - when would getCurrWeight(state) != getWorkoutWeight(state) ??!
+// export const getWorkoutWeight = (state) => {
+//   const setOrd = getCurrSetOrd(state)
+//   const weightAdjustment = setOrd > 1 ? 10 * (setOrd - 1) : 0 // only autoincrease weights on 2nd+ sets
+//   return state.getIn(['workouts',getWorkoutId(state),'weights',getCurrExerciseId(state)]) +
+//     weightAdjustment
+// }
+export const getSessLastSuccesses = (state) => state.getIn(M.LAST_SUCCESSES)
+export const getTimeForPhase = (phase,state) => {
+  if (phase === K.WARMUP) {return getProgram(state).get('warmup_secs')}
+  else if (phase === K.PREP) {return getProgram(state).get(K.PREP_SECS)}
+  else if (phase === K.EXERCISE) {return getCurrSet(state).get('secs_on')}
+  else if (phase === K.REST) {return getCurrSet(state).get('secs_off')}
+  else if (phase === K.RECOVER) {return getCurrSet(state).get('secs_recovery')}
+  return 0
+}
 // mutators
 export const changePhase = (state, phase) => {
   var color = ''
@@ -577,9 +625,11 @@ export const changePhase = (state, phase) => {
   else if (phase === REST) {color = 'orange'}
   else if (phase === RECOVER) {color = 'red'}
   else if (phase === WARMUP) {color = 'blue'}
+  else if (phase === PREP) {color = 'purple'}
   else if (phase === COMPLETE) {color = 'purple'}
 
-  return state.updateIn(M.PHASE, phaseSelec => PhaseLabels[phase])
+  return state.updateIn(M.PHASE_LABEL, phaseSelec => PhaseLabels[phase])
+              .updateIn(M.PHASE, p => phase)
               .updateIn(M.COLOR, c => color)
 }
 
@@ -599,7 +649,7 @@ export const setWorkout = (state, workoutId) => {
 }
 
 export const incrementRep = (state) => {
-  var newRep = getCurrPhase(state) === PhaseLabels[WARMUP] ? 1 : parseInt(getCurrRep(state)) + 1
+  var newRep = getCurrPhaseLabel(state) === PhaseLabels[WARMUP] ? 1 : parseInt(getCurrRep(state)) + 1
   return state.updateIn(M.REP_LABEL, rep => newRep + '/' + getNumReps(state))
               .updateIn(M.CURRENT_REP, rep => newRep)
 }
@@ -610,8 +660,8 @@ export const resetRep = (state) => {
 }
 
 // current assumption is that exercise id == ord.toString()
-export const incrementExercise = (state) => {
-  var newEx = getCurrExerciseOrd(state) + 1  //note we shouldn't recover after last set
+export const incrementExercise = (state, incAmount = 1) => {
+  var newEx = getCurrExerciseOrd(state) + incAmount  //note we shouldn't recover after last set
   var newExId = newEx.toString()
   var nextEx = newEx + 1
   var nextGrip = newEx === getNumExercises(state)
@@ -645,8 +695,8 @@ export const resetExercise = (state, program, workout) => {
                 getBoard(state).getIn(['grips', state.getIn(['session','grips','2']),'name']))
 }
 
-export const incrementSet = (state) => {
-  const newSetOrd = parseInt(state.getIn(M.CURRENT_SET_ORD)) + 1
+export const incrementSet = (state, incAmount = 1) => {
+  const newSetOrd = parseInt(state.getIn(M.CURRENT_SET_ORD)) + incAmount
   const newSetId = getProgram(state).getIn([K.EXERCISES,getCurrExerciseId(state),K.SETS,newSetOrd.toString()])
   return state.updateIn(M.CURRENT_SET_ORD, cset => newSetOrd.toString())
               .updateIn(M.CURRENT_SET_ID, id => newSetId)
@@ -667,24 +717,28 @@ export const resetSet = (state, program) => {
 
 export const transition = (state) => {
   // we only want to figure out the next phase to go to here, and get going that way
-  if (state.getIn(M.PHASE) === PhaseLabels[WARMUP]) {
-    // move on to exercise
-    return loop(state,Effects.constant(exercise()));
-  } else if (state.getIn(M.PHASE) === PhaseLabels[EXERCISE]) {
+  if (state.getIn(M.PHASE) === WARMUP) {
+    // move on to exercise or prep
+    if (getProgram(state).get(K.PREP_SECS)) {
+      return prep()
+    } else {
+      return exercise()
+    }
+  } else if (state.getIn(M.PHASE) === EXERCISE) {
     // move on to rest or recovery or complete
     if (getCurrSet(state).get('reps') === getCurrRep(state)) {
       if (getProgram(state).get(K.EXERCISES).count() === getCurrExerciseOrd(state)) {
-        return loop(state,Effects.constant(complete()));
+        return complete()
       } else {
-        return loop(state,Effects.constant(recover()));
+        return recover()
       }
     } else {
-      return loop(state,Effects.constant(rest()));
+      return rest()
     }
-  } else if (state.getIn(M.PHASE) === PhaseLabels[REST]) {
-    return loop(state,Effects.constant(exercise()));
-  } else {  // recovery presumably
-    return loop(state,Effects.constant(exercise()));
+  } else if (state.getIn(M.PHASE) === REST) {
+    return exercise()
+  } else {  // recovery or prep presumably
+    return exercise()
   }
 }
 
@@ -705,7 +759,8 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
         return loop(
           changePhase(state4,LOAD)
             .update('loading',loading => true),
-          Effects.constant(warmup())
+          Effects.batch([Effects.constant(warmup()),
+            Effects.constant(needNewSound(K.WARMUP, getTimeForPhase(K.WARMUP, state4)))])
         );
       } else {
         // bad workoutId passed in
@@ -716,49 +771,57 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       return loop(
         changePhase(state,WARMUP)
           .update('loading',loading => false),
-        Effects.constant(setTime(getProgram(state).get('warmup_secs')))
+        Effects.constant(setTime(getTimeForPhase(action.type, state))),
+      );
+
+    case PREP:
+      return loop(
+        changePhase(state,PREP),
+        Effects.constant(setTime(getTimeForPhase(action.type, state)))
       );
 
     case EXERCISE:
       var stateEx = incrementRep(state)
       return loop(
         changePhase(stateEx,EXERCISE),
-        Effects.constant(setTime(getCurrSet(stateEx).get('secs_on')))
+        Effects.constant(setTime(getTimeForPhase(action.type, state)))
       );
 
     case REST:
       return loop(
         changePhase(state,REST),
-        Effects.constant(setTime(getCurrSet(state).get('secs_off')))
+        Effects.constant(setTime(getTimeForPhase(action.type, state)))
       );
 
     case RECOVER:
       // do we have another set to do on this grip or do we move on to the next one?
-      var stateR1 = resetRep(state)
-      if (numSetsInExercise(stateR1) === parseInt(getCurrSetOrd(stateR1))) {
+
+      if (numSetsInExercise(state) === parseInt(getCurrSetOrd(state))) {
         // move on to next exercise
+        var stateR1 = resetRep(state)
         var stateR2 = incrementExercise(stateR1)
         var stateR3 = resetSet(stateR2)
         return loop(
           changePhase(stateR3,RECOVER),
           Effects.batch([
-            Effects.constant(setTime(getCurrSet(stateR3).get('secs_recovery'))),
+            Effects.constant(setTime(getTimeForPhase(action.type, state))),
             Effects.constant(collectSetResults(getCurrSetOrd(stateR1), getSetLabel(stateR1),
                 getCurrExerciseId(stateR1), getCurrGripName(stateR1), getNumReps(stateR1),
-                getCurrWeight(stateR1), getWorkoutWeight(stateR1))
+                getCurrWeight(state), getBaselineWeight(state))
             )
           ])
         );
       } else {
         // ready for the next set on this grip
-        var stateR4 = incrementSet(stateR1)
+        stateR1 = incrementSet(state)
+        var stateR4 = resetRep(stateR1)
         return loop(
           changePhase(stateR4,RECOVER),
           Effects.batch([
-            Effects.constant(setTime(getCurrSet(stateR4).get('secs_recovery'))),
+            Effects.constant(setTime(getTimeForPhase(action.type, state))),
             Effects.constant(collectSetResults(getCurrSetOrd(stateR1), getSetLabel(stateR1),
                 getCurrExerciseId(stateR1), getCurrGripName(stateR1), getNumReps(stateR1),
-                getCurrWeight(stateR1), getWorkoutWeight(stateR1))
+                getCurrWeight(state), getBaselineWeight(state))
             )
           ])
         );
@@ -772,12 +835,12 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       KeepAwake.deactivate();
       return loop(
         changePhase(state,COMPLETE)
-          .updateIn(M.COMPLETE, done => true),
+          .updateIn(M.COMPLETED, done => true),
           Effects.batch([
             Effects.constant(pause()),
             Effects.constant(collectSetResults(getCurrSetOrd(state), getSetLabel(state),
                 getCurrExerciseId(state), getCurrGripName(state), getNumReps(state),
-                getCurrWeight(state), getWorkoutWeight(state))
+                getCurrWeight(state), getBaselineWeight(state))
             )
           ])
       )
@@ -785,8 +848,10 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
     case COLLECTRESULTS:
       var struct = Map({'setId': action.setId, 'setLabel': action.setLabel, 'exId': action.exId,
         'grip': action.grip, 'reps': action.reps, 'sessionWeight': action.sessionWeight,
-        'workoutWeight': action.workoutWeight})
-      return state.mergeIn(M.COLLECT_SET_RESULTS, struct)
+        'workoutWeight': action.workoutWeight, numRepsComplete: 0})
+      return loop(state.mergeIn(M.COLLECT_SET_RESULTS, struct),
+                  Effects.constant(NavigationActions.navigate({routeName: 'SetResult'}))
+                )
 
     case COLLECTEDRESULTS:
       //action: exId, setId, successfulReps
@@ -796,10 +861,11 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
                     parseInt(action.setId) === numSetsInExercise(state)
         ? state.mergeIn([K.HISTORY],Map({[moment().format('MMMM Do YYYY, h:mm:ss a')]:
                                     getSessLastSuccesses(state).merge(result)}))
-        : state
+              .updateIn([...M.COLLECT_SET_RESULTS,'numRepsComplete'],r => action.successfulReps)
+        : state.updateIn([...M.COLLECT_SET_RESULTS,'numRepsComplete'],r => action.successfulReps)
 
-      return state1.deleteIn(M.COLLECT_SET_RESULTS)
-                  .mergeDeepIn(M.LAST_SUCCESSES, result)
+      return state1.mergeDeepIn(M.LAST_SUCCESSES, result)
+                // .deleteIn(M.COLLECT_SET_RESULTS)
 
     case ADJUSTWEIGHT:
       // params are:
@@ -811,10 +877,15 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       //
       // if the current set is not the first in the set it should update everything properly
       //  (e.g. changing the baseline) since we are doing relative changes and not absolute.
+      var isLastSet = action.exerciseId === getCurrExerciseId(state)
       var newState = action.result
         ? state.updateIn(['workouts',getWorkoutId(state),'weights',action.exerciseId],
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
                 .updateIn([...M.COLLECT_SET_RESULTS,'workoutWeight'],
+                  weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
+                .updateIn([...M.WEIGHTS,action.exerciseId],
+                  weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
+                .updateIn(M.CURRENT_WEIGHT,
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
         : state.updateIn([...M.WEIGHTS,action.exerciseId],
                   weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
@@ -831,11 +902,69 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
                     getCurrExerciseId(state)], grip => action.newGrip)
                   .updateIn(M.GRIP, grip => getBoard(state).getIn(['grips',action.newGrip,'name']))
 
+    case NEXT_SET:
+      // are we in warmup or prep?
+      if (getCurrPhaseLabel(state) === K.WARMUP) {
+        return loop(state,Effects.constant(prep()))
+      }
+      // do we need to go to the next exercise?
+      state1 = changePhase(state,K.RECOVERY)
+      if (parseInt(getCurrSetOrd(state)) === numSetsInExercise(state)) {
+        var state2a = incrementExercise(state1)
+        state2 = resetSet(state2a)
+      } else if (getCurrExerciseOrd(state1) < getNumExercises(state1)) {
+        state2 = incrementSet(state1)
+      }
+      return loop(resetRep(state2),Effects.constant(setTime(1)))
+
+    case PREV_SET:
+      // if we haven't gotten started, just go back to beginning
+      if (getCurrPhaseLabel(state) === K.WARMUP ||
+          getCurrPhaseLabel(state) === K.PREP ||
+          getCurrExerciseOrd(state) === 1) {
+        return loop(state,Effects.constant(reset()))
+      }
+      // otherwise start at the beginning of the prior set
+      state1 = changePhase(state,K.RECOVERY)
+      if (getCurrSetOrd(state) === '1') {
+        state2a = incrementExercise(state1, -1)
+        state2 = resetSet(state2a)
+      } else if (getCurrExerciseOrd(state1) < getNumExercises(state1)) {
+        state2 = incrementSet(state1, -1) // decrementSet
+      }
+      return loop(resetRep(state2),Effects.constant(setTime(1)))
+
     case DONE:  // this action is dispactched from the timer, which doesn't know what it's timing
-      return transition(state)
+      return loop(state,Effects.constant(transition(state)))
 
     case RESET:
-      return loop(state,Effects.constant(load(state.getIn(M.LAST_WORKOUT_ID))));
+      return loop(state,Effects.constant(load(state.getIn(M.LAST_WORKOUT_ID))))
+
+    case SKIP:
+      var nextState = transition(state)
+      return loop(state, Effects.constant(needNewSound(nextState.type, getTimeForPhase(nextState.type, state))))
+
+    case TOCK: // calculate the next sound to be played so that the timing is perfect
+      var phase = getCurrPhase(state)
+      var efx = []
+      if (action.seconds === 0) {
+        nextState = transition(state)
+        // this is the case we are getting ready to switch phases so we need to figure out where we are going
+        efx.push(Effects.constant(nextState))
+      } else if (action.seconds === 1) {
+        // here we need to play the right sound for the next phase
+        nextState = transition(state)
+        efx.push(Effects.constant(needNewSound(nextState.type, getTimeForPhase(nextState.type, state))))
+      } else if (action.seconds === 4) {
+        // here we may turn on the beeps
+        efx.push(Effects.constant(needNewSound(phase, action.seconds)))
+      }
+
+      if (efx.length > 0) {
+        return loop(state, Effects.batch(efx))
+      }
+
+      return state
 
     default:
       return state;

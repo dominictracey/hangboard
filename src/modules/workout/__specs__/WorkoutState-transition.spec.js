@@ -19,12 +19,12 @@ describe('WorkoutState transitions', () => {
   const getSetValue = state => state.getIn(['workout', 'session', 'currentSet']);
   const getCompleteValue = state => state.getIn(['workout', 'session', 'complete']);
 
-  describe('warmup to exercise', () => {
+  describe('warmup to prep', () => {
     const [secondState] = dispatch(initialState, WorkoutStateActions.load('2'));
-    const [warmupState] = dispatch(secondState, WorkoutStateActions.warmup())
+    const [warmupState] = dispatch(secondState, WorkoutStateActions.prep())
 
-    it('should start in warmup state', () => {
-      expect(getPhaseValue(warmupState)).toEqual('Warmup')
+    it('should start in prep state', () => {
+      expect(getPhaseValue(warmupState)).toEqual('Get ready!')
     })
 
     const [exerciseState,effects] = dispatch(warmupState, TimerStateActions.done())

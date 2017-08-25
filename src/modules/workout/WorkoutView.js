@@ -9,18 +9,17 @@
  * @Copyright: (c) 2017 Aquilon Consulting, Inc.
  */
 
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet,
-  TouchableOpacity,
   View
 } from 'react-native';
 import WeightView from '../../components/WeightView'
 import NextView from '../../components/NextView'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import TimerViewContainer from '../timer/TimerViewContainer';
-import SetResultViewContainer from '../setResult/SetResultViewContainer'
-import {K} from '../../utils/constants'
+import {K,M} from '../../utils/constants'
 import EditableGripView from '../../components/EditableGripView'
 import AppText from '../../components/AppText'
 
@@ -81,52 +80,134 @@ class WorkoutView extends Component {
     this.props.workoutStateActions.changeGrip(newGrip)
   }
 
+  showBoard = () => {
+    this.props.navigate({routeName: 'Image'})
+  }
+
   loadDefault = () => {
     this.load(this.props.session.get('lastWorkoutId'))
   }
 
-  loadPage = () => {
-    // this should be the startview now so we can remove this I think?
-    const {workouts,session} = this.props;
-    const loadingStyle = session.get('loading')
-          ? {backgroundColor: '#eee'}
-          : null;
-    return (
-        <View style={styles.container}>
-        <TouchableOpacity
-          style={[styles.defaultStartButton, loadingStyle]}
-            accessible={true}
-            accessibilityLabel={'Start Workout'}
-            onPress={this.loadDefault}>
-          <AppText size='xs' theme={this.theme}>
-            Start Workout
-          </AppText>
-        </TouchableOpacity>
-        <AppText size='lg' theme='theme'>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
-      </View>
-    )
-  }
+  // loadPage = () => {
+  //   // this should be the startview now so we can remove this I think?
+  //   const {workouts,session} = this.props;
+  //   const loadingStyle = session.get('loading')
+  //         ? {backgroundColor: '#eee'}
+  //         : null;
+  //   return (
+  //       <View style={styles.container}>
+  //       <TouchableOpacity
+  //         style={[styles.defaultStartButton, loadingStyle]}
+  //           accessible={true}
+  //           accessibilityLabel={'Start Workout'}
+  //           onPress={this.loadDefault}>
+  //         <AppText size='lg' theme={this.theme}>
+  //           Start Workout
+  //         </AppText>
+  //       </TouchableOpacity>
+  //       <AppText size='lg' theme='theme'>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
+  //     </View>
+  //   )
+  // }
+  //
+  // workoutPage = () => {
+  //   const {session, workouts, boards} = this.props
+  //   //const canEditWeight = session.get(K.SET_LABEL).startsWith('1') ? true : false
+  //
+  //   // console.log('workoutId: ' + session.get(K.WORKOUT_ID))
+  //   return (
+  //     <View style={styles.container}>
+  //
+  //       {/* {this.renderUserInfo()} */}
+  //       <AppText size='xl'>
+  //         {session.get(K.PHASE_LABEL)}
+  //       </AppText>
+  //       <TimerViewContainer/>
+  //       <EditableGripView session={session}
+  //           board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get('board'))}
+  //           selectCb={this.changeGrip}
+  //           showCb={this.showBoard}/>
+  //       <View style={styles.detailsContainer}>
+  //         <View style={styles.container}>
+  //           <AppText size='lg' theme='theme'>Grip</AppText>
+  //           <AppText size='lg' theme='theme'>{session.get(K.EXERCISE_LABEL)}</AppText>
+  //         </View>
+  //         <View style={styles.container}>
+  //           <AppText size='lg' theme='theme'>Set</AppText>
+  //           <AppText size='lg' theme='theme'> {session.get('setLabel')}</AppText>
+  //         </View>
+  //         <View style={styles.container}>
+  //           <AppText size='lg' theme='theme'>Rep</AppText>
+  //           <AppText size='lg' theme='theme'>{session.get('repLabel')}</AppText>
+  //         </View>
+  //       </View>
+  //       <View style={styles.detailsContainer}>
+  //         <WeightView weight={session.get(K.WEIGHT)}
+  //                     title='Weight'
+  //                     addCb={this.addWeight}
+  //                     removeCb={this.removeWeight}
+  //                     allowUpdate={true}/>
+  //         <NextView nextWeight={session.get('nextWeight')}
+  //                   nextGrip={session.get('nextGrip')}/>
+  //       </View>
+  //     </View>
+  //   );
+  // }
+  //
+  // resultPage = () => {
+  //   const {session, workoutStateActions} = this.props;
+  //   const collectSetResults = session.get('collectSetResults')
+  //
+  //   return (
+  //       <View style={styles.container}>
+  //         <SetResultViewContainer exId={collectSetResults.get('exId')}
+  //                                 setId={collectSetResults.get('setId')}
+  //                                 setLabel={collectSetResults.get('setLabel')}
+  //                                 grip={collectSetResults.get(K.GRIP)}
+  //                                 reps={collectSetResults.get('reps')}
+  //                                 workoutWeight={collectSetResults.get('workoutWeight')}
+  //                                 sessionWeight={collectSetResults.get('sessionWeight')}
+  //                                 save={workoutStateActions.collectedSetResults}/>
+  //     </View>
+  //   )
+  // }
 
-  workoutPage = () => {
+  render() {
+    // const {session} = this.props
+    // const phase = session.get(K.PHASE)
+    // const needSetResults = session.get(K.COLLECT_SET_RESULTS) && session.get(K.COLLECT_SET_RESULTS).size
+    //
+    // var view = (<View/>)
+    // if (phase === K.INIT) {
+    //   view = this.loadPage()
+    // } else if (needSetResults) {
+    //   view = this.resultPage()
+    // } else {
+    //   view = this.workoutPage()
+    // }
+    //
+    // return view
     const {session, workouts, boards} = this.props
-    //const canEditWeight = session.get(K.SET_LABEL).startsWith('1') ? true : false
+    const phase = session.get(K.PHASE)
+    if (phase === K.INIT)
+      {return (<View><AppText size='lg'>Please pick a workout from the home tab</AppText></View>)}
 
-    // console.log('workoutId: ' + session.get(K.WORKOUT_ID))
     return (
       <View style={styles.container}>
 
         {/* {this.renderUserInfo()} */}
         <AppText size='xl'>
-          {session.get('currentPhase')}
+          {session.get(K.PHASE_LABEL)}
         </AppText>
         <TimerViewContainer/>
         <EditableGripView session={session}
             board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get('board'))}
-            selectCb={this.changeGrip}/>
+            selectCb={this.changeGrip}
+            showCb={this.showBoard}/>
         <View style={styles.detailsContainer}>
           <View style={styles.container}>
             <AppText size='lg' theme='theme'>Grip</AppText>
-            <AppText size='lg' theme='theme'>{session.get('exerciseLabel')}</AppText>
+            <AppText size='lg' theme='theme'>{session.get(K.EXERCISE_LABEL)}</AppText>
           </View>
           <View style={styles.container}>
             <AppText size='lg' theme='theme'>Set</AppText>
@@ -143,46 +224,11 @@ class WorkoutView extends Component {
                       addCb={this.addWeight}
                       removeCb={this.removeWeight}
                       allowUpdate={true}/>
-          <NextView nextWeight={session.get('nextWeight')}
-                    nextGrip={session.get('nextGrip')}/>
+          <NextView nextWeight={session.get(K.NEXT_WEIGHT)}
+                    nextGrip={session.get(K.NEXT_GRIP)}/>
         </View>
       </View>
     );
-  }
-
-  resultPage = () => {
-    const {session, workoutStateActions} = this.props;
-    const collectSetResults = session.get('collectSetResults')
-
-    return (
-        <View style={styles.container}>
-          <SetResultViewContainer exId={collectSetResults.get('exId')}
-                                  setId={collectSetResults.get('setId')}
-                                  setLabel={collectSetResults.get('setLabel')}
-                                  grip={collectSetResults.get(K.GRIP)}
-                                  reps={collectSetResults.get('reps')}
-                                  workoutWeight={collectSetResults.get('workoutWeight')}
-                                  sessionWeight={collectSetResults.get('sessionWeight')}
-                                  save={workoutStateActions.collectedSetResults}/>
-      </View>
-    )
-  }
-
-  render() {
-    const {session} = this.props
-    const phase = session.get('currentPhase')
-    const needSetResults = session.get('collectSetResults') && session.get('collectSetResults').size
-
-    var view = (<View/>)
-    if (phase === 'Init') {
-      view = this.loadPage()
-    } else if (needSetResults) {
-      view = this.resultPage()
-    } else {
-      view = this.workoutPage()
-    }
-
-    return view
   }
 }
 

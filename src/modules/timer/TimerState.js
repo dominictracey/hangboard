@@ -1,6 +1,9 @@
 /*eslint-disable no-unused-vars*/
 import {Map} from 'immutable';
 import {loop, Effects} from 'redux-loop-symbol-ponyfill';
+import moment from 'moment'
+import {K} from '../../utils/constants'
+import {tock} from '../workout/WorkoutState'
 
 // Initial state
 const initialState = Map({
@@ -8,16 +11,22 @@ const initialState = Map({
   running: false,
   loading: false,
   timeToRun: 10,
+  playTicks: true,
+  playBeeps: true,
+  nextSound: K.SILENCE,
 });
 
 // Actions
 export const SET_TIME = 'TimerState/SET_TIME'; // how much time do you want me to count down
-const RESUME = 'TimerState/RESUME'; // unpause
-const PAUSE = 'TimerState/PAUSE'; // stop counting and hold
-const TICK = 'TimerState/TICK'; // move down one second
+export const RESUME = 'TimerState/RESUME'; // unpause
+export const PAUSE = 'TimerState/PAUSE'; // stop counting and hold
+export const TICK = 'TimerState/TICK'; // move down one second
 export const DONE = 'TimerState/DONE'; // we have reached zero
-const RESTART = 'TimerState/RESTART'; // start the timer over
-const SKIP = 'TimerState/SKIP'; // set the timer to 0
+export const RESTART = 'TimerState/RESTART'; // start the timer over
+export const SKIP = 'TimerState/SKIP'; // set the timer to 0
+const PLAY_TICKS = 'TimerState/PLAY_TICKS'
+const PLAY_BEEPS = 'TimerState/PLAY_BEEPS'
+const SET_NEXT_SOUND = 'TimerState/SET_NEXT_SOUND'
 //export const INIT = 'TimerState/INIT' // start the metronome
 
 // Action creators
@@ -33,8 +42,8 @@ export function pause() {
   return {type: PAUSE};
 }
 
-export function tick() {
-  return {type: TICK};
+export function tick(seconds) {
+  return {type: TICK, seconds};
 }
 
 export function done() {
@@ -49,35 +58,23 @@ export function skip() {
   return {type: SKIP};
 }
 
-// export function init() {
-//   return {type: INIT};
-// }
-//
-// // heartbeat
-// function heartbeat() {
-//   setTimeout(() => {
-//     tick()
-//     heartbeat()
-//   }, 1000)
-// }
+export function playTicks(on) {
+  return {type: PLAY_TICKS, on}
+}
 
-//
-// async function doTick() {
-//   return new Promise((res) => setTimeout(res, 1000));
-// }
-//
-// //
-// export async function nextTick() {
-//   return {
-//     type: TICK,
-//     payload: await doTick()
-//   };
-// }
+export function playBeeps(on) {
+  return {type: PLAY_BEEPS, on}
+}
+
+export function setNextSound(sound) {
+  return {type: SET_NEXT_SOUND, sound}
+}
 
 // Reducer
 export default function TimerStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case SET_TIME:
+      console.log('setting timer to ' + action.seconds)
       return state.update('seconds', seconds => action.seconds)
                   .update('timeToRun', seconds => action.seconds)
 
@@ -89,14 +86,9 @@ export default function TimerStateReducer(state = initialState, action = {}) {
 
     case TICK:
       if (state.getIn(['running'])) {
-        if (state.getIn(['seconds']) === 1) {
-          return loop(
-            state,
-            Effects.constant({type: DONE})
-          );
-        } else {
-          return state.update('seconds', seconds => seconds - 1)
-        }
+        // give the workoutReducer a whack at it too
+        return loop(state.update('seconds', seconds => seconds - 1),
+                    Effects.constant(tock(state.get('seconds')-1)))
       } else {
         return state;
       }
@@ -106,6 +98,15 @@ export default function TimerStateReducer(state = initialState, action = {}) {
 
     case SKIP:
       return state.update('seconds', secs => 1)
+
+    case PLAY_TICKS:
+      return state.update('playTicks', on => action.on)
+
+    case PLAY_BEEPS:
+      return state.update('playBeeps', on => action.on)
+
+    case SET_NEXT_SOUND:
+      return state.update('nextSound', sound => action.sound)
 
     default:
       return state;

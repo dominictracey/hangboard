@@ -20,8 +20,31 @@ export const K = {
   SETS: 'sets',
   BOARDS: 'boards',
   HISTORY: 'history',
+  SETTINGS: 'settings',
+
+  // phases
+  INIT: 'WorkoutState/INIT',
+  LOAD: 'WorkoutState/LOAD',
+  WARMUP: 'WorkoutState/WARMUP', // begin phases of workout
+  PREP: 'WorkoutState/PREP', // time needed between warmup and exercise
+  EXERCISE: 'WorkoutState/EXERCISE',
+  REST: 'WorkoutState/REST',
+  RECOVER: 'WorkoutState/RECOVER',
+  COMPLETE: 'WorkoutState/COMPLETE', // the workout is done
+
+  // phase labels
+  INIT_LABEL: 'Init',
+  LOAD_LABEL: 'Load',
+  WARMUP_LABEL: 'Warmup', // begin phases of workout
+  PREP_LABEL: 'Get ready!', // time needed between warmup and exercise
+  EXERCISE_LABEL: 'Exercise',
+  REST_LABEL: 'Rest',
+  RECOVER_LABEL: 'Recover',
+  COMPLETE_LABEL: 'Complete',
+
   GRIP: 'grip',
-  PHASE: 'currentPhase',
+  PHASE_LABEL: 'currentPhaseLabel',
+  PHASE: 'phase',
   CURRENT_SET_ORD: 'currentSetOrd',
   CURRENT_SET_ID: 'currentSetId',
   SET_LABEL: 'setLabel',
@@ -30,7 +53,6 @@ export const K = {
   CURRENT_EXERCISE_ORD: 'currentExerciseOrd',
   CURRENT_EXERCISE_ID: 'currentExerciseId',
   CURRENT_EXERCISE: 'currentExercise',
-  EXERCISE_LABEL: 'exerciseLabel',
   GRIPS: 'grips',
   NEXT_GRIP: 'nextGrip',
   WEIGHTS: 'weights',
@@ -40,13 +62,20 @@ export const K = {
   REP_LABEL: 'repLabel',
   COLLECT_SET_RESULTS: 'collectSetResults',
   LAST_SUCCESSES: 'lastSuccesses',
-  COMPLETE: 'complete',
+  COMPLETED: 'complete',
   COLOR: 'color',
   THEME: 'theme',
+  PREP_SECS: 'prep_secs',
+  SOUNDS: 'sounds',
+  TICKS: 'ticks',
+  BEEPS: 'beeps',
+  TICKS_FOR: 'ticksForPhases',
+  BEEPS_FOR: 'beepsForPhases',
 }
 
 export const M = {
   PHASE: [K.SESSION,K.PHASE],
+  PHASE_LABEL: [K.SESSION,K.PHASE_LABEL],
   CURRENT_SET_ORD: [K.SESSION,K.CURRENT_SET_ORD],
   CURRENT_SET_ID: [K.SESSION,K.CURRENT_SET_ID],
   SET_LABEL: [K.SESSION,K.SET_LABEL],
@@ -68,6 +97,19 @@ export const M = {
   LAST_SUCCESSES: [K.SESSION,K.LAST_SUCCESSES],
   COMPLETE: [K.SESSION,K.COMPLETE],
   COLOR: [K.SESSION,K.COLOR],
+  //sound Settings
+  TICKS_FOR: [K.SOUNDS,K.TICKS_FOR],
+  BEEPS_FOR: [K.SOUNDS,K.BEEPS_FOR],
+  // WARMUP_TICKS: [K.SOUNDS,K.TICKS_FOR,K.WARMUP],
+  // PREPARE_TICKS: [K.SOUNDS,K.TICKS_FOR,K.PREP],
+  // EXERCISE_TICKS: [K.SOUNDS,K.TICKS_FOR,K.EXERCISE],
+  // REST_TICKS: [K.SOUNDS,K.TICKS_FOR,K.REST],
+  // RECOVER_TICKS: [K.SOUNDS,K.TICKS_FOR,K.RECOVER],
+  // WARMUP_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.WARMUP],
+  // PREPARE_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.PREP],
+  // EXERCISE_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.EXERCISE],
+  // REST_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.REST],
+  // RECOVER_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.RECOVER],
 }
 
 export const H = {

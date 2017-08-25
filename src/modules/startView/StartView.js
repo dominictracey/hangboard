@@ -10,7 +10,8 @@
  */
  /*eslint-disable no-unused-vars*/
 
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
   TouchableOpacity,
   Text,
@@ -56,6 +57,7 @@ class StartView extends Component {
 
   load = (workoutId) => {
     this.props.workoutStateActions.load(workoutId);
+    this.props.navigate({routeName: 'Workout'})
   };
 
   loadDefault = () => {
@@ -70,7 +72,9 @@ class StartView extends Component {
           : null;
     const background = theme === 'dark' ? styles.dark : styles.light
     return (
+        <View style={styles.top}>
         <View style={[styles.container, background]}>
+
         <TouchableOpacity
           style={[styles.defaultStartButton, loadingStyle]}
             accessible={true}
@@ -83,6 +87,9 @@ class StartView extends Component {
         <AppText
           size='sm'
           theme={this.theme}>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
+        <AppText
+          size='sm' theme={this.theme}>or pick a different workout:</AppText>
+        </View>
         <WorkoutListView workouts={workouts}
                           lastWorkoutId={session.get(K.LAST_WORKOUT_ID)}
                           loadCb={this.load}
@@ -100,6 +107,9 @@ const bigCircle = {
 };
 
 const styles = StyleSheet.create({
+  top: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',

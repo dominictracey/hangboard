@@ -4,10 +4,10 @@
   "description": "Android and iOS app for climbing training",
   "license": "MIT",
   "homepage": "http://getpepperoni.com",
-  "bugs": "https://github.com/dominictracey/react-native-hangboard/issues",
+  "bugs": "https://github.com/dominictracey/hangboard/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dominictracey/react-native-hangboard"
+    "url": "https://github.com/dominictracey/hangboard"
   },
   "keywords": [
     "React Native",
@@ -41,10 +41,12 @@
     "immutable": "^3.7.6",
     "lodash": "^4.11.0",
     "moment": "^2.12.0",
+    "prop-types": "^15.5.10",
     "react": "16.0.0-alpha.12",
-    "react-dom": "~15.4.2",
     "react-native": "0.47.1",
+    "react-native-elements": "^0.16.0",
     "react-native-keep-awake": "^2.0.5",
+    "react-native-sound": "^0.10.3",
     "react-native-vector-icons": "^4.0.0",
     "react-navigation": "^1.0.0-beta.7",
     "react-redux": "^4.4.5",
@@ -74,8 +76,9 @@
     "jest-cli": "^20.0.4",
     "plop": "^1.7.4",
     "react-addons-test-utils": "~15.4.2",
+    "react-dom": "^15.4.2",
     "react-native-mock": "~0.2.5",
-    "react-test-renderer": "~15.4.2",
+    "react-test-renderer": "^15.4.2",
     "remote-redux-devtools": "^0.5.7",
     "rimraf": "^2.5.2"
   }

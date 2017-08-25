@@ -10,7 +10,8 @@
  */
 
 /*eslint-disable no-unused-vars*/
-import React, {PropTypes, Component} from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet,
   TouchableOpacity,
@@ -19,6 +20,10 @@ import {
   View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Tock from 'tocktimer'
+import moment from 'moment'
+import Sound from 'react-native-sound'
+import {K} from '../../utils/constants'
 
 class TimerView extends Component {
   static displayName = 'TimerView';
@@ -41,27 +46,78 @@ class TimerView extends Component {
     workoutStateActions: PropTypes.shape({
       reset: PropTypes.func.isRequired,
       complete: PropTypes.func.isRequired,
+      nextSet: PropTypes.func.isRequired,
+      prevSet: PropTypes.func.isRequired,
     }).isRequired,
-    navigate: PropTypes.func.isRequired
-  };
+    navigate: PropTypes.func.isRequired,
+    ticksFor: PropTypes.object.isRequired,
+    beepsFor: PropTypes.object.isRequired,
+    phase: PropTypes.string.isRequired,
+    nextSound: PropTypes.string.isRequired,
+  }
 
   componentDidMount() {
+    // load click sound
+    this.tickSound = new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('failed to load the tick sound', error);
+        return;
+      }
+    });
+
+    this.beepSound = new Sound('beep.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('failed to load the beep sound', error);
+        return;
+      }
+    });
+
+    this.silenceSound = new Sound('silence.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('failed to load the silence sound', error);
+        return;
+      }
+    });
+
+    Sound.setCategory('Playback')
+    this.lastSound = moment()
+    this.nowSound = moment()
+
     if (!TimerView.heartbeatRunning) {
       this.heartbeat() // start metronome
       TimerView.heartbeatRunning = true
     }
   }
 
+  componentWillUnmount() {
+    this.tickSound.release()
+    this.beepSound.release()
+  }
+
   // heartbeat
   heartbeat = () => {
-    setTimeout(() => {
-      this.heartbeat()
-      this.props.timerStateActions.tick()
-    }, 1000)
+    // setTimeout(() => {
+    //   this.heartbeat()
+    //   this.props.timerStateActions.tick()
+    // }, 1000)
+    var timer = new Tock({
+      countdown: false,
+      interval: 1000,
+      callback: this.interval,
+      // complete: someCompleteFunction
+    });
+    timer.start()
+  }
+
+  interval = () => {
+    if (this.props.running) {
+      this.playSound(this.props.nextSound)
+    }
   }
 
   restart = () => {
-    this.props.workoutStateActions.reset()
+    //this.props.workoutStateActions.reset()
+    this.props.workoutStateActions.prevSet()
   }
 
   resume = () => {
@@ -74,7 +130,8 @@ class TimerView extends Component {
 
   finish = () => {
     this.props.timerStateActions.setTime(1)
-    this.props.workoutStateActions.complete()
+    // this.props.workoutStateActions.complete()
+    this.props.workoutStateActions.nextSet()
   }
 
   rewind = () => {
@@ -102,8 +159,44 @@ class TimerView extends Component {
     }
   }
 
+  playSound(sound) {
+    var soundFile
+    if (sound === K.BEEPS) {
+      soundFile = this.beepSound
+    } else if (sound === K.TICKS) {
+      soundFile = this.tickSound
+    } else {
+      soundFile = this.silenceSound
+    }
+    const secs = this.props.seconds // get right closure
+    this.nowSound = moment()
+    soundFile.play((success) => {
+      if (success) {
+        var diff = this.nowSound.diff(this.lastSound)
+        console.log(sound + ' @ ' + this.nowSound.format('mm:ss:SSS') + ' last is' + this.lastSound.format('mm:ss:SSS') + ' diff is ' + diff);
+        if (diff > 1025 || diff < 975) {
+          console.log('SKEW TOO GREAT!!! ' + diff)
+        }
+        this.lastSound = this.nowSound
+
+        // once the sound has been played, update the display
+        this.props.timerStateActions.tick(secs)
+      } else {
+        console.log('playback failed due to audio decoding errors for ' + sound)
+        // try to reload sound
+        this.beepSound.release()
+        this.beepSound = new Sound('beep.mp3', Sound.MAIN_BUNDLE, (error) => {
+          if (error) {
+            console.log('failed to load the beep sound', error);
+            return;
+          }
+        });
+      }
+    })
+  }
+
   render() {
-    const {loadingStyle, running, color} = this.props
+    const {loadingStyle, running, color, ticksFor, beepsFor, phase} = this.props
       // ? {backgroundColor: '#eee'}
       // : null;
 
