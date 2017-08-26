@@ -1,4 +1,4 @@
-package com.hangboard;
+package com.dominictracey.hangboard;
 
 import com.facebook.react.ReactActivity;
 
