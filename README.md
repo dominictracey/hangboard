@@ -85,13 +85,9 @@ $ brew update && brew cask install react-native-debugger
 ```
 > Note: Make sure you close all active chrome debugger tabs and then restart the debugger from the React Native Development context menu.
 
-## Deployment
-
-Read the **[Deployment guide](docs/DEPLOYMENT.md)** to learn how to deploy the application to test devices, app stores, and how to use Code Push to push updates to your users immediately.
-
 ## Contributing
 
-If you find any problems, please [open an issue](https://github.com/futurice/pepperoni-app-kit/issues/new) or submit a fix as a pull request.
+If you find any problems, please [open an issue](https://github.com/dominictracey/hangboard/issues/new) or submit a fix as a pull request.
 
 We welcome new features, but for large changes let's discuss first to make sure the changes can be accepted and integrated smoothly.
 
@@ -101,4 +97,5 @@ We welcome new features, but for large changes let's discuss first to make sure 
 
 ## Credits
 
-This project was initially motivated by [Snowflake](https://github.com/bartonhammond/snowflake), a React Native boilerplate by Barton Hammond. It shares some features and design principles for Pepperoni, but it wasn't the right fit for our needs. At this time Snowflake is more mature, so if you like Pepperoni but didn't agree with something we are doing, you should check it out to see if it's a good fit for your app.
+This project was forked from [Pepperoni App Kit](https://github.com/futurice/pepperoni-app-kit), an excellent React Native Starter Kit. Its framework combines RN, redux, redux-loop,
+immutable-js, jest, enzyme, AsycStorage, plop and some other neat concepts. It seems to be moving in a different direction (becoming a [patching util for CRNA](https://github.com/futurice/pepperoni-app-kit/issues/217)) and redux-loop also seems to have a [major 3.0 rewrite](https://github.com/redux-loop/redux-loop/releases/tag/v3.0.0) that hasn't been reflected in the codebase yet.
