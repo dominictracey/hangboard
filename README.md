@@ -13,6 +13,13 @@ intuitive interface, obviating the need for switching apps on your phone or tabl
 
 ## Status
 
+August 26, 2017 v0.3.2:
+- Working, stable versions in App Store (TestFlight only) and Play Store
+- Configurable sounds with react-native-sound
+- Visual map of trango RP board
+- Names of grips congruent with TRCTM (as close as I could grok them)
+- 100 or so jest tests
+
 August 1, 2017:
 - Basic project structure established using pepperoni-app-kit
 - react-native, redux and react-navigation architecture
@@ -30,17 +37,11 @@ August 1, 2017:
 
 ## Getting started
 
-To build the hangboard app, fork or mirror this repository. For serious use we recommend [mirroring using these instructions](https://help.github.com/articles/duplicating-a-repository/), since you can't make a fork of a public repository private on GitHub. To contribute to Starter Kit development or just playing around, forking is the way to go.
-
-First, give your application a name by running `./support/rename.sh YourAppName`.
-
-Once you have the code downloaded, follow the **[Setup guide](docs/SETUP.md)** to get started.
-
-## Development workflow
-
-After you have set up the project using above instructions, you can use your favorite IDE or text editor to write code, and run the application from the command line. Turn on React Native hot module reloading in the app developer menu to update your application as you code.
-
-To learn how to structure your application and use the Redux application architecture, read the **[Architecture guide](docs/ARCHITECTURE.md)** for more details.
+```
+$ git clone https://github.com/dominictracey/hangboard
+$ npm install
+$react-native link
+```
 
 ##### Start the application in iOS simulator
 ```
@@ -54,6 +55,7 @@ $ react-native run-android
 ```
 
 ##### Run unit tests
+*current issue with react-native-sound (8/27/17)
 ```
 $ npm test
 ```
