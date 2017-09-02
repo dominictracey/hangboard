@@ -3,6 +3,9 @@
 import {initialState, dispatch} from '../../../test/state';
 import * as SessionState from '../../modules/session/SessionState';
 
+jest.mock('react-native-sound', () => 'Sound')
+jest.mock('react-native-version-number', () => 'VersionNumber')
+
 describe('reducer', () => {
   describe('mainReducer', () => {
     it('resets state with RESET_STATE action', () => {

@@ -3,6 +3,10 @@
 import {Effects} from 'redux-loop-symbol-ponyfill';
 import {initialState, dispatch} from '../../../../test/state';
 import * as TimerStateActions from '../TimerState';
+import * as WorkoutStateActions from '../../workout/WorkoutState'
+
+jest.mock('react-native-sound', () => 'Sound')
+jest.mock('react-native-version-number', () => 'VersionNumber')
 
 describe('TimerState', () => {
 
@@ -75,15 +79,11 @@ describe('TimerState', () => {
     const [runState] = dispatch(statezero, TimerStateActions.resume());
     const [secondState, effects] = dispatch(runState, TimerStateActions.tick());
 
-    it('should not decrement the running zero timer but generate a DONE effect', () => {
-      expect(getValue(statezero)).toBe(1);
-      expect(getValue(secondState)).toBe(1);
-    });
-
-    it('should trigger a DONE side effect', () => {
+    it('should trigger a TOCK side effect', () => {
       expect(effects).toEqual(
-         Effects.constant(TimerStateActions.done())
+         Effects.constant(WorkoutStateActions.tock(0))
       );
     });
+
   });
 });

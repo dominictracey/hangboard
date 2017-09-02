@@ -74,7 +74,6 @@ export function setNextSound(sound) {
 export default function TimerStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case SET_TIME:
-      console.log('setting timer to ' + action.seconds)
       return state.update('seconds', seconds => action.seconds)
                   .update('timeToRun', seconds => action.seconds)
 

@@ -22,13 +22,9 @@ jest.mock('react-native-keep-awake') //
 const keepAwake = require('react-native-keep-awake')
 keepAwake.activate = () => console.log('stay awake!')
 keepAwake.deactivate = () => console.log('go to sleep!')
-// , () => {
-//   class KeepAwake {
-//     activate() {}
-//     deactiveate() {}
-//   }
-// })
-// jest.mock('_reactNativeKeepAwake2', () => 'wat')
+
+jest.mock('react-native-sound', () => 'Sound')
+jest.mock('react-native-version-number', () => 'VersionNumber')
 
 describe('WorkoutState', () => {
   const getLoadingValue = state => state.getIn([K.WORKOUT, 'loading']);
@@ -38,7 +34,7 @@ describe('WorkoutState', () => {
   const getWorkoutsValue = state => state.getIn([K.WORKOUT,K.WORKOUTS]);
   const getRepValue = state => state.getIn([K.WORKOUT, ...M.CURRENT_REP]);
   const getSetOrdValue = state => state.getIn([K.WORKOUT, ...M.CURRENT_SET_ORD]);
-  const getCompleteValue = state => state.getIn([K.WORKOUT, ...M.COMPLETE]);
+  const getCompleteValue = state => state.getIn([K.WORKOUT, ...M.COMPLETED]);
   const getSetIdValue = state => state.getIn([K.WORKOUT, ...M.CURRENT_SET_ID]);
   const getExerciseIdValue = state => state.getIn([K.WORKOUT, ...M.CURRENT_EXERCISE_ID]);
   const getGripValue = state => state.getIn([K.WORKOUT, ...M.GRIP]);
@@ -58,12 +54,6 @@ describe('WorkoutState', () => {
     it('should start the loading', () => {
       expect(getLoadingValue(initialState)).toBe(false);
       expect(getLoadingValue(secondState)).toBe(true);
-    });
-
-    it('should trigger a WARMUP side effect', () => {
-      expect(effects).toEqual(
-         Effects.constant(WorkoutStateActions.warmup())
-      );
     });
 
     it('should set the workoutId for the session', () => {
@@ -102,8 +92,8 @@ describe('WorkoutState', () => {
     const [secondState,effects] = dispatch(firstState, WorkoutStateActions.warmup());
 
     it('should move to warmup phase', () => {
-      expect(getPhaseValue(initialState)).toBe('Init');
-      expect(getPhaseValue(secondState)).toBe('Warmup');
+      expect(getPhaseValue(initialState)).toBe(K.INIT);
+      expect(getPhaseValue(secondState)).toBe(K.WARMUP);
     });
 
     it('should have an blue color', () => {
@@ -124,8 +114,8 @@ describe('WorkoutState', () => {
     const [secondState,effects] = dispatch(firstState, WorkoutStateActions.exercise());
 
     it('should move to exercise phase', () => {
-      expect(getPhaseValue(firstState)).toBe('Load');
-      expect(getPhaseValue(secondState)).toBe('Exercise');
+      expect(getPhaseValue(firstState)).toBe(K.LOAD);
+      expect(getPhaseValue(secondState)).toBe(K.EXERCISE);
     })
 
     it('should increment reps', () => {
@@ -167,8 +157,8 @@ describe('WorkoutState', () => {
     const [secondState,effects] = dispatch(firstState, WorkoutStateActions.rest());
 
     it('should move to rest phase', () => {
-      expect(getPhaseValue(initialState)).toBe('Init');
-      expect(getPhaseValue(secondState)).toBe('Rest');
+      expect(getPhaseValue(initialState)).toBe(K.INIT);
+      expect(getPhaseValue(secondState)).toBe(K.REST);
     });
 
     it('should have a orange color', () => {
@@ -192,8 +182,8 @@ describe('WorkoutState', () => {
     const [secondState, effects] = dispatch(exerciseState, WorkoutStateActions.recover());
 
     it('should move to recovery phase', () => {
-      expect(getPhaseValue(exerciseState)).toBe('Exercise');
-      expect(getPhaseValue(secondState)).toBe('Recovery');
+      expect(getPhaseValue(exerciseState)).toBe(K.EXERCISE);
+      expect(getPhaseValue(secondState)).toBe(K.RECOVER);
     });
 
     it('should reset reps', () => {
@@ -321,7 +311,8 @@ describe('WorkoutState', () => {
       //          Effects.constant(WorkoutStateActions.collectSetResults('1', '1/1', '1', 'Medium pinch', 3, 0))
       expect(getSetResultCollectionValue(state9)).toEqual(
         Map({'setId': '1', 'setLabel': '1/1', 'exId': '1',
-          'grip': 'Medium pinch', 'reps': 3, 'sessionWeight': 0, 'workoutWeight': 0}))
+          'grip': 'Medium pinch', 'reps': 3, 'sessionWeight': 0,
+          'workoutWeight': 0, 'numRepsComplete': 0}))
     })
 
     const [state10] = dispatch(state9, WorkoutStateActions.collectedSetResults('3', '1', 2))
@@ -337,8 +328,8 @@ describe('WorkoutState', () => {
     const [secondState,effects] = dispatch(firstState, WorkoutStateActions.complete());
 
     it('should move to complete phase', () => {
-      expect(getPhaseValue(initialState)).toBe('Init')
-      expect(getPhaseValue(secondState)).toBe('Complete')
+      expect(getPhaseValue(initialState)).toBe(K.INIT)
+      expect(getPhaseValue(secondState)).toBe(K.COMPLETE)
     })
 
     it('should set session state to complete', () => {
@@ -366,15 +357,15 @@ describe('WorkoutState', () => {
 
     it('should change the workout and session when updating from workout screen', () => {
       expect(getWeightValue(state1)).toBe(0) // start at 0 and go up 2.5
-      expect(getWorkoutsValue(state2).getIn([getWorkoutIdValue(state2),K.WEIGHTS,'1'])).toBe(2.5)
-      expect(getWeightValue(state2)).toBe(2.5)
+      expect(getWorkoutsValue(state2).getIn([getWorkoutIdValue(state2),K.WEIGHTS,'1'])).toBe(5)
+      expect(getWeightValue(state2)).toBe(5)
       expect(getSetResultCollectionValue(state2)).toBe(Map())
     })
 
     const [state3] = dispatch(state2, WorkoutStateActions.adjustWeight(true, true, '1'))
     it('should change the workout when updating from set result screen', () => {
-      expect(getWorkoutsValue(state3).getIn([getWorkoutIdValue(state3),K.WEIGHTS,'1'])).toBe(5)
-      expect(getWeightValue(state3)).toBe(2.5) // this shouldn't be updated in the result screem
+      expect(getWorkoutsValue(state3).getIn([getWorkoutIdValue(state3),K.WEIGHTS,'1'])).toBe(10)
+      expect(getWeightValue(state3)).toBe(10) // this shouldn't be updated in the result screem
     })
 
   })
