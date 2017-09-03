@@ -4,6 +4,7 @@ import {loop, Effects} from 'redux-loop-symbol-ponyfill';
 import moment from 'moment'
 import {K} from '../../utils/constants'
 import {tock} from '../workout/WorkoutState'
+import {REHYDRATE} from 'redux-persist/constants'
 
 // Initial state
 const initialState = Map({
@@ -73,6 +74,7 @@ export function setNextSound(sound) {
 // Reducer
 export default function TimerStateReducer(state = initialState, action = {}) {
   switch (action.type) {
+
     case SET_TIME:
       console.log('setting timer to ' + action.seconds)
       return state.update('seconds', seconds => action.seconds)

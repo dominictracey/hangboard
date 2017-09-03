@@ -1,9 +1,11 @@
 import {applyMiddleware, createStore, compose} from 'redux';
 import * as reduxLoop from 'redux-loop-symbol-ponyfill';
+import enhancers from './enhancers';
 import middleware from './middleware';
 import reducer from './reducer';
-
-const enhancers = [
+import persist from '../utils/persist'
+const enhanced = [
+  ...enhancers,
   applyMiddleware(...middleware),
   reduxLoop.install()
 ];
@@ -16,7 +18,7 @@ const enhancers = [
 const composeEnhancers = (__DEV__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 /* eslint-enable no-undef */
 
-const enhancer = composeEnhancers(...enhancers);
+const enhancer = composeEnhancers(...enhanced);
 
 // create the store
 const store = createStore(
@@ -24,5 +26,7 @@ const store = createStore(
   null,
   enhancer
 );
+
+persist(store, () => console.log('store loaded'))
 
 export default store;

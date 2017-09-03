@@ -8,6 +8,7 @@ import SessionStateReducer, {RESET_STATE} from '../modules/session/SessionState'
 // ## Generator Reducer Imports
 import SettingsReducer from '../modules/settings/SettingsState';
 import HistoryReducer from '../modules/history/HistoryState';
+import {REHYDRATE} from 'redux-persist-immutable/constants'
 
 const reducers = {
   // Counter sample app state. This can be removed in a live application
@@ -43,6 +44,10 @@ export default function mainReducer(state, action) {
     ? namespacedReducer(action.payload, action)
     : namespacedReducer(state || void 0, action);
 
+  // redux-loop doesn't play well with redux-persist-immutable
+  if (action.type === REHYDRATE) {
+    return nextState
+  }
   // enforce the state is immutable
   return loop(fromJS(nextState), effects);
 }
