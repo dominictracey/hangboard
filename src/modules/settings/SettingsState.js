@@ -60,47 +60,8 @@ export default function SettingsStateReducer(state = initialState, action = {}) 
       } else if (playTicks) {
         sound = K.TICKS
       }
-      console.log('setting sound to ' + sound + ' for seconds ' + action.seconds + ' in phase ' + action.phase + ', ticks/beeps ' + playTicks + '/' + playBeeps)
+      //console.log('setting sound to ' + sound + ' for seconds ' + action.seconds + ' in phase ' + action.phase + ', ticks/beeps ' + playTicks + '/' + playBeeps)
       return loop(state, Effects.constant(timerStateActions.setNextSound(sound)))
-    // case K.WARMUP:
-    // case K.PREP:
-    // case K.EXERCISE:
-    // case K.REST:
-    // case K.RECOVER:
-    //   return loop(state,
-    //     Effects.batch([
-    //       Effects.constant(timerStateActions.playTicks(state.getIn([...M.TICKS_FOR,action.type]))),
-    //       Effects.constant(timerStateActions.playBeeps(state.getIn([...M.BEEPS_FOR,action.type])))
-    //     ])
-    //   )
-    // case K.PREP:
-    //   return loop(state,
-    //     Effects.batch([
-    //       Effects.constant(timerStateActions.playTicks(state.getIn([...M.TICKS_FOR,K.PREP]))),
-    //       Effects.constant(timerStateActions.playBeeps(state.getIn([...M.BEEPS_FOR,K.PREP])))
-    //     ])
-    //   )
-    // case K.EXERCISE:
-    //   return loop(state,
-    //     Effects.batch([
-    //       Effects.constant(timerStateActions.playTicks(state.getIn([...M.TICKS_FOR,K.EXERCISE]))),
-    //       Effects.constant(timerStateActions.playBeeps(state.getIn([...M.BEEPS_FOR,K.EXERCISE])))
-    //     ])
-    //   )
-    // case K.REST:
-    //   return loop(state,
-    //     Effects.batch([
-    //       Effects.constant(timerStateActions.playTicks(state.getIn([...M.TICKS_FOR,K.REST]))),
-    //       Effects.constant(timerStateActions.playBeeps(state.getIn([...M.BEEPS_FOR,K.REST])))
-    //     ])
-    //   )
-    // case K.RECOVER:
-    //   return loop(state,
-    //     Effects.batch([
-    //       Effects.constant(timerStateActions.playTicks(state.getIn([...M.TICKS_FOR,K.RECOVER]))),
-    //       Effects.constant(timerStateActions.playBeeps(state.getIn([...M.BEEPS_FOR,K.RECOVER])))
-    //     ])
-    //   )
 
     default:
       return state;

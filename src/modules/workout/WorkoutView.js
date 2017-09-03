@@ -214,7 +214,7 @@ class WorkoutView extends Component {
             <AppText size='lg' theme='theme'> {session.get('setLabel')}</AppText>
           </View>
           <View style={styles.container}>
-            <AppText size='lg' theme='theme'>Rep</AppText>
+            <AppText size='lg' theme='theme'>Reps</AppText>
             <AppText size='lg' theme='theme'>{session.get('repLabel')}</AppText>
           </View>
         </View>

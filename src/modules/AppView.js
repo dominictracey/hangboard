@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import {View, StyleSheet, StatusBar, ActivityIndicator} from 'react-native';
 import NavigatorViewContainer from './navigator/NavigatorViewContainer';
-import * as snapshotUtil from '../utils/snapshot';
-import * as SessionStateActions from '../modules/session/SessionState';
-import store from '../redux/store';
+// import * as snapshotUtil from '../utils/snapshot';
+// import * as SessionStateActions from '../modules/session/SessionState';
+// import store from '../redux/store';
 import DeveloperMenu from '../components/DeveloperMenu';
 
 class AppView extends Component {
@@ -19,30 +19,30 @@ class AppView extends Component {
     //console.log('CDM')
     //snapshotUtil.clearSnapshot()
 
-    snapshotUtil.resetSnapshot()
-      .then(snapshot => {
-        const {dispatch} = this.props;
-
-        if (snapshot) {
-          dispatch(SessionStateActions.resetSessionStateFromSnapshot(snapshot));
-        } else {
-          dispatch(SessionStateActions.initializeSessionState());
-        }
-
-        store.subscribe(() => {
-          snapshotUtil.saveSnapshot(store.getState());
-        });
-      });
+    // snapshotUtil.resetSnapshot()
+    //   .then(snapshot => {
+    //     const {dispatch} = this.props;
+    //
+    //     if (snapshot) {
+    //       dispatch(SessionStateActions.resetSessionStateFromSnapshot(snapshot));
+    //     } else {
+    //       dispatch(SessionStateActions.initializeSessionState());
+    //     }
+    //
+    //     store.subscribe(() => {
+    //       snapshotUtil.saveSnapshot(store.getState());
+    //     });
+    //   });
   }
 
   render() {
-    if (!this.props.isReady) {
-      return (
-        <View style={{flex: 1}}>
-          <ActivityIndicator style={styles.centered} />
-        </View>
-      );
-    }
+    // if (!this.props.isReady) {
+    //   return (
+    //     <View style={{flex: 1}}>
+    //       <ActivityIndicator style={styles.centered} />
+    //     </View>
+    //   );
+    // }
 
     return (
       <View style={{flex: 1}}>

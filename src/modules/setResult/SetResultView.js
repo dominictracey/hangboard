@@ -73,10 +73,6 @@ class SetResultView extends Component {
 
   render() {
     const {grip,setLabel,sessionWeight,workoutWeight,reps, numRepsComplete} = this.props
-    // only allow the user to edit weight on the first (baseline) setLabel
-    // TODO will probably get complaints about this...
-    //const canEditWeight = setLabel.startsWith('1') ? true : false
-    // const buttonAppText = 'Save';
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
@@ -109,9 +105,6 @@ class SetResultView extends Component {
                       removeCb={this.removeWeight}
                       allowUpdate={true}/>
         </View>
-        {/* <View style={styles.row}>
-          <Button color='#ee7f06' title={buttonAppText} onPress={this.save}/>
-        </View> */}
       </View>
     );
   }
@@ -128,9 +121,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  // repsComplete: {
-  //   flex: 3,
-  // },
   row: {
     flex: 1,
     flexDirection: 'row',

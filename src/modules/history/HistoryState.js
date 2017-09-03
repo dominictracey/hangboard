@@ -1,4 +1,4 @@
-import { Map } from 'immutable';
+import {Map} from 'immutable';
 
 // Initial state
 const initialState = Map({
@@ -10,7 +10,7 @@ const ACTION = 'HistoryState/ACTION';
 
 // Action creators
 export function act() {
-  return { type: ACTION };
+  return {type: ACTION};
 }
 
 // Reducer
