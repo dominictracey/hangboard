@@ -14,13 +14,13 @@ import {bindActionCreators} from 'redux';
 import WorkoutView from './WorkoutView';
 import {NavigationActions} from 'react-navigation';
 import * as WorkoutStateActions from '../workout/WorkoutState';
-//import {K,M} from '../../utils/constants'
+import {K} from '../../utils/constants'
 
 export default connect(
   state => ({
-    boards: state.getIn(['workout', 'boards']),
-    sets: state.getIn(['workout', 'sets']),
-    programs: state.getIn(['workout', 'programs']),
+    boards: state.getIn([K.CONFIGURATION, 'boards']),
+    sets: state.getIn([K.CONFIGURATION, 'sets']),
+    programs: state.getIn([K.CONFIGURATION, 'programs']),
     workouts: state.getIn(['workout', 'workouts']),
     session: state.getIn(['workout', 'session']),
   }),

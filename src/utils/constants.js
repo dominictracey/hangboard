@@ -13,14 +13,21 @@
 export const K = {
   SESSION: 'session',
   WORKOUTS: 'workouts',
+  CONFIGURATION: 'configuration',
   WORKOUT: 'workout',
   EXERCISES: 'exercises',
   PROGRAMS: 'programs',
   PROGRAM: 'program',
-  SETS: 'sets',
+
   BOARDS: 'boards',
   HISTORY: 'history',
   SETTINGS: 'settings',
+  BOARD: 'board',
+  BOARD_ID: 'boardId',
+  BOARD_LABEL: 'boardLabel',
+  PROGRAM_ID: 'programId',
+  PROGRAM_LABEL: 'programLabel',
+  RESULTS: 'results',
 
   // phases
   INIT: 'WorkoutState/INIT',
@@ -42,26 +49,43 @@ export const K = {
   RECOVER_LABEL: 'Recover',
   COMPLETE_LABEL: 'Complete',
 
+  SECONDS: 'seconds',
+  RUNNING: 'running',
+  INTERVAL: 'interval',
+
   GRIP: 'grip',
+  GRIP_ID: 'gripId',
+  GRIP_LABEL: 'gripLabel',
+  GRIPS: 'grips',
+  NEXT_GRIP: 'nextGrip',
+
   PHASE_LABEL: 'currentPhaseLabel',
   PHASE: 'phase',
+
+  SETS: 'sets',
+  SET_ID: 'setId',
+  SET_LABEL: 'setLabel',
   CURRENT_SET_ORD: 'currentSetOrd',
   CURRENT_SET_ID: 'currentSetId',
-  SET_LABEL: 'setLabel',
+
   WORKOUT_ID: 'workoutId',
   LAST_WORKOUT_ID: 'lastWorkoutId',
+
   CURRENT_EXERCISE_ORD: 'currentExerciseOrd',
   CURRENT_EXERCISE_ID: 'currentExerciseId',
   CURRENT_EXERCISE: 'currentExercise',
-  GRIPS: 'grips',
-  NEXT_GRIP: 'nextGrip',
+
   WEIGHTS: 'weights',
   WEIGHT: 'weight',
   NEXT_WEIGHT: 'nextWeight',
+
   CURRENT_REP: 'currentRep',
+  REPS: 'reps',
   REP_LABEL: 'repLabel',
+
   COLLECT_SET_RESULTS: 'collectSetResults',
   LAST_SUCCESSES: 'lastSuccesses',
+  LAST_SUCCESS: 'lastSuccess',
   COMPLETED: 'complete',
   COLOR: 'color',
   THEME: 'theme',
@@ -71,6 +95,13 @@ export const K = {
   BEEPS: 'beeps',
   TICKS_FOR: 'ticksForPhases',
   BEEPS_FOR: 'beepsForPhases',
+
+  // history Actions
+  HISTORY_START_WORKOUT: 'historyState/StartWorkout',
+  HISTORY_RECORD_SET: 'historyState/RecordSet',
+  HISTORY_DELETE_SET: 'historyState/DeleteSet',
+  HISTORY_UPDATE_SET: 'historyState/UpdateSet',
+  HISTORY_COMPLETE_WORKOUT: 'historyState/CompleteWorkout',
 }
 
 export const M = {

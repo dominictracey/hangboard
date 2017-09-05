@@ -6,7 +6,7 @@ const persistConfig = {
 
   // blacklisted reducers, useful when debugging to recover from broken state
   blacklist: [
-    // 'navigatorState',
+    'navigatorState',
   ],
 };
 

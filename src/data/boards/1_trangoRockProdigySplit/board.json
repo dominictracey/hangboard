@@ -1,0 +1,66 @@
+{
+  "boards": {
+    "1": {
+      "name": "Trango Rock Prodigy Training Center",
+      "description": "Blue split board aligned with Mark Anderson\"s seminal book \"Training for Rock Climbing\"",
+      "grips": {
+        "1": {
+          "name": "Warm-up Jug",
+          "type": "jug",
+        },
+        "2": {
+          "name": "Sloper",
+          "type": "sloper",
+        },
+        "3": {
+          "name": "Large edge",
+          "type": "edge",
+        },
+        "4": {
+          "name": "Small edge",
+          "type": "edge",
+        },
+        "5": {
+          "name": "Crimp",
+          "type": "edge",
+        },
+        "6": {
+          "name": "Wide pinch",
+          "type": "pinch",
+        },
+        "7": {
+          "name": "Medium pinch",
+          "type": "pinch",
+        },
+        "8": {
+          "name": "Narrow pinch",
+          "type": "pinch",
+        },
+        "9": {
+          "name": "MRP 3F pocket (deep)",
+          "type": "3-finger pocket",
+        },
+        "10": {
+          "name": "IMR 3F pocket (var)",
+          "type": "3-finger pocket",
+        },
+        "11": {
+          "name": "Medium MR 2F pocket",
+          "type": "2-finger pocket",
+        },
+        "12": {
+          "name": "IM 2F pocket",
+          "type": "2-finger pocket",
+        },
+        "13": {
+          "name": "Small MR 2F pocket",
+          "type": "2-finger pocket",
+        },
+        "14": {
+          "name": "Mono",
+          "type": "mono",
+        },
+      },
+    },
+  },
+}

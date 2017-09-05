@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {StyleSheet, View, Image, Icon} from 'react-native'
+import {StyleSheet, View, Image} from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class ImageView extends Component {
   static displayName = 'ImageView';
@@ -26,7 +27,7 @@ class ImageView extends Component {
       <View style={styles.container}>
         <Image
           style={{flex: 1, height: undefined, width: undefined}}
-          source={require('../../data/boards/1/board.png')}
+          source={require('../../data/boards/1_trangoRockProdigySplit/board.png')}
           resizeMode='contain'/>
       </View>
     )

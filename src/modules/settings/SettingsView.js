@@ -18,7 +18,7 @@ class SettingsView extends Component {
   static navigationOptions =
     ({navigation}) => ({
       tabBarKey: navigation.state,
-      tabBarlabel: 'Home',
+      tabBarlabel: 'Config',
       tabBarIcon: () => (<Icon name='settings' size={24} />
      ),
       headerTintStart: 'white',
@@ -36,6 +36,10 @@ class SettingsView extends Component {
       updateBeepsFor: PropTypes.func.isRequired,
     })
   };
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return false
+  }
 
   buildTicks = () => {
     const {ticksFor} = this.props

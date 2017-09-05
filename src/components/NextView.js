@@ -24,13 +24,13 @@ NextView.propTypes = {
 
 function NextView(props) {
   //const gripLabel = props.nextGrip === 'Complete' ? '' : 'Grip '
-  const weightLabel = props.nextGrip === 'Complete' ? '' : 'Weight '
+  const weightLabel = props.nextGrip === 'Complete' ? '' : 'Weight ' + props.nextWeight
   return (
     <View style={styles.container}>
       <AppText size='lg'>Next</AppText>
       <View style={styles.la_container}>
         <AppText size='xs'>{props.nextGrip}</AppText>
-        <AppText size='xs'>{weightLabel} {props.nextWeight}</AppText>
+        <AppText size='xs'>{weightLabel}</AppText>
       </View>
     </View>
   )

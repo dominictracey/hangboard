@@ -18,6 +18,8 @@ import StartViewContainer from '../startView/StartViewContainer'
 import SettingsViewContainer from '../settings/SettingsViewContainer'
 import ImageViewContainer from '../imageView/ImageViewContainer'
 import SetResultViewContainer from '../setResult/SetResultViewContainer'
+import HistoryViewContainer from '../history/HistoryViewContainer'
+import HistoryDetail from '../history/HistoryDetail'
 
 const headerColor = '#39babd';
 const activeColor = 'white';
@@ -25,8 +27,10 @@ const activeColor = 'white';
 // TabNavigator is nested inside StackNavigator
 export const MainScreenNavigator = TabNavigator({
   Home: {screen: StartViewContainer},
-  Workout: {screen: WorkoutViewContainer},
-  Settings: {screen: SettingsViewContainer},
+  Hang: {screen: WorkoutViewContainer},
+  History: {screen: HistoryViewContainer},
+  Config: {screen: SettingsViewContainer},
+
   //Color: {screen: ColorViewContainer},
   // Counter: {screen: CounterViewContainer},
 }, {
@@ -57,12 +61,9 @@ const AppNavigator = StackNavigator({
       header: null,
     }
   },
-  //InfiniteColorStack: {screen: ColorViewContainer},
-  //Start: {screen: StartViewContainer},
   SetResult: {screen: SetResultViewContainer},
-  //Workout: {screen: WorkoutViewContainer},
-  //Settings: {screen: SettingsViewContainer},
-  Image: {screen: ImageViewContainer}
+  Image: {screen: ImageViewContainer},
+  HistoryDetail: {screen: HistoryDetail},
 });
 
 export default AppNavigator;

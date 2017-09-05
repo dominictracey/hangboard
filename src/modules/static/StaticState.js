@@ -1,42 +1,76 @@
-import {fromJS} from 'immutable';
+import {fromJS} from 'immutable'
+import {H} from '../../utils/constants'
 
 export const LOAD_STATIC_STATE = 'StaticState/LOAD';
 
 // Initial state
 const initialState = fromJS({
   boards: {
-    '0': {
-      name: 'Trango Split Board',
+    '1': {
+      name: 'Trango Rock Prodigy Training Center',
+      description: 'Blue split board aligned with Mark Anderson\'s seminal book \"Training for Rock Climbing\"',
       grips: {
-        '0': {
-          name: 'jug'
-        },
         '1': {
-          name: 'big crimp (in)'
+          name: 'Warm-up Jug',
+          type: H.JUG,
         },
         '2': {
-          name: 'big crimp (out)'
+          name: 'Sloper',
+          type: H.SLOPER,
         },
         '3': {
-          name: 'little crimp (in)'
+          name: 'Large edge',
+          type: H.EDGE,
         },
         '4': {
-          name: 'sloper'
+          name: 'Small edge',
+          type: H.EDGE,
         },
         '5': {
-          name: 'IMR 2-pad 3F'
+          name: 'Crimp',
+          type: H.EDGE,
         },
         '6': {
-          name: 'wide pinch'
+          name: 'Wide pinch',
+          type: H.PINCH,
         },
         '7': {
-          name: 'narrow pinch'
+          name: 'Medium pinch',
+          type: H.PINCH,
+        },
+        '8': {
+          name: 'Narrow pinch',
+          type: H.PINCH,
+        },
+        '9': {
+          name: 'MRP 3F pocket (deep)',
+          type: H.FP3,
+        },
+        '10': {
+          name: 'IMR 3F pocket (var)',
+          type: H.FP3,
+        },
+        '11': {
+          name: 'Medium MR 2F pocket',
+          type: H.FP2,
+        },
+        '12': {
+          name: 'IM 2F pocket',
+          type: H.FP2,
+        },
+        '13': {
+          name: 'Small MR 2F pocket',
+          type: H.FP2,
+        },
+        '14': {
+          name: 'Mono',
+          type: H.FP1,
         },
       },
     },
   },
   sets: {
-    '0': {
+    '1': {
       description: '10 on/5 off x 6',
       source: 'Rock Prodigy - beginner',
       reps: 6,
@@ -45,7 +79,7 @@ const initialState = fromJS({
       secs_recovery: 180,
       baseline_plus: 0
     },
-    '1': {
+    '2': {
       description: '7 on/3 off x 7',
       source: 'Rock Prodigy - intermediate 1',
       reps: 7,
@@ -54,7 +88,7 @@ const initialState = fromJS({
       secs_recovery: 180,
       baseline_plus: 0
     },
-    '2': {
+    '3': {
       description: '7 on/3 off x 6 - baseline+10',
       source: 'Rock Prodigy - intermediate 2',
       reps: 6,
@@ -63,7 +97,7 @@ const initialState = fromJS({
       secs_recovery: 180,
       baseline_plus: 10
     },
-    '3': {
+    '4': {
       description: '7 on/3 off x 5 - baseline+20',
       source: 'Rock Prodigy - advanced 3',
       reps: 5,
@@ -72,7 +106,7 @@ const initialState = fromJS({
       secs_recovery: 180,
       baseline_plus: 20
     },
-    '4': {
+    '5': {
       description: 'test',
       source: 'test',
       reps: 3,
@@ -83,88 +117,201 @@ const initialState = fromJS({
     },
   },
   programs: {
-    '0': {
-      title: 'Rock Prodigy Beginner Program on Trango Split',
+    '1': {
+      title: 'Rock Prodigy Beginner Program',
       author: 'Manderson',
       level: 'beginner',
-      board: '0',
-      warmup_secs: 5,
+      warmup_secs: 1200,
+      prep_secs: 10,
       exercises: {
         '1': {
-          grip: '0',
           sets: {
-            '1': '0'
+            '1': '1'
           }
         },
         '2': {
-          grip: '1',
           sets: {
-            '1': '0'
+            '1': '1'
           }
         },
         '3': {
-          grip: '2',
           sets: {
-            '1': '0'
+            '1': '1'
           }
         },
         '4': {
-          grip: '3',
           sets: {
-            '1': '0'
+            '1': '1'
           }
         },
         '5': {
-          grip: '4',
           sets: {
-            '1': '0'
+            '1': '1'
           }
         },
         '6': {
-          grip: '5',
           sets: {
-            '1': '0'
+            '1': '1'
+          },
+        },
+        '7': {
+          sets: {
+            '1': '1'
+          },
+        },
+        '8': {
+          sets: {
+            '1': '1'
+          },
+        },
+        '9': {
+          sets: {
+            '1': '1'
           },
         },
       },
     },
-    '1': {
-      title: 'TEST PROGRAM ON TRANGO SPLIT',
+    '2': {
+      title: 'TEST PROGRAM',
       author: 'DPT',
       level: 'advanced',
-      board: '0',
       warmup_secs: 3,
+      prep_secs: 10,
       exercises: {
         '1': {
-          grip: '0',
           sets: {
-            '1': '4'
+            '1': '5',
           }
         },
         '2': {
-          grip: '1',
           sets: {
-            '1': '4'
+            '1': '5',
+            '2': '4',
           }
         },
         '3': {
-          grip: '2',
           sets: {
-            '1': '4'
+            '1': '5',
           }
+        },
+      },
+    },
+    '3': {
+      title: 'Rock Prodigy Intermediate Program',
+      author: 'Manderson',
+      level: 'intermediate',
+      warmup_secs: 1200,
+      prep_secs: 10,
+      exercises: {
+        '1': {
+          sets: {
+            '1': '2',
+          },
+        },
+        '2': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '3': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '4': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '5': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '6': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '7': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '8': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+      },
+    },
+    '4': {
+      title: 'Rock Prodigy Advanced Program',
+      author: 'Manderson',
+      level: 'advanced',
+      warmup_secs: 1200,
+      prep_secs: 10,
+      exercises: {
+        '1': {
+          sets: {
+            '1': '2',
+            '2': '3',
+          },
+        },
+        '2': {
+          sets: {
+            '1': '2',
+            '2': '3',
+            '3': '4',
+          },
+        },
+        '3': {
+          sets: {
+            '1': '2',
+            '2': '3',
+            '3': '4',
+          },
+        },
+        '4': {
+          sets: {
+            '1': '2',
+            '2': '3',
+            '3': '4',
+          },
+        },
+        '5': {
+          sets: {
+            '1': '2',
+            '2': '3',
+            '3': '4',
+          },
+        },
+        '6': {
+          sets: {
+            '1': '2',
+            '2': '3',
+            '3': '4',
+          },
+        },
+        '7': {
+          sets: {
+            '1': '2',
+            '2': '3',
+            '3': '4',
+          },
         },
       },
     },
   },
 })
 
-// export function resetSessionStateFromSnapshot(state) {
-//   return {
-//     type: RESET_STATE,
-//     payload: state
-//   };
-// }
-//
 export function LoadStaticState() {
   return {
     type: LOAD_STATIC_STATE,
@@ -172,7 +319,7 @@ export function LoadStaticState() {
 }
 
 // Reducer
-export default function SessionStateReducer(state = initialState, action = {}) {
+export default function StaticStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD_STATIC_STATE:
       return state.set('isReady', true);
