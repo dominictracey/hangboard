@@ -57,12 +57,12 @@ class StartView extends Component {
 
   load = (workoutId) => {
     this.props.workoutStateActions.load(workoutId);
-    this.props.navigate({routeName: 'Workout'})
+    this.props.navigate({routeName: 'Hang'})
   };
 
   loadDefault = () => {
     this.load(this.props.session.get('lastWorkoutId'))
-    this.props.navigate({routeName: 'Workout'})
+    this.props.navigate({routeName: 'Hang'})
   }
 
   render() {

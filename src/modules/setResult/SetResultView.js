@@ -96,6 +96,7 @@ class SetResultView extends Component {
           <RepsComplete reps={reps}
                         style={styles.container}
                         cb={this.repsComplete}
+                        title='Last Successful Rep'
                         complete={numRepsComplete}/>
         </View>
         <View style={styles.row}>

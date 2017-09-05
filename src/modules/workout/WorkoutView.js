@@ -29,7 +29,7 @@ class WorkoutView extends Component {
   static navigationOptions =
   ({navigation}) => ({
     tabBarKey: navigation.state,
-    tabBarLabel: 'Workout',
+    tabBarLabel: 'Hang',
     tabBarIcon: () => (
         <Icon name='pages' size={24} color='red' />
       )
@@ -211,7 +211,7 @@ class WorkoutView extends Component {
           </View>
           <View style={styles.container}>
             <AppText size='lg' theme='theme'>Set</AppText>
-            <AppText size='lg' theme='theme'> {session.get('setLabel')}</AppText>
+            <AppText size='lg' theme='theme'>{session.get('setLabel')}</AppText>
           </View>
           <View style={styles.container}>
             <AppText size='lg' theme='theme'>Reps</AppText>

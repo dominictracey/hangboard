@@ -11,6 +11,7 @@ class RepsComplete extends Component {
   static propTypes = {
     reps: PropTypes.number.isRequired,
     complete: PropTypes.number.isRequired,
+    title: PropTypes.string,
     cb: PropTypes.func.isRequired,
   }
 
@@ -20,7 +21,7 @@ class RepsComplete extends Component {
   }
 
   render() {
-    const {reps} = this.props
+    const {reps, title = ''} = this.props
 
     let buttonArr = []
     for (let i = 1; i <= reps; ++i) {
@@ -36,11 +37,11 @@ class RepsComplete extends Component {
       </TouchableOpacity>)
     }
 
+    const titleRow = title ? <View style={styles.row}><AppText size='sm'>{title}</AppText></View> : null
+
     return (
       <View style={styles.container}>
-        <View style={styles.row}>
-          <AppText size='sm'>Last Successful Rep</AppText>
-        </View>
+        {titleRow}
         <View style={styles.row}>
           {buttonArr.map((button) => button)}
         </View>
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   row: {
-    height: 50,
+    // height: 50,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',

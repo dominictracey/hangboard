@@ -18,9 +18,9 @@ import {K} from '../../utils/constants'
 
 export default connect(
   state => ({
-    boards: state.getIn(['workout', 'boards']),
-    sets: state.getIn(['workout', 'sets']),
-    programs: state.getIn(['workout', 'programs']),
+    boards: state.getIn([K.CONFIGURATION, 'boards']),
+    sets: state.getIn([K.CONFIGURATION, 'sets']),
+    programs: state.getIn([K.CONFIGURATION, 'programs']),
     workouts: state.getIn(['workout', 'workouts']),
     session: state.getIn(['workout', 'session']),
     theme: state.getIn(['workout',K.THEME]),

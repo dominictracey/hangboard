@@ -32,6 +32,10 @@ class WeightView extends React.Component {
     super(props);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return (!isNaN(nextProps.weight) && nextProps.weight !== this.props.weight)
+  }
+
   render() {
     const {weight, title, addCb, removeCb, allowUpdate} = this.props
     const controls = allowUpdate ? (
