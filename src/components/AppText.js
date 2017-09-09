@@ -15,10 +15,6 @@ class AppText extends Component {
     super(props);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return (nextProps.children && nextProps.children !== this.props.children)
-  }
-
   getSize = (size) => {
     switch (size) {
       case 'xs':

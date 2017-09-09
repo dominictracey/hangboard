@@ -10,7 +10,6 @@
  */
 
 /*eslint-disable max-nested-callbacks, no-unused-expressions*/
-
 import {Effects} from 'redux-loop-symbol-ponyfill';
 import {initialState, dispatch} from '../../../../test/state';
 import * as WorkoutStateActions from '../WorkoutState';
@@ -26,6 +25,9 @@ keepAwake.deactivate = () => console.log('go to sleep!')
 jest.mock('react-native-sound', () => 'Sound')
 jest.mock('react-native-version-number', () => 'VersionNumber')
 
+/**
+ * @jest-environment jsdom
+ */
 describe('WorkoutState', () => {
   const getLoadingValue = state => state.getIn([K.WORKOUT, 'loading']);
   const getPhaseValue = state => state.getIn([K.WORKOUT, ...M.PHASE]);

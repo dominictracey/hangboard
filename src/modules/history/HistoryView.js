@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet,
   ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {List, ListItem} from 'react-native-elements'
+import {List} from 'react-native-elements'
+import HistoryLineItem from '../../components/HistoryLineItem'
+import {K} from '../../utils/constants'
 
 class HistoryView extends Component {
   static displayName = 'HistoryView'
@@ -30,26 +31,29 @@ class HistoryView extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      'list': []
+      'list': [],
+      'size': -1,
     }
   }
 
-  componentWillMount() {
-    this.setState({'list': this.buildList()})
+  componentDidMount() {
+    this.setState({list: this.buildList()})
+    this.setState({size: this.state.list.length})
   }
 
   buildList = () => {
     const {history} = this.props
     let list = []
-    history.mapKeys((key) => {
-      console.log('adding ' + key)
-      list.push(<ListItem key={key} title={key} onPress={() => this.showHistory(key, history.get(key))}/>)
+    history.map((item,i) => {
+      console.log('adding ' + i)
+      list.push(<HistoryLineItem index={i} key={i} title={item.get(K.HISTORY_LABEL)} cb={this.showHistory}/>)
     })
     return list
   }
 
-  showHistory = (key, workout) => {
-    this.props.navigate({routeName: 'HistoryDetail', params: {key: key, [key]: workout}})
+  showHistory = (key) => {
+    const {navigate, history} = this.props
+    navigate({routeName: 'HistoryDetail', params: {item: history.get(key)}})
   }
 
   render() {
@@ -62,14 +66,5 @@ class HistoryView extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  }
-})
 
 export default HistoryView

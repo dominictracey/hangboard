@@ -22,6 +22,7 @@ export function initializeSessionState() {
 export default function SessionStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case INITIALIZE_STATE:
+      return Map({'isReady': true})
     case RESET_STATE:
       return state.set('isReady', true);
 

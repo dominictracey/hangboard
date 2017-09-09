@@ -12,7 +12,7 @@ class AppView extends Component {
 
   static propTypes = {
     isReady: PropTypes.bool.isRequired,
-    dispatch: PropTypes.func.isRequired
+    clearState: PropTypes.func.isRequired
   };
 
   componentDidMount() {
@@ -35,6 +35,10 @@ class AppView extends Component {
     //   });
   }
 
+  clearState = () => {
+    this.props.clearState()
+  }
+
   render() {
     // if (!this.props.isReady) {
     //   return (
@@ -48,7 +52,7 @@ class AppView extends Component {
       <View style={{flex: 1}}>
         <StatusBar backgroundColor='#455a64' barStyle='light-content' />
         <NavigatorViewContainer />
-        {__DEV__ && <DeveloperMenu />}
+        {__DEV__ && <DeveloperMenu clearState={this.clearState}/>}
       </View>
     );
   }

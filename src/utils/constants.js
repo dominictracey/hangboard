@@ -40,14 +40,14 @@ export const K = {
   COMPLETE: 'WorkoutState/COMPLETE', // the workout is done
 
   // phase labels
-  INIT_LABEL: 'Init',
-  LOAD_LABEL: 'Load',
-  WARMUP_LABEL: 'Warmup', // begin phases of workout
-  PREP_LABEL: 'Get ready!', // time needed between warmup and exercise
-  EXERCISE_LABEL: 'Exercise',
-  REST_LABEL: 'Rest',
-  RECOVER_LABEL: 'Recover',
-  COMPLETE_LABEL: 'Complete',
+  INIT_PHASE_LABEL: 'Init',
+  LOAD_PHASE_LABEL: 'Load',
+  WARMUP_PHASE_LABEL: 'Warmup', // begin phases of workout
+  PREP_PHASE_LABEL: 'Get ready!', // time needed between warmup and exercise
+  EXERCISE_PHASE_LABEL: 'Exercise',
+  REST_PHASE_LABEL: 'Rest',
+  RECOVER_PHASE_LABEL: 'Recover',
+  COMPLETE_PHASE_LABEL: 'Complete',
 
   SECONDS: 'seconds',
   RUNNING: 'running',
@@ -70,10 +70,12 @@ export const K = {
 
   WORKOUT_ID: 'workoutId',
   LAST_WORKOUT_ID: 'lastWorkoutId',
+  WORKOUT_LABEL: 'workoutLabel',
 
   CURRENT_EXERCISE_ORD: 'currentExerciseOrd',
   CURRENT_EXERCISE_ID: 'currentExerciseId',
   CURRENT_EXERCISE: 'currentExercise',
+  EXERCISE_LABEL: 'exerciseLabel',
 
   WEIGHTS: 'weights',
   WEIGHT: 'weight',
@@ -102,6 +104,9 @@ export const K = {
   HISTORY_DELETE_SET: 'historyState/DeleteSet',
   HISTORY_UPDATE_SET: 'historyState/UpdateSet',
   HISTORY_COMPLETE_WORKOUT: 'historyState/CompleteWorkout',
+  CURRENT: 'Current Workout',
+  NOTE: 'note',
+  HISTORY_LABEL: 'historyLabel',
 }
 
 export const M = {
@@ -131,16 +136,9 @@ export const M = {
   //sound Settings
   TICKS_FOR: [K.SOUNDS,K.TICKS_FOR],
   BEEPS_FOR: [K.SOUNDS,K.BEEPS_FOR],
-  // WARMUP_TICKS: [K.SOUNDS,K.TICKS_FOR,K.WARMUP],
-  // PREPARE_TICKS: [K.SOUNDS,K.TICKS_FOR,K.PREP],
-  // EXERCISE_TICKS: [K.SOUNDS,K.TICKS_FOR,K.EXERCISE],
-  // REST_TICKS: [K.SOUNDS,K.TICKS_FOR,K.REST],
-  // RECOVER_TICKS: [K.SOUNDS,K.TICKS_FOR,K.RECOVER],
-  // WARMUP_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.WARMUP],
-  // PREPARE_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.PREP],
-  // EXERCISE_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.EXERCISE],
-  // REST_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.REST],
-  // RECOVER_BEEPS: [K.SOUNDS,K.BEEPS_FOR,K.RECOVER],
+
+  // history
+  RESULTS: [K.CURRENT,K.RESULTS],
 }
 
 export const H = {

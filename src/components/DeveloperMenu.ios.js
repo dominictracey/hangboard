@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import * as snapshot from '../utils/snapshot';
+import PropTypes from 'prop-types'
+// import * as snapshot from '../utils/snapshot';
 
 import {
   TouchableOpacity,
@@ -14,6 +15,9 @@ import {
  */
 class DeveloperMenu extends Component {
   static displayName = 'DeveloperMenu';
+  static propTypes = {
+    clearState: PropTypes.func.isRequired
+  }
 
   showDeveloperMenu() {
     const options = {
@@ -24,7 +28,8 @@ class DeveloperMenu extends Component {
 
     const callback = async index => {
       if (index === options.clearState) {
-        await snapshot.clearSnapshot();
+        //await snapshot.clearSnapshot();
+        this.props.clearState()
         console.warn('(╯°□°）╯︵ ┻━┻ \nState cleared, Cmd+R to reload the application now');
       }
     };

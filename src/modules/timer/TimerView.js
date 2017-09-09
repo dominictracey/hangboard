@@ -19,7 +19,7 @@ class TimerView extends Component {
     color: PropTypes.string.isRequired,
     loading: PropTypes.bool.isRequired,
     running: PropTypes.bool.isRequired,
-    nextSound: PropTypes.string.isRequired,
+    nextSound: PropTypes.string,
     timerStateActions: PropTypes.shape({
       resume: PropTypes.func.isRequired,
       pause: PropTypes.func.isRequired,

@@ -3,17 +3,17 @@ import {bindActionCreators} from 'redux';
 import {NavigationActions} from 'react-navigation';
 import SetResultView from './SetResultView';
 import * as WorkoutStateActions from '../workout/WorkoutState';
-import {M} from '../../utils/constants'
+import {M,K} from '../../utils/constants'
 
 export default connect(
    state => ({
-     exId: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'exId']),
-     setId: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'setId']),
-     grip: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'grip']),
-     setLabel: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'setLabel']),
+     [K.CURRENT_EXERCISE_ID]: state.getIn(['workout',...M.COLLECT_SET_RESULTS,K.CURRENT_EXERCISE_ID]),
+     [K.SET_ID]: state.getIn(['workout',...M.COLLECT_SET_RESULTS,K.SET_ID]),
+     [K.GRIP_LABEL]: state.getIn(['workout',...M.COLLECT_SET_RESULTS,K.GRIP_LABEL]),
+     [K.SET_LABEL]: state.getIn(['workout',...M.COLLECT_SET_RESULTS,K.SET_LABEL]),
      sessionWeight: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'sessionWeight']),
      workoutWeight: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'workoutWeight']),
-     reps: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'reps']),
+     [K.REPS]: state.getIn(['workout',...M.COLLECT_SET_RESULTS,K.REPS]),
      numRepsComplete: state.getIn(['workout',...M.COLLECT_SET_RESULTS,'numRepsComplete']),
    }),
    dispatch => {

@@ -69,11 +69,11 @@ class WorkoutView extends Component {
   };
 
   addWeight = () => {
-    this.props.workoutStateActions.adjustWeight(true, false, this.props.session.get('currentExerciseId'))
+    this.props.workoutStateActions.adjustWeight(true, false, this.props.session.get(K.CURRENT_EXERCISE_ID))
   }
 
   removeWeight = () => {
-    this.props.workoutStateActions.adjustWeight(false, false, this.props.session.get('currentExerciseId'))
+    this.props.workoutStateActions.adjustWeight(false, false, this.props.session.get(K.CURRENT_EXERCISE_ID))
   }
 
   changeGrip = (newGrip) => {
@@ -88,105 +88,7 @@ class WorkoutView extends Component {
     this.load(this.props.session.get('lastWorkoutId'))
   }
 
-  // loadPage = () => {
-  //   // this should be the startview now so we can remove this I think?
-  //   const {workouts,session} = this.props;
-  //   const loadingStyle = session.get('loading')
-  //         ? {backgroundColor: '#eee'}
-  //         : null;
-  //   return (
-  //       <View style={styles.container}>
-  //       <TouchableOpacity
-  //         style={[styles.defaultStartButton, loadingStyle]}
-  //           accessible={true}
-  //           accessibilityLabel={'Start Workout'}
-  //           onPress={this.loadDefault}>
-  //         <AppText size='lg' theme={this.theme}>
-  //           Start Workout
-  //         </AppText>
-  //       </TouchableOpacity>
-  //       <AppText size='lg' theme='theme'>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
-  //     </View>
-  //   )
-  // }
-  //
-  // workoutPage = () => {
-  //   const {session, workouts, boards} = this.props
-  //   //const canEditWeight = session.get(K.SET_LABEL).startsWith('1') ? true : false
-  //
-  //   // console.log('workoutId: ' + session.get(K.WORKOUT_ID))
-  //   return (
-  //     <View style={styles.container}>
-  //
-  //       {/* {this.renderUserInfo()} */}
-  //       <AppText size='xl'>
-  //         {session.get(K.PHASE_LABEL)}
-  //       </AppText>
-  //       <TimerViewContainer/>
-  //       <EditableGripView session={session}
-  //           board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get('board'))}
-  //           selectCb={this.changeGrip}
-  //           showCb={this.showBoard}/>
-  //       <View style={styles.detailsContainer}>
-  //         <View style={styles.container}>
-  //           <AppText size='lg' theme='theme'>Grip</AppText>
-  //           <AppText size='lg' theme='theme'>{session.get(K.EXERCISE_LABEL)}</AppText>
-  //         </View>
-  //         <View style={styles.container}>
-  //           <AppText size='lg' theme='theme'>Set</AppText>
-  //           <AppText size='lg' theme='theme'> {session.get('setLabel')}</AppText>
-  //         </View>
-  //         <View style={styles.container}>
-  //           <AppText size='lg' theme='theme'>Rep</AppText>
-  //           <AppText size='lg' theme='theme'>{session.get('repLabel')}</AppText>
-  //         </View>
-  //       </View>
-  //       <View style={styles.detailsContainer}>
-  //         <WeightView weight={session.get(K.WEIGHT)}
-  //                     title='Weight'
-  //                     addCb={this.addWeight}
-  //                     removeCb={this.removeWeight}
-  //                     allowUpdate={true}/>
-  //         <NextView nextWeight={session.get('nextWeight')}
-  //                   nextGrip={session.get('nextGrip')}/>
-  //       </View>
-  //     </View>
-  //   );
-  // }
-  //
-  // resultPage = () => {
-  //   const {session, workoutStateActions} = this.props;
-  //   const collectSetResults = session.get('collectSetResults')
-  //
-  //   return (
-  //       <View style={styles.container}>
-  //         <SetResultViewContainer exId={collectSetResults.get('exId')}
-  //                                 setId={collectSetResults.get('setId')}
-  //                                 setLabel={collectSetResults.get('setLabel')}
-  //                                 grip={collectSetResults.get(K.GRIP)}
-  //                                 reps={collectSetResults.get('reps')}
-  //                                 workoutWeight={collectSetResults.get('workoutWeight')}
-  //                                 sessionWeight={collectSetResults.get('sessionWeight')}
-  //                                 save={workoutStateActions.collectedSetResults}/>
-  //     </View>
-  //   )
-  // }
-
   render() {
-    // const {session} = this.props
-    // const phase = session.get(K.PHASE)
-    // const needSetResults = session.get(K.COLLECT_SET_RESULTS) && session.get(K.COLLECT_SET_RESULTS).size
-    //
-    // var view = (<View/>)
-    // if (phase === K.INIT) {
-    //   view = this.loadPage()
-    // } else if (needSetResults) {
-    //   view = this.resultPage()
-    // } else {
-    //   view = this.workoutPage()
-    // }
-    //
-    // return view
     const {session, workouts, boards} = this.props
     const phase = session.get(K.PHASE)
     if (phase === K.INIT)
@@ -201,7 +103,7 @@ class WorkoutView extends Component {
         </AppText>
         <TimerViewContainer/>
         <EditableGripView session={session}
-            board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get('board'))}
+            board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get(K.BOARD))}
             selectCb={this.changeGrip}
             showCb={this.showBoard}/>
         <View style={styles.detailsContainer}>
@@ -211,11 +113,11 @@ class WorkoutView extends Component {
           </View>
           <View style={styles.container}>
             <AppText size='lg' theme='theme'>Set</AppText>
-            <AppText size='lg' theme='theme'>{session.get('setLabel')}</AppText>
+            <AppText size='lg' theme='theme'>{session.get(K.SET_LABEL)}</AppText>
           </View>
           <View style={styles.container}>
             <AppText size='lg' theme='theme'>Reps</AppText>
-            <AppText size='lg' theme='theme'>{session.get('repLabel')}</AppText>
+            <AppText size='lg' theme='theme'>{session.get(K.REP_LABEL)}</AppText>
           </View>
         </View>
         <View style={styles.detailsContainer}>
@@ -264,14 +166,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1
   },
-  // timerContainer: {
-  //   flex: 1,
-  //   // flexDirection: 'row',
-  //   // justifyContent: 'center',
-  //   // alignItems: 'center',
-  //   borderWidth: 2,
-  //   borderColor: 'green',
-  // },
   userProfilePhoto: {
     ...circle,
     alignSelf: 'center'

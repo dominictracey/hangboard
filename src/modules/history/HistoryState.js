@@ -1,10 +1,15 @@
-import {Map} from 'immutable';
+import {List, Map} from 'immutable';
 import {K,M} from '../../utils/constants'
+import moment from 'moment'
 
 // Initial state
-const initialState = Map({
-  'Oct 8, 2017 2:42pm': Map({
-    [K.BOARDID]: 1,
+const initialState = List([
+  Map({
+    [K.HISTORY_LABEL]: K.CURRENT,
+  }),
+  Map({
+    [K.HISTORY_LABEL]: 'Oct 8, 2017 2:42pm',
+    [K.BOARD_ID]: 1,
     [K.BOARD_LABEL]: 'Trango Rock Prodigy Training Center',
     [K.PROGRAM_ID]: 3,
     [K.PROGRAM_LABEL]: 'Rock Prodigy Intermediate Program',
@@ -115,7 +120,7 @@ const initialState = Map({
       }),
     }),
   }),
-});
+]);
 
 // Actions
 const HISTORY_START_WORKOUT = K.HISTORY_START_WORKOUT
@@ -129,8 +134,8 @@ export function startWorkout(boardId, boardLabel, programId, programLabel) {
   return {type: HISTORY_START_WORKOUT, boardId, boardLabel, programId, programLabel}
 }
 
-export function recordSet(exId, setId, gripId, gripLabel, reps, lastSuccess, weight, note) {
-  return {type: HISTORY_RECORD_SET,exId, setId, gripId, gripLabel, reps, lastSuccess, weight, note}
+export function recordSet(exId, setId, setLabel, gripLabel, reps, lastSuccess, weight, note) {
+  return {type: HISTORY_RECORD_SET,exId, setId, setLabel, gripLabel, reps, lastSuccess, weight, note}
 }
 
 export function deleteSet(exId, setId) {
@@ -145,19 +150,79 @@ export function completeWorkout(timestamp) {
   return {type: HISTORY_COMPLETE_WORKOUT, timestamp}
 }
 
+function moveCurrentOut(state) {
+  // the first item in the history List should always be the current Map
+  if (!state.first().get(K.HISTORY_LABEL) === K.CURRENT) {
+    return state.shift(Map({[K.HISTORY_LABEL]: K.CURRENT,}))
+  }
+
+  // only save if there is something to save
+  if (!state.first().get(K.RESULTS) || state.first().get(K.RESULTS).size === 0) {
+    return state
+  } else {
+    // relabel the Current (first) history item with the current Date
+    // and put a new empty history item at the beginning of the list
+    const timestamp = moment().format('MMM Do YYYY, h:mm a')
+    const toSave = state.first()
+    const timestamped = toSave.update(K.HISTORY_LABEL,label => timestamp)
+    const state1 = state.shift()
+    const state2 = state1.unshift(timestamped)
+    return state2.unshift(Map({[K.HISTORY_LABEL]: K.CURRENT,}))
+  }
+
+}
+
 // Reducer
 export default function HistoryStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case HISTORY_START_WORKOUT:
-      return state;
+      // move anything in current to history
+      var state1 = moveCurrentOut(state)
+
+      var newSesh = Map({
+        [K.HISTORY_LABEL]: K.CURRENT,
+        [K.BOARD_ID]: action.boardId,
+        [K.BOARD_LABEL]: action.boardLabel,
+        [K.PROGRAM_ID]: action.programId,
+        [K.PROGRAM_LABEL]: action.programLabel,
+        [K.WORKOUT_ID]: action.workoutId,
+        [K.WORKOUT_LABEL]: action.workoutLabel,
+        [K.RESULTS]: Map({}),
+      })
+      var shifted = state1.shift()
+      return shifted.unshift(newSesh)
     case HISTORY_RECORD_SET:
-      return state;
+      // merge a new set into current
+      var newSet =
+        Map({
+          [action.exId]: Map({
+            [K.GRIP_LABEL]: action.gripLabel,
+            [K.SETS]: Map({
+              [action.setId]: Map({
+                [K.SET_LABEL]: action.setLabel,
+                [K.WEIGHT]: action.weight,
+                [K.REPS]: action.reps,
+                [K.LAST_SUCCESS]: action.lastSuccess,
+                [K.NOTE]: action.note,
+              }),
+            })
+          })
+        })
+      var newResults = state.first().get(K.RESULTS).mergeDeep(newSet)
+      var newSession = state.first().set(K.RESULTS,newResults)
+      // with a List, we can't update the existing element? We have to
+      // shift the first element off and unshift the new one on?
+      shifted = state.shift()
+      return shifted.unshift(newSession)
     case HISTORY_DELETE_SET:
+      // delete the set specified by action.key from history
       return state;
     case HISTORY_UPDATE_SET:
+      // update the set specified by action.key with the new values
       return state;
     case HISTORY_COMPLETE_WORKOUT:
-      return state;
+      // move current to a timestamped key and recreate an empty current
+      return moveCurrentOut(state)
     default:
       return state;
   }

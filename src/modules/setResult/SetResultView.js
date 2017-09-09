@@ -18,6 +18,7 @@ import {
 import RepsComplete from '../../components/RepsComplete'
 import WeightView from '../../components/WeightView'
 import AppText from '../../components/AppText'
+import {K} from '../../utils/constants'
 
 /*
 ** view to collect results from a set:
@@ -28,13 +29,13 @@ class SetResultView extends Component {
   static displayName = 'SetResultView';
 
   static propTypes = {
-    exId: PropTypes.string.isRequired,
-    setId: PropTypes.string.isRequired,
-    grip: PropTypes.string.isRequired,
-    setLabel: PropTypes.string.isRequired,
+    [K.CURRENT_EXERCISE_ID]: PropTypes.string.isRequired,
+    [K.SET_ID]: PropTypes.string.isRequired,
+    [K.GRIP_LABEL]: PropTypes.string.isRequired,
+    [K.SET_LABEL]: PropTypes.string.isRequired,
     sessionWeight: PropTypes.number.isRequired,
     workoutWeight: PropTypes.number.isRequired,
-    reps: PropTypes.number.isRequired,
+    [K.REPS]: PropTypes.number.isRequired,
     numRepsComplete: PropTypes.number.isRequired,
 
     // save: PropTypes.func.isRequired,
@@ -45,34 +46,22 @@ class SetResultView extends Component {
     })
   };
 
-  constructor(props) {
-    super(props);
-    // this.state = {
-    //   lastSuccess: -1,
-    // };
-  }
-  //
-  // save = () => {
-  //   const {collectSetResults: {exId, setId}} = this.props
-  //   save(exId, setId, this.state.lastSuccess)
-  // };
-
   addWeight = () => {
-    this.props.workoutStateActions.adjustWeight(true, true, this.props.exId)
+    this.props.workoutStateActions.adjustWeight(true, true, this.props.currentExerciseId)
   }
 
   removeWeight = () => {
-    this.props.workoutStateActions.adjustWeight(false, true, this.props.exId)
+    this.props.workoutStateActions.adjustWeight(false, true, this.props.currentExerciseId)
   }
 
   repsComplete = (i) => {
-    const {exId, setId, workoutStateActions: {collectedSetResults}} = this.props
-    collectedSetResults(exId, setId, i)
+    const {currentExerciseId, setId, workoutStateActions: {collectedSetResults}} = this.props
+    collectedSetResults(currentExerciseId, setId, i)
     // this.setState({lastSuccess: i})
   }
 
   render() {
-    const {grip,setLabel,sessionWeight,workoutWeight,reps, numRepsComplete} = this.props
+    const {gripLabel,setLabel,sessionWeight,workoutWeight,reps, numRepsComplete} = this.props
     return (
       <View style={styles.container}>
         <View style={styles.infoContainer}>
@@ -81,7 +70,7 @@ class SetResultView extends Component {
           </View>
           <View style={styles.row}>
             <AppText size='sm'>Grip:</AppText>
-            <AppText size='sm'>{grip}</AppText>
+            <AppText size='sm'>{gripLabel}</AppText>
           </View>
           <View style={styles.row}>
             <AppText size='sm'>Set:</AppText>

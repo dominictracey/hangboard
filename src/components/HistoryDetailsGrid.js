@@ -5,7 +5,7 @@ import HistoryDetailsRow from './HistoryDetailsRow'
 
 class HistoryDetailsGrid extends React.Component {
   static propTypes = {
-    history: PropTypes.object.isRequired,
+    history: PropTypes.array.isRequired,
   }
 
   constructor(props) {
@@ -20,6 +20,9 @@ class HistoryDetailsGrid extends React.Component {
 
   buildList = () => {
     const {history: {results}} = this.props
+
+    if (!results) {return []}
+
     return Object.keys(results).reduce((acc,exerciseKey,i) => {
       const exercise = results[exerciseKey]
       let setsForExercise = Object.keys(exercise.sets).reduce((rows,setKey,j) => {

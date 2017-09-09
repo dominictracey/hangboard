@@ -24,7 +24,8 @@
     "test:watch": "jest --watch",
     "lint": "eslint src test",
     "coverage": "rimraf coverage && jest --coverage",
-    "version": "support/version-ios.sh"
+    "version": "support/version-ios.sh",
+    "postinstall": "rndebugger-open"
   },
   "jest": {
     "preset": "react-native",
@@ -79,6 +80,7 @@
     "plop": "^1.8.1",
     "react-addons-test-utils": "~15.4.2",
     "react-dom": "^15.6.1",
+    "react-native-debugger-open": "^0.3.12",
     "react-native-mock": "~0.2.5",
     "react-test-renderer": "^15.6.1",
     "remote-redux-devtools": "^0.5.7",

@@ -4,6 +4,7 @@ import {View, ScrollView, StyleSheet} from 'react-native'
 import AppText from '../../components/AppText'
 import {Icon} from 'react-native-vector-icons/MaterialIcons'
 import HistoryDetailsGrid from '../../components/HistoryDetailsGrid'
+import {K} from '../../utils/constants'
 
 class HistoryDetail extends React.Component {
 
@@ -23,23 +24,24 @@ class HistoryDetail extends React.Component {
     navigation: PropTypes.object.isRequired,
   }
 
+  // so it seems like using the react-navigation parameter to pass in an
+  // immutable Map converts it to a POJS object. So use item[key] rather than item.get(key)
   render() {
     const {params} = this.props.navigation.state
-    const key = params.key
-    const item = params[key]
+    const item = params.item
     return (
       <ScrollView>
-          <View style={styles.container}>
+        <View style={styles.container}>
           <View style={styles.top}>
-            <AppText size='lg'>{key}</AppText>
+            <AppText size='lg'>{item[K.HISTORY_LABEL]}</AppText>
           </View>
           <View style={styles.top}>
             <AppText size='lg'>board:</AppText>
-            <AppText size='sm'>{item.boardLabel}</AppText>
+            <AppText size='sm'>{item[K.BOARD_LABEL]}</AppText>
           </View>
           <View style={styles.top}>
             <AppText size='lg'>program:</AppText>
-            <AppText size='sm'>{item.programLabel}</AppText>
+            <AppText size='sm'>{item[K.PROGRAM_LABEL]}</AppText>
           </View>
           <View style={styles.bottom}>
             <HistoryDetailsGrid history={item} style={styles.grid}/>

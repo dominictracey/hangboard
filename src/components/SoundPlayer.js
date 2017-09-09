@@ -97,7 +97,7 @@ class SoundPlayer extends React.Component {
 
 SoundPlayer.propTypes = {
   seconds: PropTypes.number.isRequired,
-  nextSound: PropTypes.string.isRequired,
+  nextSound: PropTypes.string,
   tock: PropTypes.func.isRequired,
 }
 
