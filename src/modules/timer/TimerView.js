@@ -75,6 +75,24 @@ class TimerView extends Component {
     }
   }
 
+  fancyTimeFormat = (time) => {
+    // Hours, minutes and seconds
+    var hrs = ~~(time / 3600);
+    var mins = ~~((time % 3600) / 60);
+    var secs = time % 60;
+
+    // Output like "1:01" or "4:03:59" or "123:03:59"
+    var ret = '';
+
+    if (hrs > 0) {
+      ret += '' + hrs + ':' + (mins < 10 ? '0' : '');
+    }
+
+    ret += '' + mins + ':' + (secs < 10 ? '0' : '');
+    ret += '' + secs;
+    return ret;
+  }
+
   render() {
     const {loading, running, color, seconds, nextSound,
             timerStateActions: {tick}, workoutStateActions: {tock}} = this.props
@@ -90,7 +108,7 @@ class TimerView extends Component {
         <SoundPlayer seconds={seconds} nextSound={nextSound} tock={tock}/>
         <View style={styles.row}>
           <Text style={styles.timer}>
-            {seconds}
+            {this.fancyTimeFormat(seconds)}
           </Text>
         </View>
 

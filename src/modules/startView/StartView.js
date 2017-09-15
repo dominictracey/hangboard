@@ -1,21 +1,9 @@
-/**
- * @Author: Dominic Tracey <dpt>
- * @Date:   06-08-2017
- * @Email:  dominic.tracey@gmail.com
- * @Project: Hangboard
- * @Last modified by:   dpt
- * @Last modified time: 08-08-2017
- * @License: MIT
- * @Copyright: (c) 2017 Aquilon Consulting, Inc.
- */
- /*eslint-disable no-unused-vars*/
-
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
   TouchableOpacity,
-  Text,
   View,
+  ScrollView,
   StyleSheet
 } from 'react-native';
 import WorkoutListView from '../../components/WorkoutListView'
@@ -33,19 +21,20 @@ class StartView extends Component {
     ({navigation}) => ({
       tabBarKey: navigation.state,
       tabBarlabel: 'Home',
-      tabBarIcon: (props) => (<Icon name='home' size={24} />
+      tabBarIcon: () => (<Icon name='home' size={24} />
      ),
       headerTintStart: 'white',
       headerStyle: {
         backgroundStart: '#39babd'
       }
-    });
+    })
 
   static propTypes = {
     navigate: PropTypes.func.isRequired,
     session: PropTypes.object.isRequired,
     workouts: PropTypes.object.isRequired,
     theme: PropTypes.string,
+    history: PropTypes.object.isRequired,
     workoutStateActions: PropTypes.shape({
       load: PropTypes.func.isRequired,
     })
@@ -54,6 +43,15 @@ class StartView extends Component {
   constructor(props) {
     super(props);
   }
+
+  shouldComponentUpdate(nextProps) {
+    return (nextProps.session.get(K.LAST_WORKOUT_ID) !== this.props.session.get(K.LAST_WORKOUT_ID)) ||
+            (this.isGoing(nextProps.history) !== this.isGoing(this.props.history))
+  }
+
+  // do we have a workout underway?
+  isGoing = history => history.first().get(K.RESULTS) &&
+                      history.first().get(K.RESULTS).size > 0
 
   load = (workoutId) => {
     this.props.workoutStateActions.load(workoutId);
@@ -65,36 +63,64 @@ class StartView extends Component {
     this.props.navigate({routeName: 'Hang'})
   }
 
+  continue = () => {
+    this.props.navigate({routeName: 'Hang'})
+  }
+
   render() {
-    const {workouts,session, theme} = this.props;
+    const {workouts,session, theme, history} = this.props;
     const loadingStyle = session.get('loading')
           ? {backgroundColor: '#eee'}
           : null;
     const background = theme === 'dark' ? styles.dark : styles.light
-    return (
-        <View style={styles.top}>
-        <View style={[styles.container, background]}>
 
-        <TouchableOpacity
-          style={[styles.defaultStartButton, loadingStyle]}
+    // If we already have a session going, the big button should let them continue it,
+    //  with a link under it to "Start New Workout".
+    // If there is no session going, big button starts one.
+    const bigButton = this.isGoing(history)
+        ? (<View>
+            <TouchableOpacity
+              style={[styles.defaultStartButton, loadingStyle]}
+              accessible={true}
+              accessibilityLabel={'Continue Workout'}
+              onPress={this.continue}>
+              <AppText size='lg' theme='dark' flex='0'>
+                Continue{'\n'}Workout
+              </AppText>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.startNewButton}
+                accessible={true}
+                accessibilityLabel={'Start New Workout'}
+                onPress={this.loadDefault}>
+                <AppText size='lg' theme='dark' flex='0'>
+                  Start New
+                </AppText>
+            </TouchableOpacity>
+          </View>)
+        : (<TouchableOpacity
+            style={[styles.defaultStartButton, loadingStyle]}
             accessible={true}
             accessibilityLabel={'Start Workout'}
             onPress={this.loadDefault}>
             <AppText size='lg' theme='dark' flex='0'>
-              Start Workout
+              Start{'\n'}Workout
             </AppText>
-        </TouchableOpacity>
-        <AppText
-          size='sm'
-          theme={this.theme}>{workouts.getIn([session.get('lastWorkoutId'),'name'])}</AppText>
-        <AppText
-          size='sm' theme={this.theme}>or pick a different workout:</AppText>
-        </View>
-        <WorkoutListView workouts={workouts}
-                          lastWorkoutId={session.get(K.LAST_WORKOUT_ID)}
-                          loadCb={this.load}
-                          theme={theme}/>
-      </View>
+          </TouchableOpacity>)
+    return (
+        <ScrollView style={styles.top}>
+          <View style={[styles.container, background]}>
+            {bigButton}
+            <AppText
+              size='lg'
+              theme={this.theme}>{workouts.getIn([session.get('lastWorkoutId'),'name']) + '\n'}</AppText>
+
+          </View>
+          <WorkoutListView workouts={workouts}
+                            lastWorkoutId={session.get(K.LAST_WORKOUT_ID)}
+                            loadCb={this.load}
+                            theme={theme}/>
+      </ScrollView>
     )
   }
 }
@@ -140,6 +166,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     shadowOffset: {width: 10, height: 10},
     shadowRadius: 5,
+    shadowOpacity: 50,
+    elevation: 1,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 30,
+    shadowColor: '#888888',
+    margin: 20,
+  },
+  startNewButton: {
+    borderWidth: 0,
+    borderRadius: 10,
+    padding: 10,
+    backgroundColor: '#007afe',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowOffset: {width: 5, height: 5},
+    shadowRadius: 5,
+    shadowOpacity: 50,
+    elevation: .5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10,
     shadowColor: '#888888',
     margin: 20
   },

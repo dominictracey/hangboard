@@ -22,6 +22,7 @@ class EditableGripView extends React.Component {
   static propTypes = {
     session: PropTypes.object.isRequired,
     board: PropTypes.object.isRequired,
+    currGripId: PropTypes.string.isRequired,
     selectCb: PropTypes.func.isRequired,
     showCb: PropTypes.func.isRequired,
   }
@@ -59,11 +60,11 @@ class EditableGripView extends React.Component {
   }
 
   render() {
-    const {session, board} = this.props
+    const {session, board, currGripId} = this.props
     if (!this.state.edit) {
       return (
         <View style={styles.row}>
-          <AppText size='sm'>{session.get(K.GRIP)}</AppText>
+          <AppText size='lg'>{session.get(K.GRIP)}</AppText>
           <TouchableOpacity
             accessible={true}
             accessibilityLabel={'Change grip'}
@@ -85,7 +86,7 @@ class EditableGripView extends React.Component {
         <View style={styles.row}>
           <Picker
             style={styles.picker}
-            selectedValue={session.getIn(['grips',session.get(K.CURRENT_EXERCISE_ID)])}
+            selectedValue={currGripId}
             onValueChange={(itemValue, itemIndex) => this.selectGrip(itemValue, itemIndex)}
             >
             {this.buildGripChoices(board)}

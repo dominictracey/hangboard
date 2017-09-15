@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Text, StyleSheet} from 'react-native'
+import {pure} from 'recompose'
 
 class AppText extends Component {
   static propTypes = {
@@ -78,11 +79,11 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
   dark: {
-    color: '#d7d7d7',
+    color: '#fdfdfd',
   },
   light: {
     color: '#272727',
   }
 })
 
-export default AppText
+export default pure(AppText)

@@ -24,6 +24,7 @@ export default connect(
     workouts: state.getIn(['workout', 'workouts']),
     session: state.getIn(['workout', 'session']),
     theme: state.getIn(['workout',K.THEME]),
+    history: state.get(K.HISTORY)
   }),
    dispatch => {
      return {

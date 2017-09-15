@@ -15,7 +15,10 @@ const enhanced = [
  * https://github.com/jhen0409/react-native-debugger
  */
 /* eslint-disable no-undef */
-const composeEnhancers = (__DEV__ && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+
+const composeEnhancers = compose(__DEV__ &&
+                                global.window &&
+                                global.window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 /* eslint-enable no-undef */
 
 const enhancer = composeEnhancers(...enhanced);

@@ -62,20 +62,17 @@ class SoundPlayer extends React.Component {
 
     if (!soundFile) {return}
 
-    //const secs = this.props.seconds // get right closure
-    this.nowSound = moment()
+    // this.nowSound = moment()
     soundFile.play((success) => {
       if (success) {
-        var diff = this.nowSound.diff(this.lastSound)
-        console.log(nextSound + ' @ ' + this.nowSound.format('mm:ss:SSS') +
-          ' last is' + this.lastSound.format('mm:ss:SSS') + ' diff is ' + diff);
-        if (diff > 1025 || diff < 975) {
-          console.log('SKEW TOO GREAT!!! ' + diff)
-        }
-        this.lastSound = this.nowSound
+        // var diff = this.nowSound.diff(this.lastSound)
+        // console.log(nextSound + ' @ ' + this.nowSound.format('mm:ss:SSS') +
+        //   ' last is' + this.lastSound.format('mm:ss:SSS') + ' diff is ' + diff);
+        // if (diff > 1025 || diff < 975) {
+        //   console.log('SKEW TOO GREAT!!! ' + diff)
+        // }
+        // this.lastSound = this.nowSound
 
-        // once the sound has been played, update the display
-        //this.props.tock(secs)
       } else {
         console.log('playback failed due to audio decoding errors for ' + nextSound)
         // try to reload sound

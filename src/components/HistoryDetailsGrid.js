@@ -43,7 +43,7 @@ class HistoryDetailsGrid extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View >
         {this.state.rows}
       </View>
     );

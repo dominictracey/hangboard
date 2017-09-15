@@ -7,20 +7,16 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {List} from 'react-native-elements'
 import HistoryLineItem from '../../components/HistoryLineItem'
 import {K} from '../../utils/constants'
-
+import {pure} from 'recompose'
+ /*eslint-disable no-unused-vars*/
 class HistoryView extends Component {
   static displayName = 'HistoryView'
-
-  static propTypes = {
-    history: PropTypes.object.isRequired,
-    navigate: PropTypes.func.isRequired,
-  };
 
   static navigationOptions =
     ({navigation}) => ({
       tabBarKey: navigation.state,
-      tabBarlabel: 'History',
-      tabBarIcon: () => (<Icon name='history' size={24} />
+      tabBarlabel: 'Home',
+      tabBarIcon: (props) => (<Icon name='history' size={24} />
      ),
       headerTintStart: 'white',
       headerStyle: {
@@ -28,39 +24,49 @@ class HistoryView extends Component {
       }
     })
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      'list': [],
-      'size': -1,
-    }
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    navigate: PropTypes.func.isRequired,
+    historyActions: PropTypes.shape({
+      deleteSet: PropTypes.func.isRequired,
+    })
   }
 
-  componentDidMount() {
-    this.setState({list: this.buildList()})
-    this.setState({size: this.state.list.length})
+  constructor(props) {
+    super(props)
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props.history.size !== nextProps.history.size
   }
 
   buildList = () => {
     const {history} = this.props
+
     let list = []
     history.map((item,i) => {
       console.log('adding ' + i)
       list.push(<HistoryLineItem index={i} key={i} title={item.get(K.HISTORY_LABEL)} cb={this.showHistory}/>)
     })
+
     return list
   }
 
   showHistory = (key) => {
     const {navigate, history} = this.props
-    navigate({routeName: 'HistoryDetail', params: {item: history.get(key)}})
+    navigate({routeName: 'HistoryDetail',
+      params: {item: history.get(key), index: key, deleteCb: this.delete}})
+  }
+
+  delete = (index) => {
+    this.props.historyActions.deleteSet(index)
   }
 
   render() {
     return (
       <ScrollView>
         <List>
-          {this.state.list}
+          {this.buildList()}
         </List>
       </ScrollView>
     );

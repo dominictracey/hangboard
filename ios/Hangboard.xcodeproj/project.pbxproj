@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -18,8 +19,6 @@
 		139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139105C11AF99BAD00B5F7CC /* libRCTSettings.a */; };
 		139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 139FDEF41B06529B00C62182 /* libRCTWebSocket.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
@@ -27,7 +26,6 @@
 		275CE2F2503C4212AE2EB108 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E684CFA6BE941F7B91B4B82 /* Octicons.ttf */; };
 		28CCE4A40FD844C4AF4D50AA /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 135010F97EA64055A67287DF /* libRNSound.a */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4C21E0B4AEC006451C7 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		2D02E4C31E0B4AEC006451C7 /* libRCTImage-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */; };
@@ -51,6 +49,8 @@
 		B300D5F87CD04AD7B41B4D56 /* libRNVersionNumber.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5305C92DAA9148E1BC597D6B /* libRNVersionNumber.a */; };
 		B4038C471F48868C0004AA02 /* click.wav in Resources */ = {isa = PBXBuildFile; fileRef = B4038C461F48868C0004AA02 /* click.wav */; };
 		B4038C491F489EFE0004AA02 /* click.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B4038C481F489EFE0004AA02 /* click.mp3 */; };
+		B46AF0181F6B8019001BF73D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B46AF0171F6B8019001BF73D /* Images.xcassets */; };
+		B46AF07A1F6C4BE1001BF73D /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B46AF0781F6C4BE1001BF73D /* LaunchScreen.xib */; };
 		B4B8ED901F50873B00C15C11 /* silence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B4B8ED8F1F50873B00C15C11 /* silence.mp3 */; };
 		B4F442621F4A27F80094D683 /* beep.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B4F442611F4A27F80094D683 /* beep.mp3 */; };
 /* End PBXBuildFile section */
@@ -320,8 +320,6 @@
 		13B07F961A680F5B00A75B9A /* Hangboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hangboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Hangboard/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Hangboard/AppDelegate.m; sourceTree = "<group>"; };
-		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Hangboard/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Hangboard/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Hangboard/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
@@ -344,6 +342,8 @@
 		B24DE58E72B04B7FA44A7E80 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B4038C461F48868C0004AA02 /* click.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = click.wav; path = ../../../../../Downloads/click.wav; sourceTree = "<group>"; };
 		B4038C481F489EFE0004AA02 /* click.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = click.mp3; path = ../android/app/src/main/res/raw/click.mp3; sourceTree = "<group>"; };
+		B46AF0171F6B8019001BF73D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Hangboard/Images.xcassets; sourceTree = "<group>"; };
+		B46AF0791F6C4BE1001BF73D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Hangboard/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		B4B8ED8F1F50873B00C15C11 /* silence.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = silence.mp3; path = ../android/app/src/main/res/raw/silence.mp3; sourceTree = "<group>"; };
 		B4F442611F4A27F80094D683 /* beep.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = beep.mp3; path = ../android/app/src/main/res/raw/beep.mp3; sourceTree = "<group>"; };
 		B9980402C71242E2AC7F040A /* libKCKeepAwake.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libKCKeepAwake.a; sourceTree = "<group>"; };
@@ -488,12 +488,12 @@
 		13B07FAE1A68108700A75B9A /* Hangboard */ = {
 			isa = PBXGroup;
 			children = (
+				B46AF0781F6C4BE1001BF73D /* LaunchScreen.xib */,
+				B46AF0171F6B8019001BF73D /* Images.xcassets */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
-				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = Hangboard;
@@ -1077,8 +1077,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 				3141FA954BBA4D2CBAA73758 /* Entypo.ttf in Resources */,
 				37D874BAB99E4F1D9B6B679F /* EvilIcons.ttf in Resources */,
 				1FAAE8CBD5B348CBB9BF2CC8 /* FontAwesome.ttf in Resources */,
@@ -1088,8 +1086,10 @@
 				0453A547FC3941749C117958 /* Ionicons.ttf in Resources */,
 				955E3F37C1F246E2B83F89F9 /* MaterialCommunityIcons.ttf in Resources */,
 				6B3036B632244F6D8A2C0BDF /* MaterialIcons.ttf in Resources */,
+				B46AF0181F6B8019001BF73D /* Images.xcassets in Resources */,
 				B4F442621F4A27F80094D683 /* beep.mp3 in Resources */,
 				B4B8ED901F50873B00C15C11 /* silence.mp3 in Resources */,
+				B46AF07A1F6C4BE1001BF73D /* LaunchScreen.xib in Resources */,
 				275CE2F2503C4212AE2EB108 /* Octicons.ttf in Resources */,
 				087C4018B7FE49B9BC038470 /* SimpleLineIcons.ttf in Resources */,
 				87ECEEB64BCE4FA8A047AC3B /* Zocial.ttf in Resources */,
@@ -1100,7 +1100,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1195,13 +1194,12 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		13B07FB11A68108700A75B9A /* LaunchScreen.xib */ = {
+		B46AF0781F6C4BE1001BF73D /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				13B07FB21A68108700A75B9A /* Base */,
+				B46AF0791F6C4BE1001BF73D /* Base */,
 			);
 			name = LaunchScreen.xib;
-			path = Hangboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

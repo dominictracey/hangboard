@@ -1,6 +1,8 @@
 import {List, Map} from 'immutable';
-import {K,M} from '../../utils/constants'
+import {K} from '../../utils/constants'
 import moment from 'moment'
+import {NavigationActions} from 'react-navigation'
+import {loop, Effects} from 'redux-loop-symbol-ponyfill'
 
 // Initial state
 const initialState = List([
@@ -138,8 +140,8 @@ export function recordSet(exId, setId, setLabel, gripLabel, reps, lastSuccess, w
   return {type: HISTORY_RECORD_SET,exId, setId, setLabel, gripLabel, reps, lastSuccess, weight, note}
 }
 
-export function deleteSet(exId, setId) {
-  return {type: HISTORY_DELETE_SET, exId, setId}
+export function deleteSet(index) {
+  return {type: HISTORY_DELETE_SET, index}
 }
 
 export function updateSet(exId, setId, gripId, gripLabel, reps, lastSuccess, weight, note) {
@@ -153,7 +155,7 @@ export function completeWorkout(timestamp) {
 function moveCurrentOut(state) {
   // the first item in the history List should always be the current Map
   if (!state.first().get(K.HISTORY_LABEL) === K.CURRENT) {
-    return state.shift(Map({[K.HISTORY_LABEL]: K.CURRENT,}))
+    return state.shift(Map({[K.HISTORY_LABEL]: K.CURRENT, [K.RESULTS]: Map({})}))
   }
 
   // only save if there is something to save
@@ -164,7 +166,9 @@ function moveCurrentOut(state) {
     // and put a new empty history item at the beginning of the list
     const timestamp = moment().format('MMM Do YYYY, h:mm a')
     const toSave = state.first()
+    /*eslint-disable no-unused-vars*/
     const timestamped = toSave.update(K.HISTORY_LABEL,label => timestamp)
+    /*eslint-enable no-unused-vars*/
     const state1 = state.shift()
     const state2 = state1.unshift(timestamped)
     return state2.unshift(Map({[K.HISTORY_LABEL]: K.CURRENT,}))
@@ -215,11 +219,15 @@ export default function HistoryStateReducer(state = initialState, action = {}) {
       shifted = state.shift()
       return shifted.unshift(newSession)
     case HISTORY_DELETE_SET:
-      // delete the set specified by action.key from history
-      return state;
+      // delete the set specified by action.index from history
+      // and go back to history list
+      var backAction = NavigationActions.back({})
+
+      return loop(state.delete(action.index),
+                  Effects.constant(backAction))
     case HISTORY_UPDATE_SET:
       // update the set specified by action.key with the new values
-      return state;
+      return state
     case HISTORY_COMPLETE_WORKOUT:
       // move current to a timestamped key and recreate an empty current
       return moveCurrentOut(state)

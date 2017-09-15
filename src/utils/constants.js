@@ -97,6 +97,8 @@ export const K = {
   BEEPS: 'beeps',
   TICKS_FOR: 'ticksForPhases',
   BEEPS_FOR: 'beepsForPhases',
+  DEFAULT_PROGRAM_ID: 'defaultProgramId',
+  DEFAULT_BOARD_ID: 'defaultBoardId',
 
   // history Actions
   HISTORY_START_WORKOUT: 'historyState/StartWorkout',
@@ -107,6 +109,19 @@ export const K = {
   CURRENT: 'Current Workout',
   NOTE: 'note',
   HISTORY_LABEL: 'historyLabel',
+  NAME: 'name',
+
+  // program types
+  BEGINNER: 'programType/BEGINNER',
+  INTERMEDIATE: 'programType/INTERMEDIATE',
+  ADVANCED: 'programType/ADVANCED',
+  CUSTOM: 'programType/CUSTOM',
+
+  TITLE: 'title',
+
+  // board keys
+  DEFAULTS: 'defaults',
+  LEVEL: 'level',
 }
 
 export const M = {
@@ -116,6 +131,7 @@ export const M = {
   CURRENT_SET_ID: [K.SESSION,K.CURRENT_SET_ID],
   SET_LABEL: [K.SESSION,K.SET_LABEL],
   WORKOUT_ID: [K.SESSION,K.WORKOUT_ID],
+  //WORKOUTS: [K.SESSSION,K.WORKOUTS],
   LAST_WORKOUT_ID: [K.SESSION,K.LAST_WORKOUT_ID],
   CURRENT_EXERCISE_ORD: [K.SESSION,K.CURRENT_EXERCISE_ORD],
   CURRENT_EXERCISE_ID: [K.SESSION,K.CURRENT_EXERCISE_ID],

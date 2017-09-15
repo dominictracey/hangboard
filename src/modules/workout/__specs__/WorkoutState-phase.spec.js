@@ -29,6 +29,7 @@ jest.mock('react-native-version-number', () => 'VersionNumber')
  * @jest-environment jsdom
  */
 describe('WorkoutState', () => {
+
   const getLoadingValue = state => state.getIn([K.WORKOUT, 'loading']);
   const getPhaseValue = state => state.getIn([K.WORKOUT, ...M.PHASE]);
   const getWorkoutIdValue = state => state.getIn([K.WORKOUT, ...M.WORKOUT_ID]);

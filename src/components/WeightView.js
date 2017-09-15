@@ -32,7 +32,7 @@ class WeightView extends React.Component {
     super(props);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps) {
     return (!isNaN(nextProps.weight) && nextProps.weight !== this.props.weight)
   }
 
@@ -45,14 +45,14 @@ class WeightView extends React.Component {
           accessibilityLabel={'Add Weight'}
           onPress={addCb}
           style={styles.timerButton}>
-          <Icon name='add-circle-outline' size={32} color='black'/>
+          <Icon name='add-circle-outline' size={34} color='black'/>
         </TouchableOpacity>
         <TouchableOpacity
           accessible={true}
           accessibilityLabel={'Remove Weight'}
           onPress={removeCb}
           style={styles.timerButton}>
-          <Icon name='remove-circle-outline' size={32} color='black'/>
+          <Icon name='remove-circle-outline' size={34} color='black'/>
         </TouchableOpacity>
       </View>
     ) : null
@@ -73,39 +73,26 @@ class WeightView extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: .75,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
   },
   row: {
-    height: 50,
-    flex: 1,
+    //height: 50,
+    flex: .5,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   rowplus: {
     flex: 1.5,
-  },
-  details: {
-    flex: 1,
-    color: '#878787',
-    fontSize: 32,
-    textAlign: 'center',
   },
   timerButton: {
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
     flex: .4,
-  },
-  weight: {
-    flex: 1,
-    color: '#878787',
-    fontSize: 42,
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 })
 

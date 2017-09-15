@@ -1,18 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {TouchableOpacity, StyleSheet} from 'react-native'
+import {View, TouchableOpacity, StyleSheet} from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const PlayButton = (props) => {
   const iconName = props.running ? 'pause-circle-outline' : 'play-circle-outline'
   return (
-    <TouchableOpacity
-      accessible={true}
-      accessibilityLabel={'Stop timer'}
-      onPress={props.callback}
-      style={styles.timerButton}>
-      <Icon name={iconName} size={80} color='black' />
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        accessible={true}
+        accessibilityLabel={'Stop timer'}
+        onPress={props.callback}
+        style={styles.timerButton}>
+        <Icon name={iconName} size={56} color='black' />
+      </TouchableOpacity>
+    </View>
   )
 }
 

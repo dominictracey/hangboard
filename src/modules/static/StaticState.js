@@ -1,7 +1,9 @@
 import {fromJS} from 'immutable'
-import {H} from '../../utils/constants'
-
-export const LOAD_STATIC_STATE = 'StaticState/LOAD';
+import {H,K} from '../../utils/constants'
+import boardIndex from './BoardIndex'
+import allBoards from './BoardsAll'
+export const LOAD_STATIC_STATE = 'StaticState/LOAD'
+export const LOAD_BOARD = 'StaticState/LOAD_BOARD'
 
 // Initial state
 const initialState = fromJS({
@@ -67,6 +69,74 @@ const initialState = fromJS({
           type: H.FP1,
         },
       },
+      defaults: {
+        [K.BEGINNER]: {
+          [K.WEIGHTS]: {
+            '1': 0,
+            '2': -30,
+            '3': -30,
+            '4': -40,
+            '5': -40,
+            '6': -20,
+            '7': -50,
+            '8': -20,
+            '9': -40,
+          },
+          [K.GRIPS]: {
+            '1': '1',
+            '2': '9',
+            '3': '3',
+            '4': '7',
+            '5': '11',
+            '6': '3',
+            '7': '6',
+            '8': '2',
+            '9': '9',
+          },
+        },
+        [K.INTERMEDIATE]: {
+          [K.WEIGHTS]: {
+            '1': 10,
+            '2': 0,
+            '3': -30,
+            '4': -10,
+            '5': -20,
+            '6': -40,
+            '7': -10,
+            '8': -50,
+          },
+          [K.GRIPS]: {
+            '1': '1',
+            '2': '3',
+            '3': '13',
+            '4': '4',
+            '5': '10',
+            '6': '6',
+            '7': '2',
+            '8': '8',
+          },
+        },
+        [K.ADVANCED]: {
+          [K.WEIGHTS]: {
+            '1': 0,
+            '2': -20,
+            '3': 0,
+            '4': -30,
+            '5': -20,
+            '6': -30,
+            '7': -30,
+          },
+          [K.GRIPS]: {
+            '1': '3',
+            '2': '13',
+            '3': '4',
+            '4': '14',
+            '5': '6',
+            '6': '12',
+            '7': '8',
+          },
+        }
+      }
     },
   },
   sets: {
@@ -118,9 +188,9 @@ const initialState = fromJS({
   },
   programs: {
     '1': {
-      title: 'Rock Prodigy Beginner Program',
+      title: 'Beginner',
       author: 'Manderson',
-      level: 'beginner',
+      level: K.BEGINNER,
       warmup_secs: 1200,
       prep_secs: 10,
       exercises: {
@@ -171,35 +241,10 @@ const initialState = fromJS({
         },
       },
     },
-    '2': {
-      title: 'TEST PROGRAM',
-      author: 'DPT',
-      level: 'advanced',
-      warmup_secs: 3,
-      prep_secs: 10,
-      exercises: {
-        '1': {
-          sets: {
-            '1': '5',
-          }
-        },
-        '2': {
-          sets: {
-            '1': '5',
-            '2': '4',
-          }
-        },
-        '3': {
-          sets: {
-            '1': '5',
-          }
-        },
-      },
-    },
     '3': {
-      title: 'Rock Prodigy Intermediate Program',
+      title: 'Intermediate',
       author: 'Manderson',
-      level: 'intermediate',
+      level: K.INTERMEDIATE,
       warmup_secs: 1200,
       prep_secs: 10,
       exercises: {
@@ -253,9 +298,9 @@ const initialState = fromJS({
       },
     },
     '4': {
-      title: 'Rock Prodigy Advanced Program',
+      title: 'Advanced',
       author: 'Manderson',
-      level: 'advanced',
+      level: K.ADVANCED,
       warmup_secs: 1200,
       prep_secs: 10,
       exercises: {
@@ -310,19 +355,38 @@ const initialState = fromJS({
       },
     },
   },
-})
+}).mergeDeep(boardIndex)
 
-export function LoadStaticState() {
+export function loadStaticState() {
   return {
     type: LOAD_STATIC_STATE,
   };
+}
+
+export function loadBoard(boardId) {
+  return {type: LOAD_BOARD, boardId}
 }
 
 // Reducer
 export default function StaticStateReducer(state = initialState, action = {}) {
   switch (action.type) {
     case LOAD_STATIC_STATE:
-      return state.set('isReady', true);
+      return state.set('isReady', true)
+    case LOAD_BOARD:
+      // have to pull it into state
+      // for now, it's just in the data directory
+      console.log('importing boardId ' + action.boardId)
+      var boardMeta = state.getIn(['boards','index',action.boardId])
+      if (boardMeta) {
+        const boardData =
+              // https://github.com/facebook/react-native/issues/6391
+              //require('../../data/boards/' + boardMeta.get('location') + '/board.js')
+              allBoards.getIn([K.BOARDS,action.boardId])
+        return state.mergeDeepIn([K.BOARDS,action.boardId],boardData)
+      } else {
+        console.log('could not find requested board meta data')
+        return state
+      }
 
     default:
       return state;

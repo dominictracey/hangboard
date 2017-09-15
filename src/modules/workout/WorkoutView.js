@@ -52,10 +52,6 @@ class WorkoutView extends Component {
     navigate: PropTypes.func.isRequired
   };
 
-  componentDidMount() {
-    //this.load();
-  }
-
   load = (workoutId) => {
     this.props.workoutStateActions.load(workoutId);
   };
@@ -81,7 +77,9 @@ class WorkoutView extends Component {
   }
 
   showBoard = () => {
-    this.props.navigate({routeName: 'Image'})
+    const {navigate, workouts, session} = this.props
+    navigate({routeName: 'Image',
+      params: {boardId: workouts.get(session.get(K.WORKOUT_ID)).get(K.BOARD)}})
   }
 
   loadDefault = () => {
@@ -98,26 +96,30 @@ class WorkoutView extends Component {
       <View style={styles.container}>
 
         {/* {this.renderUserInfo()} */}
-        <AppText size='xl'>
-          {session.get(K.PHASE_LABEL)}
-        </AppText>
+        <View style={styles.phase}>
+          <AppText size='xl'>
+            {session.get(K.PHASE_LABEL)}
+          </AppText>
+        </View>
         <TimerViewContainer/>
         <EditableGripView session={session}
             board={boards.get(workouts.get(session.get(K.WORKOUT_ID)).get(K.BOARD))}
+            currGripId={workouts.get(session.get(K.WORKOUT_ID))
+                                .get(K.GRIPS).get(session.get(K.CURRENT_EXERCISE_ID))}
             selectCb={this.changeGrip}
             showCb={this.showBoard}/>
-        <View style={styles.detailsContainer}>
-          <View style={styles.container}>
+        <View style={[styles.detailsContainer, styles.altBackground]}>
+          <View style={[styles.container, styles.altBackground]}>
             <AppText size='lg' theme='theme'>Grip</AppText>
-            <AppText size='lg' theme='theme'>{session.get(K.EXERCISE_LABEL)}</AppText>
+            <AppText size='xl' theme='theme'>{session.get(K.EXERCISE_LABEL)}</AppText>
           </View>
-          <View style={styles.container}>
+          <View style={[styles.container, styles.altBackground]}>
             <AppText size='lg' theme='theme'>Set</AppText>
-            <AppText size='lg' theme='theme'>{session.get(K.SET_LABEL)}</AppText>
+            <AppText size='xl' theme='theme'>{session.get(K.SET_LABEL)}</AppText>
           </View>
-          <View style={styles.container}>
+          <View style={[styles.container, styles.altBackground]}>
             <AppText size='lg' theme='theme'>Reps</AppText>
-            <AppText size='lg' theme='theme'>{session.get(K.REP_LABEL)}</AppText>
+            <AppText size='xl' theme='theme'>{session.get(K.REP_LABEL)}</AppText>
           </View>
         </View>
         <View style={styles.detailsContainer}>
@@ -133,20 +135,6 @@ class WorkoutView extends Component {
     );
   }
 }
-
-const circle = {
-  borderWidth: 0,
-  borderRadius: 40,
-  width: 80,
-  height: 80
-};
-
-const bigCircle = {
-  borderWidth: 0,
-  borderRadius: 100,
-  width: 200,
-  height: 200
-};
 
 const styles = StyleSheet.create({
   container: {
@@ -164,64 +152,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1
-  },
-  userProfilePhoto: {
-    ...circle,
-    alignSelf: 'center'
-  },
-  defaultStartButton: {
-    ...bigCircle,
-    backgroundColor: '#349d4a',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowOffset: {width: 10, height: 10},
-    shadowRadius: 5,
-    shadowColor: '#888888',
-    margin: 20
-  },
-  startWorkout: {
-    color: 'white',
-    fontSize: 40,
-    textAlign: 'center'
-  },
-  workout: {
-    color: '#dfdfdf',
-    fontSize: 50,
-    textAlign: 'center'
+    paddingTop: 5,
+    paddingBottom: 1,
   },
   phase: {
-    color: '#ababab',
-    fontSize: 40,
-    textAlign: 'center'
+    flex: .5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 20,
   },
-  grip: {
-    color: '#ababab',
-    fontSize: 40,
-    textAlign: 'center'
-  },
-  details: {
-    color: '#878787',
-    fontSize: 32,
-    textAlign: 'center'
-  },
-  details2: {
-    color: '#878787',
-    fontSize: 20,
-    textAlign: 'center'
-  },
-  welcome: {
-    textAlign: 'center',
-    color: 'black',
-    marginBottom: 5,
-    padding: 5
-  },
-  linkButton: {
-    textAlign: 'center',
-    color: '#CCCCCC',
-    marginBottom: 10,
-    padding: 5
-  }
+  altBackground: {backgroundColor: '#dfdfdf'},
 });
 
 export default WorkoutView;

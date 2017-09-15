@@ -14,15 +14,13 @@ const HistoryDetailsRow = (props) => {
           <AppText size='sm'>{grip}</AppText>
         </View>
         <View style={styles.row}>
-          <View style={styles.detail}>
-            <AppText size='sm'>Set: {set} </AppText>
-          </View>
-          <View style={styles.detail}>
-            <AppText size='sm'>Weight: {weight}</AppText>
-          </View>
+          <AppText size='sm'>Set: {set} </AppText>
+        </View>
+        <View style={styles.row}>
+          <AppText size='sm'>Weight: {weight}</AppText>
         </View>
       </View>
-      <View style={styles.row}>
+      <View style={[styles.container, styles.containerplus]}>
         <RepsComplete reps={reps} complete={lastSuccess} cb={noop}/>
       </View>
     </View>
@@ -46,14 +44,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  containerplus: {
+    flex: 1.5,
+    alignItems: 'flex-start',
+  },
   outer: {
-    height: 100,
+  //  height: 100,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#dfdfdf',
+    borderBottomColor: '#dfdfdf',
+    borderBottomWidth: 2,
   },
   row: {
     flex: 1,

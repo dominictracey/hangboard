@@ -21,6 +21,7 @@ import moment from 'moment'
 import KeepAwake from 'react-native-keep-awake'
 import store from '../../redux/store'
 import {startWorkout, recordSet, completeWorkout} from '../history/HistoryState'
+import boardIndex from '../static/BoardIndex'
 
 // Initial state
 // All keys are strings per https://github.com/facebook/immutable-js/issues/282
@@ -28,7 +29,7 @@ const initialState = fromJS({
   // everything below here should be user configurable
   workouts: {
     '1': {
-      name: 'Rock Prodigy Beginner Workout',
+      name: 'Beginner - Rock Prodigy Training Center',
       program: '1',
       board: '1',
       weights: {
@@ -55,7 +56,7 @@ const initialState = fromJS({
       }
     },
     '2': {
-      name: 'Rock Prodigy Intermediate Workout',
+      name: 'Intermediate - Rock Prodigy Training Center',
       program: '3',
       board: '1',
       weights: {
@@ -80,7 +81,7 @@ const initialState = fromJS({
       }
     },
     '3': {
-      name: 'Rock Prodigy Advanced Workout',
+      name: 'Advanced - Rock Prodigy Training Center',
       program: '4',
       board: '1',
       weights: {
@@ -101,21 +102,6 @@ const initialState = fromJS({
         '6': '12',
         '7': '8',
       }
-    },
-    '4': {
-      name: 'Test hangboard routine',
-      program: '2',
-      board: '1',
-      weights: {
-        '1': 0,
-        '2': 10,
-        '3': -10,
-      },
-      grips: {
-        '1': '7',
-        '2': '2',
-        '3': '3',
-      },
     },
   },
 
@@ -170,6 +156,7 @@ const CHANGEGRIP = 'WorkoutState/CHANGEGRIP' // change the current grip
 const NEXT_SET = 'WorkoutState/NEXT_SET'
 const PREV_SET = 'WorkoutState/PREV_SET'
 export const TOCK = 'WorkoutState/TOCK' // allows the timer to let us process each tick
+export const CREATE_WORKOUT = 'WorkoutState/CREATE_WORKOUT' // pick a board and a program...
 
 export const PhaseLabels = {
   [LOAD]: K.LOAD_PHASE_LABEL,
@@ -246,6 +233,10 @@ export function nextSet() {
 
 export function prevSet() {
   return {type: PREV_SET}
+}
+
+export function createWorkout(programId, boardId) {
+  return {type: CREATE_WORKOUT, programId, boardId}
 }
 
 // accessors
@@ -447,7 +438,8 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
         var state4 = resetSet(state3)
         return loop(
           changePhase(state4,LOAD)
-            .update('loading',loading => true),
+            .update('loading',loading => true)
+            .updateIn(M.COMPLETED,compl => false),
           Effects.batch([Effects.constant(warmup()),
             Effects.constant(needNewSound(K.WARMUP, getTimeForPhase(K.WARMUP, state4))),
             Effects.constant(startWorkout(getBoardId(state4), getBoard(state4).get('name'),
@@ -520,9 +512,7 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
             Effects.constant(pause()),
             Effects.constant(collectSetResults(getCurrSetOrd(state), getSetLabel(state),
                 getCurrExerciseId(state), getCurrGripName(state), getNumReps(state),
-                getCurrWeight(state), getBaselineWeight(state)),
-            Effects.constant(completeWorkout())
-            )
+                getCurrWeight(state), getBaselineWeight(state)))
           ])
       )
 
@@ -543,14 +533,23 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       //action: exId, setId, successfulReps
       //var result = Map({[action.exId]: Map({[action.setId]: action.successfulReps})})
 
+      // if this is the result for the last set (session marked complete in COMPLETE)
+      // tell the historyReducer to move it out.
+      var finishEffect = state.getIn(M.COMPLETED)
+        ? Effects.constant(completeWorkout())
+        : Effects.none()
+
       return loop(state.updateIn([...M.COLLECT_SET_RESULTS,'numRepsComplete'],r => action.successfulReps),
-                  Effects.constant(recordSet(action.exId, action.setId,
-                  state.getIn([...M.COLLECT_SET_RESULTS,K.SET_LABEL,]),
-                  state.getIn([...M.COLLECT_SET_RESULTS,K.GRIP_LABEL,]),
-                  state.getIn([...M.COLLECT_SET_RESULTS,K.REPS]),
-                  action.successfulReps,
-                  parseInt(state.getIn([...M.COLLECT_SET_RESULTS,'sessionWeight'])),
-                  '',))
+                  Effects.batch([
+                    Effects.constant(recordSet(action.exId, action.setId,
+                      state.getIn([...M.COLLECT_SET_RESULTS,K.SET_LABEL,]),
+                      state.getIn([...M.COLLECT_SET_RESULTS,K.GRIP_LABEL,]),
+                      state.getIn([...M.COLLECT_SET_RESULTS,K.REPS]),
+                      action.successfulReps,
+                      parseInt(state.getIn([...M.COLLECT_SET_RESULTS,'sessionWeight'])),
+                      '',)),
+                    finishEffect,
+                  ])
                 )
                 // .deleteIn(M.COLLECT_SET_RESULTS)
 
@@ -562,12 +561,18 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       // if the climber changes this during collecting results,
       //    it should just update the workout and the result collection object
       //
-      // if the current set is not the first in the set it should update everything properly
-      //  (e.g. changing the baseline) since we are doing relative changes and not absolute.
-      var isLastSet = action.exerciseId === getCurrExerciseId(state)
+      // When we get to the last set of the exercise, the next exercise has already started underneath
+      // the result collection stack card, so we need to just quietly update only the workout/baseline weight of the
+      // prior exercise and the COLLECT_SET_RESULTS weight.
+      var isLastSet = action.exerciseId !== getCurrExerciseId(state)
+      // if we have moved on to the next exercise, create a "rewound" state with the old exerciseId from
+      // which we can get the old workout/baseline weight
+      var rewoundState = isLastSet ? state.updateIn(M.CURRENT_EXERCISE_ID, exId => action.exerciseId) : state
+      // use the "rewound exerciseId" state
       var newWorkoutWeight = action.add
-            ? getBaselineWeight(state) + weightAdjustmentAmount
-            : getBaselineWeight(state) - weightAdjustmentAmount
+            ? getBaselineWeight(rewoundState) + weightAdjustmentAmount
+            : getBaselineWeight(rewoundState) - weightAdjustmentAmount
+      // we won't update the sessionWeight from the result collection of a last set - can just use state
       var newSessionWeight = action.add
             ? getCurrWeight(state) + weightAdjustmentAmount
             : getCurrWeight(state) - weightAdjustmentAmount
@@ -575,12 +580,13 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       var newState =
           state.updateIn([K.WORKOUTS,getWorkoutId(state),K.WEIGHTS,action.exerciseId],
                                             weight => newWorkoutWeight)
-                .updateIn(M.CURRENT_WEIGHT, weight => newSessionWeight)
-            // .updateIn([...M.WEIGHTS,action.exerciseId],
-            //     weight => action.add ? weight + weightAdjustmentAmount : weight - weightAdjustmentAmount)
+      if (!isLastSet) {
+        newState = newState.updateIn(M.CURRENT_WEIGHT, weight => newSessionWeight)
+      }
+
       if (action.result) {
         return newState.updateIn([...M.COLLECT_SET_RESULTS,'workoutWeight'],
-                  weight => newSessionWeight)
+                  weight => newWorkoutWeight)
       } else {
         return newState
       }
@@ -668,6 +674,41 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       }
 
       return state
+
+    case CREATE_WORKOUT:
+      // do we already have this workout? If so, don't overwrite it
+      var existing = state.get('workouts')
+        .filter(w => w.get('program') === action.programId && w.get('board') === action.boardId)
+
+      if (existing.size > 0) {
+        // should only be one - add sanity check
+        return state // at any rate, it's already created
+      }
+
+      // board should already be created
+      var board = getConfiguration().get('boards').get(action.boardId)
+
+      program = getConfiguration().get('programs').get(action.programId)
+      // find the next key value
+      var newKeyVal = state.get('workouts')
+                            .reduce((acc, _, key) => parseInt(key) > acc && parseInt(key), -1) + 1
+
+      // and the default weights and grips for the program
+
+      var newWorkout = Map({
+        [K.WORKOUTS]: Map({
+          [newKeyVal]: Map({
+            name: program.get(K.TITLE) + ' - ' + board.get(K.NAME),
+            program: action.programId,
+            board: action.boardId,
+            weights: board.getIn([K.DEFAULTS,program.get(K.LEVEL),K.WEIGHTS]),
+            grips: board.getIn([K.DEFAULTS,program.get(K.LEVEL),K.GRIPS]),
+          })
+        })
+      })
+
+      return state.mergeDeep(newWorkout)
+                  .updateIn(M.LAST_WORKOUT_ID, v => newKeyVal.toString())
 
     default:
       return state;

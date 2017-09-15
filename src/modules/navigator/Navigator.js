@@ -1,24 +1,15 @@
-/**
- * @Author: Dominic Tracey <dpt>
- * @Date:   18-07-2017
- * @Email:  dominic.tracey@gmail.com
- * @Project: Hangboard
- * @Last modified by:   dpt
- * @Last modified time: 08-08-2017
- * @License: MIT
- * @Copyright: (c) 2017 Aquilon Consulting, Inc.
- */
-
 import {Platform} from 'react-native';
 import {TabNavigator, StackNavigator} from 'react-navigation';
 
+// tabs
 import WorkoutViewContainer from '../workout/WorkoutViewContainer';
-//import ColorViewContainer from '../colors/ColorViewContainer';
 import StartViewContainer from '../startView/StartViewContainer'
 import SettingsViewContainer from '../settings/SettingsViewContainer'
-import ImageViewContainer from '../imageView/ImageViewContainer'
-import SetResultViewContainer from '../setResult/SetResultViewContainer'
 import HistoryViewContainer from '../history/HistoryViewContainer'
+
+// stacks
+import ImageView from '../imageView/ImageView'
+import SetResultViewContainer from '../setResult/SetResultViewContainer'
 import HistoryDetail from '../history/HistoryDetail'
 
 const headerColor = '#39babd';
@@ -62,7 +53,7 @@ const AppNavigator = StackNavigator({
     }
   },
   SetResult: {screen: SetResultViewContainer},
-  Image: {screen: ImageViewContainer},
+  Image: {screen: ImageView},
   HistoryDetail: {screen: HistoryDetail},
 });
 

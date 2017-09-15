@@ -11,9 +11,10 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-import {View, TouchableOpacity, Text} from 'react-native'
-import {StyleSheet} from 'react-native'
+import {View, StyleSheet} from 'react-native'
 import {List, ListItem} from 'react-native-elements'
+import {pure} from 'recompose'
+import AppText from './AppText'
 
 class WorkoutListView extends React.Component {
 
@@ -23,91 +24,47 @@ class WorkoutListView extends React.Component {
     loadCb: PropTypes.func.isRequired,
     theme: PropTypes.string,
   }
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: '',
-    }
-  }
-  componentWillMount() {
-    this.setState({'list': this.buildList()})
-  }
 
   loadWorkout = (id) => {
     this.props.loadCb(id)
   }
 
   buildList = () => {
-    const {workouts, lastWorkoutId, theme} = this.props
+    const {workouts, lastWorkoutId} = this.props
 
     var arr = []
-    workouts.mapKeys((id) => {
+    const sorted = workouts.sortBy((v,k) => -parseInt(k))
+    sorted.mapKeys((id) => {
       if (id !== lastWorkoutId) {
         arr.push(
           <ListItem key={id}
               onPress={() => this.loadWorkout(id)}
               title={workouts.getIn([id,'name'])}
-              // style={styles.details}
             />
         )
       }
     })
-    console.log('workout list created of len ' + arr.length)
+    //console.log('workout list created of len ' + arr.length)
 
     return arr
   }
 
   render() {
     //const background = this.props.theme === 'dark' ? styles.dark : styles.light
-    const v = this.state.list
-      ? (<View><List>
-          {this.state.list}
-        </List></View>)
-      : null
-    return v
+    return (
+        <View style={styles.padTop}>
+          <AppText size='sm' theme={this.theme}>or pick a different workout:</AppText>
+          <List>
+          {this.buildList()}
+        </List></View>
+    )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 2,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'white'
-  },
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  la_container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    backgroundColor: 'white',
-  },
-  details: {
-    backgroundColor: '#878787',
-    // fontSize: 32,
-    // textAlign: 'center'
-  },
-  buttons: {
-    backgroundColor: '#2222df',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    margin: 2,
-    flex: 1,
-  },
-  txt: {
-    color: 'white',
-  },
-  detailsSm: {
-    color: '#878787',
-    fontSize: 16,
-    textAlign: 'center'
+  padTop: {
+    paddingTop: 20,
   },
 })
 
-export default WorkoutListView
+export default pure(WorkoutListView)
