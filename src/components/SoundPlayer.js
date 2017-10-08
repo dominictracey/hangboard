@@ -25,6 +25,13 @@ class SoundPlayer extends React.Component {
       }
     });
 
+    this.dingSound = new Sound('ding.mp3', Sound.MAIN_BUNDLE, (error) => {
+      if (error) {
+        console.log('failed to load the ding sound', error);
+        return;
+      }
+    });
+
     this.silenceSound = new Sound('silence.mp3', Sound.MAIN_BUNDLE, (error) => {
       if (error) {
         console.log('failed to load the silence sound', error);
@@ -46,6 +53,7 @@ class SoundPlayer extends React.Component {
   componentWillUnmount() {
     this.tickSound.release()
     this.beepSound.release()
+    this.dingSound.release()
     this.silenceSound.release()
   }
 
@@ -56,6 +64,8 @@ class SoundPlayer extends React.Component {
       soundFile = this.beepSound
     } else if (nextSound === K.TICKS) {
       soundFile = this.tickSound
+    } else if (nextSound === K.DINGS) {
+      soundFile = this.dingSound
     } else {
       soundFile = this.silenceSound
     }

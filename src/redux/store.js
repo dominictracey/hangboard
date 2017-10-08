@@ -5,8 +5,8 @@ import middleware from './middleware';
 import reducer from './reducer';
 import persist from '../utils/persist'
 const enhanced = [
-  ...enhancers,
   applyMiddleware(...middleware),
+  ...enhancers,
   reduxLoop.install()
 ];
 

@@ -345,18 +345,16 @@ export const incrementExercise = (state, incAmount = 1) => {
   var nextGrip = newEx === getNumExercises(state)
     ? 'Complete'
     : getBoard(state).getIn([K.GRIPS,state.getIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, nextEx.toString()]),'name'])
-    //getBoard(state).getIn([K.GRIPS,state.getIn(['session',K.GRIPS,nextEx.toString()]),'name'])
   var nextWeight = newEx === getNumExercises(state)
     ? null
-    : getWorkout(state).getIn([K.WEIGHTS,nextEx.toString()]) //state.getIn(['session','weights',nextEx.toString()])
+    : getWorkout(state).getIn([K.WEIGHTS,nextEx.toString()])
   return state.updateIn(M.CURRENT_EXERCISE_ORD, exer => newEx)
               .updateIn(M.CURRENT_EXERCISE_ID, exer => newExId)
               .updateIn(M.CURRENT_EXERCISE, ex =>
                 getProgram(state).get(K.EXERCISES).get(newExId))
               .updateIn(M.EXERCISE_LABEL, label => newEx + '/' + getNumExercises(state))
-              .updateIn(M.CURRENT_WEIGHT, w => getWorkout(state).getIn([K.WEIGHTS,newExId])) //state.getIn([...M.WEIGHTS,newExId]))
+              .updateIn(M.CURRENT_WEIGHT, w => getWorkout(state).getIn([K.WEIGHTS,newExId]))
               .updateIn(M.GRIP, grip => getNextGripName(state))
-                //getBoard(state).getIn([K.GRIPS,state.getIn(['session',K.GRIPS,newExId]),'name']))
               .updateIn(M.NEXT_GRIP, grip => nextGrip)
               .updateIn(M.NEXT_WEIGHT,weight => nextWeight)
 }
@@ -366,12 +364,14 @@ export const resetExercise = (state, program, workout) => {
               .updateIn(M.CURRENT_EXERCISE_ID, ex => '1')
               .updateIn(M.CURRENT_EXERCISE, ex => program.get(K.EXERCISES).get('1'))
               .updateIn(M.EXERCISE_LABEL, label => '1/' + program.get(K.EXERCISES).count())
-              .updateIn(M.CURRENT_WEIGHT, w => workout.get(K.WEIGHTS).get('1')) //state.getIn([...M.WEIGHTS,'1']))
+              .updateIn(M.CURRENT_WEIGHT, w => workout.get(K.WEIGHTS).get('1'))
               .updateIn(M.NEXT_WEIGHT, w => workout.get(K.WEIGHTS).get('2'))
               .updateIn(M.GRIP, grip =>
-                getBoard(state).getIn([K.GRIPS,state.getIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, '1']),'name']))
+                getBoard(state).getIn([K.GRIPS,
+                  state.getIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, '1']),'name']))
               .updateIn(M.NEXT_GRIP, grip =>
-                getBoard(state).getIn([K.GRIPS,state.getIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, '2']),'name']))
+                getBoard(state).getIn([K.GRIPS,
+                  state.getIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, '2']),'name']))
 }
 
 export const incrementSet = (state, incAmount = 1) => {
@@ -379,7 +379,7 @@ export const incrementSet = (state, incAmount = 1) => {
   const newSetId = getProgram(state).getIn([K.EXERCISES,getCurrExerciseId(state),K.SETS,newSetOrd.toString()])
   return state.updateIn(M.CURRENT_SET_ORD, cset => newSetOrd.toString())
               .updateIn(M.CURRENT_SET_ID, id => newSetId)
-              .updateIn(M.CURRENT_WEIGHT, w => getWorkout(state).getIn([K.WEIGHTS,getCurrExerciseId(state)]) + //state.getIn([...M.WEIGHTS,getCurrExerciseId(state)]) +
+              .updateIn(M.CURRENT_WEIGHT, w => getWorkout(state).getIn([K.WEIGHTS,getCurrExerciseId(state)]) +
                       getConfiguration().getIn([K.SETS,newSetId,'baseline_plus']))
               .updateIn(M.SET_LABEL,
                 label => newSetOrd + '/' + numSetsInExercise(state))
@@ -501,8 +501,6 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
       )
 
     case COMPLETE:
-      // TODO move the current session object to history
-
       // allow screen to sleep again
       KeepAwake.deactivate();
       return loop(
@@ -593,8 +591,7 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
 
     case CHANGEGRIP:
       // change the grip in session.grips and workout.grips
-      return state //.updateIn([...M.GRIPS,getCurrExerciseId(state)], grip => action.newGrip)
-                  .updateIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, getCurrExerciseId(state)],
+      return state.updateIn([K.WORKOUTS,getWorkoutId(state),K.GRIPS, getCurrExerciseId(state)],
                               grip => action.newGrip)
                   .updateIn(M.GRIP, grip => getBoard(state).getIn([K.GRIPS,action.newGrip,'name']))
 
@@ -663,7 +660,7 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
         // here we need to play the right sound for the next phase
         nextState = transition(state)
         efx = Effects.constant(needNewSound(nextState.type, getTimeForPhase(nextState.type, state)))
-      } else if (action.seconds === 4) {
+      } else if (action.seconds === 4 || action.seconds === 2) {
         // here we may turn on the beeps
         var phase = getCurrPhase(state)
         efx = Effects.constant(needNewSound(phase, action.seconds))
@@ -694,7 +691,6 @@ export default function WorkoutStateReducer(state = initialState, action = {}) {
                             .reduce((acc, _, key) => parseInt(key) > acc && parseInt(key), -1) + 1
 
       // and the default weights and grips for the program
-
       var newWorkout = Map({
         [K.WORKOUTS]: Map({
           [newKeyVal]: Map({

@@ -95,8 +95,10 @@ export const K = {
   SOUNDS: 'sounds',
   TICKS: 'ticks',
   BEEPS: 'beeps',
+  DINGS: 'dings',
   TICKS_FOR: 'ticksForPhases',
   BEEPS_FOR: 'beepsForPhases',
+  DINGS_FOR: 'dingsForPhases',
   DEFAULT_PROGRAM_ID: 'defaultProgramId',
   DEFAULT_BOARD_ID: 'defaultBoardId',
 
@@ -152,7 +154,7 @@ export const M = {
   //sound Settings
   TICKS_FOR: [K.SOUNDS,K.TICKS_FOR],
   BEEPS_FOR: [K.SOUNDS,K.BEEPS_FOR],
-
+  DINGS_FOR: [K.SOUNDS,K.DINGS_FOR],
   // history
   RESULTS: [K.CURRENT,K.RESULTS],
 }

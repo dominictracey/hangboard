@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
-  StyleSheet,
   View,
   ScrollView,
 } from 'react-native'
@@ -11,7 +10,6 @@ import {K} from '../../utils/constants'
 import VersionNumber from 'react-native-version-number'
 import AppText from '../../components/AppText'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import {onlyUpdateForKeys} from 'recompose'
 import EditableProgramSelector from '../../components/EditableProgramSelector'
 import EditableBoardSelector from '../../components/EditableBoardSelector'
 
@@ -36,19 +34,15 @@ class SettingsView extends Component {
     defaultBoardId: PropTypes.string.isRequired,
     ticksFor: PropTypes.object.isRequired,
     beepsFor: PropTypes.object.isRequired,
-    //navigate: PropTypes.func.isRequired,
+    dingsFor: PropTypes.object.isRequired,
     settingsStateActions: PropTypes.shape({
       updateTicksFor: PropTypes.func.isRequired,
       updateBeepsFor: PropTypes.func.isRequired,
+      updateDingsFor: PropTypes.func.isRequired,
       setDefaultProgram: PropTypes.func.isRequired,
       setDefaultBoard: PropTypes.func.isRequired,
     }),
   };
-  //
-  // shouldComponentUpdate(nextProps, nextState) {
-
-  //   return false
-  // }
 
   buildTicks = () => {
     const {ticksFor} = this.props
@@ -80,28 +74,49 @@ class SettingsView extends Component {
     return retval
   }
 
-  onPressPartial = (soundType) => (phase) => {
-    const {ticksFor, beepsFor, settingsStateActions: {updateTicksFor, updateBeepsFor}} = this.props
-    return soundType === K.TICKS
-      ? updateTicksFor(phase, !ticksFor.get(phase))
-      : updateBeepsFor(phase, !beepsFor.get(phase))
+  buildDings = () => {
+    const {dingsFor} = this.props
+    let retval = []
+    var onPressCheckBox = this.onPressPartial(K.DINGS)
+    dingsFor.mapKeys(phase => {
+      retval.push(
+        <CheckBox key={'ding' + phase}
+                  checked={dingsFor.get(phase)}
+                  title={PhaseLabels[phase]}
+                  onPress={() => onPressCheckBox(phase)}/>
+      )
+    })
+    return retval
   }
 
-  // setDefaultProgram = (programId, boardId) => this.props.setDefaultProgram(programId, boardId)
-  // selectBoard = (programId, boardId) => this.props.setDefaultBoard(programId, boardId)
+  onPressPartial = (soundType) => (phase) => {
+    const {ticksFor, beepsFor, dingsFor,
+            settingsStateActions: {updateTicksFor, updateBeepsFor, updateDingsFor}} = this.props
+    switch (soundType) {
+      case K.TICKS:
+        return updateTicksFor(phase, !ticksFor.get(phase))
+      case K.BEEPS:
+        return updateBeepsFor(phase, !beepsFor.get(phase))
+      case K.DINGS:
+        return updateDingsFor(phase, !dingsFor.get(phase))
+      default:
+        return null
+    }
+  }
 
   render() {
     const {programs, defaultProgramId, boards, defaultBoardId,
             settingsStateActions: {setDefaultBoard, setDefaultProgram}} = this.props
     const ticks = this.buildTicks()
     const beeps = this.buildBeeps()
+    const dings = this.buildDings()
     return (
-      <ScrollView style={styles.container}>
-        <View style={styles.row}>
+      <ScrollView>
+        <View>
           <AppText size='sm'>{'App version: ' + VersionNumber.appVersion}</AppText>
         </View>
         {/* <AppText size='lg'>Sounds</AppText> */}
-        <View style={styles.row}>
+        <View>
           <Card title='Workout'>
             <EditableProgramSelector programs={programs}
                                   defaultProgramId={defaultProgramId}
@@ -115,35 +130,19 @@ class SettingsView extends Component {
                                   defaultBoardId={defaultBoardId}
                                   selectCb={setDefaultBoard}/>
           </Card>
-          <Card title='Audio - Ticks For:'>
+          <Card title='Audio - Ticks for:'>
             {ticks}
           </Card>
-          <Card title='Audio - 3 second beeps For:'>
+          <Card title='Audio - 3 second beeps for:'>
             {beeps}
+          </Card>
+          <Card title='Audio - Ding at end of:'>
+            {dings}
           </Card>
         </View>
       </ScrollView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1,
-    // justifyContent: 'flex-start',
-    // alignItems: 'center',
-    // backgroundColor: 'white'
-  },
-  row: {
-    // flex: .5,
-    // flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // paddingTop: 70, //otherwise hides under the tab bar on iOS
-  },
-});
-
-// can't use HOCs with react-navigation tab items as the icon doesn't show up on ios
-//   export default onlyUpdateForKeys(['ticksFor','beepsFor','defaultProgramId','defaultBoardId'])(SettingsView)
 
 export default SettingsView
